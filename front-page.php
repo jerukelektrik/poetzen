@@ -29,7 +29,7 @@ $hero_query = new WP_Query(
 ?>
 
 <!-- Editorial Hero Grid & News Ticker -->
-<section class="ss-section border-t-0 bg-slate-55/30 dark:bg-black/20">
+<section class="ss-section border-t-0 bg-slate-55/30 dark:bg-black/20 pt-4 md:pt-6 pb-10 md:pb-14">
 	<div class="ss-container">
 		<?php 
 		// Fetch ongoing/upcoming events for the News Update ticker
