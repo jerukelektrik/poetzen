@@ -135,7 +135,7 @@
   /* Footer Column Header: footer section label */
   .ss-footer-label {
     font-family: var(--font-sans), sans-serif;
-    @apply text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-zinc-500;
+    @apply text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-zinc-500;
   }
 
   /* Footer Font Overrides */

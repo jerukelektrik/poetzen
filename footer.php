@@ -25,7 +25,7 @@
 			<!-- Column 1: Rubrik (Sections) -->
 			<div>
 				<h4 class="ss-footer-label text-slate-500 dark:text-zinc-550 mb-4"><?php esc_html_e( 'Rubrik', 'sukusastra' ); ?></h4>
-				<ul class="grid gap-2 text-xs text-slate-300 dark:text-zinc-400">
+				<ul class="grid gap-2 text-sm text-slate-300 dark:text-zinc-400">
 					<li><a class="no-underline hover:text-red-400 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/category/puisi/' ) ); ?>"><?php esc_html_e( 'Puisi', 'sukusastra' ); ?></a></li>
 					<li><a class="no-underline hover:text-red-400 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/category/cerpen/' ) ); ?>"><?php esc_html_e( 'Cerpen', 'sukusastra' ); ?></a></li>
 					<li><a class="no-underline hover:text-red-400 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/category/esai/' ) ); ?>"><?php esc_html_e( 'Esai', 'sukusastra' ); ?></a></li>
@@ -35,7 +35,7 @@
 			<!-- Column 2: Rubrik Continued -->
 			<div>
 				<div class="hidden md:block h-[34px]"></div> <!-- alignment spacer -->
-				<ul class="grid gap-2 text-xs text-slate-300 dark:text-zinc-400">
+				<ul class="grid gap-2 text-sm text-slate-300 dark:text-zinc-400">
 					<li><a class="no-underline hover:text-red-400 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/review-buku/' ) ); ?>"><?php esc_html_e( 'Review Buku', 'sukusastra' ); ?></a></li>
 					<li><a class="no-underline hover:text-red-400 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/berita/' ) ); ?>"><?php esc_html_e( 'Berita', 'sukusastra' ); ?></a></li>
 					<li><a class="no-underline hover:text-red-400 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/event/' ) ); ?>"><?php esc_html_e( 'Event & Agenda', 'sukusastra' ); ?></a></li>
@@ -45,7 +45,7 @@
 			<!-- Column 3: Lainnya (More) -->
 			<div>
 				<h4 class="ss-footer-label text-slate-500 dark:text-zinc-550 mb-4"><?php esc_html_e( 'Lainnya', 'sukusastra' ); ?></h4>
-				<ul class="grid gap-2 text-xs text-slate-300 dark:text-zinc-400">
+				<ul class="grid gap-2 text-sm text-slate-300 dark:text-zinc-400">
 					<li><a class="no-underline hover:text-red-400 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/tentang-kami/' ) ); ?>"><?php esc_html_e( 'Tentang Kami', 'sukusastra' ); ?></a></li>
 					<li><a class="no-underline hover:text-red-400 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/redaksi/' ) ); ?>"><?php esc_html_e( 'Redaksi', 'sukusastra' ); ?></a></li>
 					<li><a class="no-underline hover:text-red-400 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/ketentuan-pengiriman-karya/' ) ); ?>"><?php esc_html_e( 'Ketentuan Kirim Karya', 'sukusastra' ); ?></a></li>
@@ -55,12 +55,12 @@
 			<!-- Column 4: Newsletter -->
 			<div>
 				<h4 class="ss-footer-label text-slate-500 dark:text-zinc-550 mb-4"><?php esc_html_e( 'Newsletter', 'sukusastra' ); ?></h4>
-				<p class="text-xs leading-5 text-slate-400 dark:text-zinc-500 mb-3 font-sans">
+				<p class="text-sm leading-5 text-slate-400 dark:text-zinc-500 mb-3 font-sans">
 					<?php esc_html_e( 'Dapatkan kurasi karya sastra terbaik langsung di emailmu.', 'sukusastra' ); ?>
 				</p>
 				<form class="flex items-center bg-slate-900 border border-slate-800 p-1 pl-3.5 rounded-full w-full max-w-[260px] shadow-inner" action="#" method="post">
 					<span class="text-slate-500 text-[10px] font-bold shrink-0">@</span>
-					<input type="email" class="bg-transparent border-0 outline-none text-xs flex-1 text-slate-100 placeholder-slate-500 py-1.5 px-2 font-medium" placeholder="<?php esc_attr_e( 'Alamat email...', 'sukusastra' ); ?>" required />
+					<input type="email" class="bg-transparent border-0 outline-none text-sm flex-1 text-slate-100 placeholder-slate-500 py-1.5 px-2 font-medium" placeholder="<?php esc_attr_e( 'Alamat email...', 'sukusastra' ); ?>" required />
 					<button type="submit" class="w-8 h-8 rounded-full bg-zinc-100 text-zinc-950 flex items-center justify-center hover:bg-red-700 hover:text-white transition cursor-pointer shadow-sm shrink-0">
 						<svg class="w-3.5 h-3.5 fill-none stroke-current stroke-2" viewBox="0 0 24 24">
 							<path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
@@ -71,7 +71,7 @@
 		</div>
 
 		<!-- 3. Secondary Links Grid -->
-		<div class="border-t border-slate-800 dark:border-zinc-800 py-8 grid gap-6 sm:grid-cols-2 md:grid-cols-4 text-xs">
+		<div class="border-t border-slate-800 dark:border-zinc-800 py-8 grid gap-6 sm:grid-cols-2 md:grid-cols-4 text-sm">
 			<div>
 				<ul class="grid gap-2 text-slate-400 dark:text-zinc-500">
 					<li><a class="no-underline hover:text-red-400 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/tentang-kami/' ) ); ?>"><?php esc_html_e( 'Tentang Kami', 'sukusastra' ); ?></a></li>
@@ -97,7 +97,7 @@
 		</div>
 
 		<!-- 4. Bottom Copyright & Social Icons -->
-		<div class="border-t border-slate-800 dark:border-zinc-800 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-[11px] text-slate-500 dark:text-zinc-500">
+		<div class="border-t border-slate-800 dark:border-zinc-800 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-slate-500 dark:text-zinc-500">
 			<div>
 				<?php 
 				$copyright = sukusastra_get_option( 'copyright', sprintf( '&copy; %s Suku Sastra. Hak Cipta Dilindungi.', date( 'Y' ) ) );
