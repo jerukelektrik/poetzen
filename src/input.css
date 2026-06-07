@@ -160,11 +160,13 @@
 
   /* Sidebar Item Title: small sidebar post titles */
   .ss-sidebar-title {
-    @apply text-xs font-bold text-slate-900 dark:text-zinc-100 leading-snug line-clamp-2;
+    font-family: var(--font-sans), sans-serif;
+    @apply text-sm font-semibold text-slate-900 dark:text-zinc-100 leading-snug line-clamp-2;
   }
 
   /* Sidebar Widget Heading: uppercase heading above sidebar widget sections */
   .ss-widget-title {
+    font-family: var(--font-sans), sans-serif;
     @apply text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-zinc-500;
   }
 
@@ -190,7 +192,8 @@
 
   /* Author box heading */
   .ss-author-name {
-    @apply font-black text-slate-900 dark:text-zinc-50 leading-tight;
+    font-family: var(--font-sans), sans-serif;
+    @apply text-sm font-bold text-slate-900 dark:text-zinc-50 leading-tight;
   }
 
   /* Info block heading (like single-penulis "Informasi Tokoh") */
