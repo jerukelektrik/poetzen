@@ -20,6 +20,11 @@ function sukusastra_document_title( string $title ): string {
 
 add_action( 'wp_head', 'sukusastra_render_seo_tags', 1 );
 function sukusastra_render_seo_tags(): void {
+	if ( is_search() || is_404() ) {
+		printf( '<meta name="robots" content="noindex,follow">' . "\n" );
+		return;
+	}
+
 	if ( is_singular() ) {
 		$post_id = get_queried_object_id();
 		$description = sukusastra_get_meta( $post_id, '_ss_meta_desc', wp_strip_all_tags( get_the_excerpt( $post_id ) ) );
@@ -37,7 +42,9 @@ function sukusastra_render_seo_tags(): void {
 			printf( '<meta property="og:image" content="%s">' . "\n", esc_url( $image ) );
 		}
 		echo '<meta name="twitter:card" content="summary_large_image">' . "\n";
-		sukusastra_render_json_ld( $post_id );
+		if ( '1' === sukusastra_get_option( 'toggle_schema', '1' ) ) {
+			sukusastra_render_json_ld( $post_id );
+		}
 		return;
 	}
 

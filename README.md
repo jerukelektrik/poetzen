@@ -1,6 +1,6 @@
-# Suku Sastra Theme (Revamp)
+# Poetzen Theme (Revamp)
 
-Classic WordPress PHP theme for Suku Sastra built on top of the local `poetzen` folder.
+Classic WordPress PHP theme Poetzen.
 
 ## Requirements
 
@@ -41,7 +41,7 @@ Each post, page, and CPT editor screen features a side panel and normal fields t
 
 ## Verification Routine
 
-1. **Activation**: Enable **Suku Sastra** in `wp-admin -> Appearance -> Themes`.
+1. **Activation**: Enable **Poetzen** in `wp-admin -> Appearance -> Themes`.
 2. **Administration**: Check CPT menus for *Review Buku*, *Berita*, and *Event* in the admin sidebar.
 3. **Metaboxes**: Edit an item and verify the metabox values (e.g. Booking URL, SEO title, redirect targets) persist upon save.
 4. **Feeds**: Visit the homepage and check that Puisi, Cerpen, Esai, Book Reviews, News, and Events display correctly.

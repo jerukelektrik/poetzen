@@ -43,12 +43,14 @@ $filtered = new WP_Query( sukusastra_filter_args_from_request() );
 				</div>
 			<?php endif; ?>
 		</div>
-		<div class="mt-6 border-t border-slate-200/20 pt-6">
+		<div class="mt-6 border-t border-slate-200/20 pt-6 pagination">
 			<?php
 			echo paginate_links(
 				array(
-					'total'   => $filtered->max_num_pages,
-					'current' => max( 1, get_query_var( 'paged' ) ),
+					'total'     => $filtered->max_num_pages,
+					'current'   => max( 1, get_query_var( 'paged' ) ),
+					'prev_text' => '<span class="sr-only">' . esc_html__( 'Sebelumnya', 'sukusastra' ) . '</span><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>',
+					'next_text' => '<span class="sr-only">' . esc_html__( 'Berikutnya', 'sukusastra' ) . '</span><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>',
 				)
 			);
 			?>

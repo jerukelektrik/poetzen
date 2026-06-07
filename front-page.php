@@ -29,7 +29,7 @@ $hero_query = new WP_Query(
 ?>
 
 <!-- Editorial Hero Grid & News Ticker -->
-<section class="ss-section border-t-0 bg-slate-55/30 dark:bg-black/20 pt-4 md:pt-6 pb-10 md:pb-14">
+<section class="ss-section border-t-0 bg-transparent pt-4 md:pt-6 pb-10 md:pb-14">
 	<div class="ss-container">
 		<?php 
 		// Fetch ongoing/upcoming events for the News Update ticker
@@ -82,8 +82,8 @@ $hero_query = new WP_Query(
 				'post_status'    => 'publish'
 			) );
 		}
-
-		if ( $news_update_events->have_posts() ) :
+		$show_news_ticker = sukusastra_get_option( 'toggle_news_ticker', '1' );
+		if ( '1' === $show_news_ticker && $news_update_events->have_posts() ) :
 		?>
 		<!-- 1. News Update Ticker Bar -->
 		<div class="mb-8 flex items-center border border-slate-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-900/80 backdrop-blur rounded-full p-1 pr-6 shadow-sm overflow-hidden">
@@ -254,13 +254,284 @@ $hero_query = new WP_Query(
 	</div>
 </section>
 
+<?php 
+$show_penulis_stories = sukusastra_get_option( 'toggle_penulis_stories', '1' );
+if ( '1' === $show_penulis_stories ) : 
+?>
+<!-- Penulis Stories Section -->
+<section class="bg-transparent py-8 relative">
+	<div class="ss-container">
+		<div class="flex items-center justify-between mb-6">
+			<h2 class="ss-section-title flex items-center gap-2">
+				<span>Penulis Suku Sastra</span>
+			</h2>
+			<a class="text-xs font-bold uppercase tracking-wider text-red-700 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 no-underline flex items-center gap-1.5" href="<?php echo esc_url( get_post_type_archive_link( 'penulis' ) ); ?>">
+				<span>Lihat Semua</span>
+				<svg class="w-3.5 h-3.5 stroke-current fill-none stroke-2" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+				</svg>
+			</a>
+		</div>
+
+		<!-- Scroll wrapper with slide buttons -->
+		<div class="relative group/scroll">
+			<!-- Left Slide Button -->
+			<button id="slide-left-btn" class="absolute -left-4 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-white dark:bg-[#262B4E] shadow-md border border-slate-200 dark:border-zinc-800/80 flex items-center justify-center text-slate-600 dark:text-zinc-300 opacity-0 group-hover/scroll:opacity-100 transition-opacity duration-300 hover:text-red-700 dark:hover:text-red-400" aria-label="Geser Kiri">
+				<svg class="w-4 h-4 stroke-current fill-none stroke-2" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+				</svg>
+			</button>
+			
+			<!-- Horizontally scrollable stories container -->
+			<div id="stories-scroll-container" class="flex items-start gap-6 overflow-x-auto pb-2 no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0 scroll-smooth snap-x">
+				<?php
+				$penulis_query = new WP_Query(
+					array(
+						'post_type'      => 'penulis',
+						'posts_per_page' => 15,
+						'orderby'        => 'title',
+						'order'          => 'ASC',
+					)
+				);
+
+				if ( $penulis_query->have_posts() ) :
+					while ( $penulis_query->have_posts() ) :
+						$penulis_query->the_post();
+						$author_name = get_the_title();
+						
+						// Smart handle generator: lowercase, dots, strip single letters
+						$clean_name = strtolower( preg_replace( '/[^a-zA-Z0-9\s]/', '', $author_name ) );
+						$parts = array_filter( explode( ' ', $clean_name ), function( $val ) {
+							return strlen( $val ) > 1;
+						} );
+						if ( empty( $parts ) ) {
+							$parts = array_filter( explode( ' ', $clean_name ) );
+						}
+						if ( count( $parts ) >= 2 ) {
+							$handle = implode( '.', array_slice( $parts, 0, 2 ) );
+						} else {
+							$handle = implode( '', $parts );
+						}
+						$handle = '@' . $handle;
+						
+						$avatar_url = '';
+						if ( has_post_thumbnail() ) {
+							$avatar_url = get_the_post_thumbnail_url( get_the_ID(), 'thumbnail' );
+						}
+						if ( ! $avatar_url ) {
+							$avatar_url = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=120&h=120&fit=crop';
+						}
+						
+						$bio_summary = get_post_meta( get_the_ID(), '_ss_penulis_bio_summary', true );
+						$birth_place = get_post_meta( get_the_ID(), '_ss_penulis_tempat_lahir', true );
+						$birth_date = get_post_meta( get_the_ID(), '_ss_penulis_tanggal_lahir', true );
+						$birth_info = '';
+						if ( $birth_place || $birth_date ) {
+							$birth_info = trim( implode( ', ', array_filter( array( $birth_place, $birth_date ) ) ) );
+						}
+						
+						// Check if author has posts in the last 30 days
+						$recent_posts = get_posts(
+							array(
+								'post_type'      => array( 'post', 'review_buku' ),
+								'posts_per_page' => 1,
+								'meta_query'     => array(
+									array(
+										'key'     => '_ss_original_author_id',
+										'value'   => get_the_ID(),
+										'compare' => '=',
+									),
+								),
+								'date_query'     => array(
+									array(
+										'after' => '30 days ago',
+									),
+								),
+							)
+						);
+						$is_active = ! empty( $recent_posts );
+						
+						$ring_class = $is_active 
+							? 'bg-gradient-to-tr from-red-700 via-amber-500 to-yellow-500' 
+							: 'bg-slate-200 dark:bg-zinc-800/80';
+						?>
+						<div class="flex flex-col items-center shrink-0 w-20 sm:w-24 snap-start group">
+							<a href="<?php the_permalink(); ?>" 
+							   class="author-story-trigger relative p-[3px] rounded-full <?php echo esc_attr( $ring_class ); ?> transition-transform duration-300 group-hover:scale-105 shadow-sm"
+							   data-name="<?php echo esc_attr( $author_name ); ?>"
+							   data-handle="<?php echo esc_attr( $handle ); ?>"
+							   data-bio="<?php echo esc_attr( $bio_summary ); ?>"
+							   data-birth="<?php echo esc_attr( $birth_info ); ?>"
+							   data-avatar="<?php echo esc_url( $avatar_url ); ?>"
+							   data-link="<?php the_permalink(); ?>">
+								<div class="bg-slate-50 dark:bg-[#343B6A] p-[2px] rounded-full">
+									<img src="<?php echo esc_url( $avatar_url ); ?>" alt="<?php echo esc_attr( $author_name ); ?>" class="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover">
+								</div>
+							</a>
+							<a href="<?php the_permalink(); ?>" class="mt-2 text-[11px] font-semibold text-slate-700 dark:text-zinc-300 hover:text-red-700 dark:hover:text-red-300 no-underline text-center block w-full whitespace-normal break-words">
+								<?php echo esc_html( $author_name ); ?>
+							</a>
+						</div>
+						<?php
+					endwhile;
+					wp_reset_postdata();
+				else :
+					?>
+					<p class="text-xs text-slate-500 dark:text-zinc-400 py-4"><?php esc_html_e( 'Belum ada penulis terdaftar.', 'sukusastra' ); ?></p>
+				<?php
+				endif;
+				?>
+			</div>
+			
+			<!-- Right Slide Button -->
+			<button id="slide-right-btn" class="absolute -right-4 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-white dark:bg-[#262B4E] shadow-md border border-slate-200 dark:border-zinc-800/80 flex items-center justify-center text-slate-600 dark:text-zinc-300 opacity-0 group-hover/scroll:opacity-100 transition-opacity duration-300 hover:text-red-700 dark:hover:text-red-400" aria-label="Geser Kanan">
+				<svg class="w-4 h-4 stroke-current fill-none stroke-2" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+				</svg>
+			</button>
+		</div>
+	</div>
+
+	<!-- Author Biography Modal -->
+	<div id="author-bio-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-all duration-300" aria-hidden="true" role="dialog">
+		<!-- Backdrop -->
+		<div id="author-bio-modal-backdrop" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
+		
+		<!-- Modal Card -->
+		<div class="relative w-full max-w-md bg-white dark:bg-[#262B4E] rounded-3xl overflow-hidden shadow-2xl border border-slate-200/50 dark:border-zinc-800/80 transform scale-95 transition-transform duration-300 flex flex-col items-center p-6 text-center z-10">
+			<!-- Close Button -->
+			<button id="author-bio-modal-close" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 flex items-center justify-center text-slate-500 dark:text-zinc-400 transition-colors" aria-label="Tutup">
+				<svg class="w-4 h-4 stroke-current fill-none stroke-2" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+				</svg>
+			</button>
+			
+			<!-- Avatar Ring -->
+			<div class="relative p-[4px] rounded-full bg-gradient-to-tr from-red-700 via-amber-500 to-yellow-500 shadow-md mb-4 mt-2">
+				<div class="bg-white dark:bg-[#262B4E] p-[3px] rounded-full">
+					<img id="modal-author-avatar" src="" alt="" class="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover">
+				</div>
+			</div>
+			
+			<!-- Author Name -->
+			<h3 id="modal-author-name" class="text-2xl font-black text-slate-900 dark:text-zinc-50 leading-tight"></h3>
+			
+			<!-- Username Handle -->
+			<span id="modal-author-handle" class="text-xs font-bold text-red-700 dark:text-red-400 mt-1 uppercase tracking-wider"></span>
+			
+			<!-- Birth Info -->
+			<div class="flex items-center gap-1.5 text-xs text-slate-400 dark:text-zinc-500 mt-2.5 font-semibold">
+				<svg class="w-3.5 h-3.5 stroke-current fill-none stroke-2" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+					<path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+				</svg>
+				<span id="modal-author-birth"></span>
+			</div>
+			
+			<!-- Bio Summary -->
+			<p id="modal-author-bio" class="mt-4 text-sm leading-relaxed text-slate-600 dark:text-zinc-300 font-serif italic max-w-sm"></p>
+			
+			<!-- Action Link -->
+			<a id="modal-author-link" href="" class="mt-6 w-full ss-button text-center no-underline flex items-center justify-center gap-2">
+				<span>Kunjungi Profil & Semua Karya</span>
+				<svg class="w-4 h-4 stroke-current fill-none stroke-2" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+				</svg>
+			</a>
+		</div>
+	</div>
+
+	<!-- Slider & Modal Javascript -->
+	<script>
+	document.addEventListener('DOMContentLoaded', function() {
+		// 1. Slider controls
+		const container = document.getElementById('stories-scroll-container');
+		const leftBtn = document.getElementById('slide-left-btn');
+		const rightBtn = document.getElementById('slide-right-btn');
+		
+		if (container && leftBtn && rightBtn) {
+			leftBtn.addEventListener('click', () => {
+				container.scrollBy({ left: -240, behavior: 'smooth' });
+			});
+			rightBtn.addEventListener('click', () => {
+				container.scrollBy({ left: 240, behavior: 'smooth' });
+			});
+		}
+
+		// 2. Modal Popup
+		const modal = document.getElementById('author-bio-modal');
+		const card = modal ? modal.querySelector('.transform') : null;
+		const backdrop = document.getElementById('author-bio-modal-backdrop');
+		const closeBtn = document.getElementById('author-bio-modal-close');
+		
+		const modalAvatar = document.getElementById('modal-author-avatar');
+		const modalName = document.getElementById('modal-author-name');
+		const modalHandle = document.getElementById('modal-author-handle');
+		const modalBirth = document.getElementById('modal-author-birth');
+		const modalBio = document.getElementById('modal-author-bio');
+		const modalLink = document.getElementById('modal-author-link');
+		
+		if (modal && card && backdrop && closeBtn) {
+			document.querySelectorAll('.author-story-trigger').forEach(trigger => {
+				trigger.addEventListener('click', function(e) {
+					e.preventDefault();
+					
+					const name = this.getAttribute('data-name');
+					const handle = this.getAttribute('data-handle');
+					const bio = this.getAttribute('data-bio');
+					const birth = this.getAttribute('data-birth');
+					const avatar = this.getAttribute('data-avatar');
+					const link = this.getAttribute('data-link');
+					
+					if (modalAvatar) {
+						modalAvatar.src = avatar || '';
+						modalAvatar.alt = name || '';
+					}
+					if (modalName) modalName.textContent = name || '';
+					if (modalHandle) modalHandle.textContent = handle || '';
+					if (modalBirth) modalBirth.textContent = birth || 'Data kelahiran tidak dicatat';
+					if (modalBio) modalBio.textContent = bio || 'Sastrawan terkemuka yang berkontribusi aktif di media Suku Sastra.';
+					if (modalLink) modalLink.href = link || '#';
+					
+					// Open modal
+					modal.classList.remove('opacity-0', 'pointer-events-none');
+					modal.setAttribute('aria-hidden', 'false');
+					card.classList.remove('scale-95');
+					card.classList.add('scale-100');
+					document.body.style.overflow = 'hidden';
+				});
+			});
+			
+			function closeModal() {
+				modal.classList.add('opacity-0', 'pointer-events-none');
+				modal.setAttribute('aria-hidden', 'true');
+				card.classList.remove('scale-100');
+				card.classList.add('scale-95');
+				document.body.style.overflow = '';
+			}
+			
+			closeBtn.addEventListener('click', closeModal);
+			backdrop.addEventListener('click', closeModal);
+			
+			document.addEventListener('keydown', function(e) {
+				if (e.key === 'Escape' && !modal.classList.contains('opacity-0')) {
+					closeModal();
+				}
+			});
+		}
+	});
+	</script>
+</section>
+<?php endif; ?>
+
+
 
 
 <!-- Category Feeds (Puisi, Cerpen, Esai) -->
 <?php foreach ( array( 'puisi' => 'Puisi Terbaru', 'cerpen' => 'Cerpen Terbaru', 'esai' => 'Esai Terbaru' ) as $slug => $title ) : ?>
 	<?php $query = sukusastra_home_posts( $slug, 3 ); ?>
 	<?php if ( $query->have_posts() ) : ?>
-		<section class="ss-section bg-slate-55/50 dark:bg-black/20">
+		<section class="ss-section bg-transparent">
 			<div class="ss-container grid gap-6">
 				<div class="flex items-center justify-between border-b border-slate-100 pb-2 dark:border-zinc-800/80">
 					<h2 class="ss-section-title"><?php echo esc_html( $title ); ?></h2>
@@ -298,49 +569,49 @@ $hero_query = new WP_Query(
 	</section>
 <?php endif; ?>
 
-<!-- News and Events Section -->
-<section class="ss-section border-b border-slate-200 dark:border-zinc-800">
-	<div class="ss-container grid gap-10 lg:grid-cols-2">
-		<!-- News CPT Feed -->
-		<div class="grid content-start gap-6">
-			<?php $news = sukusastra_latest_cpt( 'berita', 3 ); ?>
-			<div class="flex items-center justify-between border-b border-slate-100 pb-2 dark:border-zinc-800/80">
-				<h2 class="ss-section-title"><?php esc_html_e( 'Berita Suku Sastra', 'sukusastra' ); ?></h2>
-				<a class="ss-eyebrow" href="<?php echo esc_url( get_post_type_archive_link( 'berita' ) ); ?>">
-					<?php esc_html_e( 'Semua Berita', 'sukusastra' ); ?> &rarr;
-				</a>
-			</div>
-			<?php if ( $news->have_posts() ) : ?>
-				<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
-					<?php while ( $news->have_posts() ) : $news->the_post(); ?>
-						<?php get_template_part( 'template-parts/cards/news-card' ); ?>
-					<?php endwhile; wp_reset_postdata(); ?>
-				</div>
-			<?php else : ?>
-				<p class="text-sm text-slate-500 dark:text-zinc-400"><?php esc_html_e( 'Belum ada berita terbaru.', 'sukusastra' ); ?></p>
-			<?php endif; ?>
+<!-- News Section -->
+<section class="ss-section">
+	<div class="ss-container grid gap-6">
+		<div class="flex items-center justify-between border-b border-slate-100 pb-2 dark:border-zinc-800/80">
+			<h2 class="ss-section-title"><?php esc_html_e( 'Berita Suku Sastra', 'sukusastra' ); ?></h2>
+			<a class="ss-eyebrow" href="<?php echo esc_url( get_post_type_archive_link( 'berita' ) ); ?>">
+				<?php esc_html_e( 'Semua Berita', 'sukusastra' ); ?> &rarr;
+			</a>
 		</div>
-
-		<!-- Upcoming Events CPT Feed -->
-		<div class="grid content-start gap-6">
-			<?php $events = sukusastra_upcoming_events( 3 ); ?>
-			<div class="flex items-center justify-between border-b border-slate-100 pb-2 dark:border-zinc-800/80">
-				<h2 class="ss-section-title"><?php esc_html_e( 'Agenda & Event Sastra', 'sukusastra' ); ?></h2>
-				<a class="ss-eyebrow" href="<?php echo esc_url( get_post_type_archive_link( 'event' ) ); ?>">
-					<?php esc_html_e( 'Semua Event', 'sukusastra' ); ?> &rarr;
-				</a>
+		<?php $news = sukusastra_latest_cpt( 'berita', 3 ); ?>
+		<?php if ( $news->have_posts() ) : ?>
+			<div class="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
+				<?php while ( $news->have_posts() ) : $news->the_post(); ?>
+					<?php get_template_part( 'template-parts/cards/news-card' ); ?>
+				<?php endwhile; wp_reset_postdata(); ?>
 			</div>
-			<?php if ( $events->have_posts() ) : ?>
-				<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
-					<?php while ( $events->have_posts() ) : $events->the_post(); ?>
-						<?php get_template_part( 'template-parts/cards/event-card' ); ?>
-					<?php endwhile; wp_reset_postdata(); ?>
-				</div>
-			<?php else : ?>
-				<p class="text-sm text-slate-500 dark:text-zinc-400"><?php esc_html_e( 'Belum ada agenda terdekat.', 'sukusastra' ); ?></p>
-			<?php endif; ?>
-		</div>
+		<?php else : ?>
+			<p class="text-sm text-slate-500 dark:text-zinc-400 py-6 text-center"><?php esc_html_e( 'Belum ada berita terbaru.', 'sukusastra' ); ?></p>
+		<?php endif; ?>
 	</div>
 </section>
+
+<!-- Events Section -->
+<section class="ss-section bg-slate-100 dark:bg-black/40 border-b border-slate-200 dark:border-[#4d568c]/25">
+	<div class="ss-container grid gap-6">
+		<div class="flex items-center justify-between border-b border-slate-100 pb-2 dark:border-zinc-800/80">
+			<h2 class="ss-section-title"><?php esc_html_e( 'Agenda & Event Sastra', 'sukusastra' ); ?></h2>
+			<a class="ss-eyebrow" href="<?php echo esc_url( get_post_type_archive_link( 'event' ) ); ?>">
+				<?php esc_html_e( 'Semua Event', 'sukusastra' ); ?> &rarr;
+			</a>
+		</div>
+		<?php $events = sukusastra_upcoming_events( 4 ); ?>
+		<?php if ( $events->have_posts() ) : ?>
+			<div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+				<?php while ( $events->have_posts() ) : $events->the_post(); ?>
+					<?php get_template_part( 'template-parts/cards/event-card' ); ?>
+				<?php endwhile; wp_reset_postdata(); ?>
+			</div>
+		<?php else : ?>
+			<p class="text-sm text-slate-500 dark:text-zinc-400 py-6 text-center"><?php esc_html_e( 'Belum ada agenda terdekat.', 'sukusastra' ); ?></p>
+		<?php endif; ?>
+	</div>
+</section>
+
 
 <?php get_footer(); ?>

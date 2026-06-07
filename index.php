@@ -14,7 +14,7 @@ get_header(); ?>
 			<?php endwhile; ?>
 		</div>
 		<div class="mt-6 border-t border-slate-250/20 pt-6">
-			<?php the_posts_pagination(); ?>
+			<?php sukusastra_pagination(); ?>
 		</div>
 	</div>
 </section>

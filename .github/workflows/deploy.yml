@@ -1,0 +1,49 @@
+name: Deploy Theme to Live Site
+
+on:
+  push:
+    branches:
+      - main # Memicu deploy otomatis setiap ada push ke branch main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Unduh kode dari repositori GitHub
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # 2. Setup Node.js untuk kompilasi Tailwind CSS
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      # 3. Instal dependensi NPM dan Build CSS Tailwind
+      - name: Install and Build CSS
+        run: |
+          npm ci
+          npm run build:css
+
+      # 4. Kirim berkas tema ke Server Live menggunakan SFTP
+      - name: SFTP Deploy
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.SFTP_HOST }}
+          username: ${{ secrets.SFTP_USERNAME }}
+          password: ${{ secrets.SFTP_PASSWORD }}
+          port: ${{ secrets.SFTP_PORT }}
+          # Path tujuan di server hosting Anda (Silakan sesuaikan jika folder live site Anda berbeda)
+          local-dir: ./
+          server-dir: /public_html/wp-content/themes/poetzen/
+          # Pengecualian berkas yang tidak perlu dikirim ke server live
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            **/src/**
+            package.json
+            package-lock.json
+            README.md

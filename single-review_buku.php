@@ -16,9 +16,9 @@ get_header(); ?>
 	<article class="ss-section">
 		<div class="ss-container">
 			<?php sukusastra_breadcrumbs(); ?>
-			<div class="grid gap-10 lg:grid-cols-[280px_minmax(0,760px)]">
+			<div class="grid gap-y-16 gap-x-10 lg:grid-cols-[280px_minmax(0,760px)]">
 			<!-- Book Meta Sidebar -->
-			<aside class="grid content-start gap-4 lg:sticky lg:top-24 self-start lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto pr-2">
+			<aside class="grid content-start gap-4 lg:sticky lg:top-24 self-start">
 				<?php if ( $book_image_id ) : ?>
 					<div class="rounded overflow-hidden shadow-md border border-slate-100 dark:border-zinc-800 bg-white dark:bg-[#262B4E] p-2">
 						<p class="ss-meta mb-2 text-center"><?php esc_html_e( 'Sampul Buku', 'sukusastra' ); ?></p>
@@ -31,6 +31,20 @@ get_header(); ?>
 				<?php endif; ?>
 				
 				<div class="ss-card grid gap-2 text-sm rounded">
+					<?php 
+					$book_type_val = sukusastra_get_meta( $post_id, '_ss_book_type', 'novel' );
+					$book_types = array(
+						'puisi'    => __( 'Kumpulan Puisi', 'sukusastra' ),
+						'cerpen'   => __( 'Kumpulan Cerpen', 'sukusastra' ),
+						'novel'    => __( 'Novel', 'sukusastra' ),
+						'nonfiksi' => __( 'Nonfiksi', 'sukusastra' ),
+					);
+					$book_type_label = isset( $book_types[ $book_type_val ] ) ? $book_types[ $book_type_val ] : $book_types['novel'];
+					?>
+					<p class="flex items-center flex-wrap">
+						<strong><?php esc_html_e( 'Jenis Buku:', 'sukusastra' ); ?></strong>
+						<span class="inline-block px-2.5 py-0.5 text-[11px] font-bold rounded-full bg-red-50 text-red-700 border border-red-200/60 dark:bg-red-950/20 dark:text-red-300 dark:border-red-900/50 ml-1.5"><?php echo esc_html( $book_type_label ); ?></span>
+					</p>
 					<p><strong><?php esc_html_e( 'Judul Buku:', 'sukusastra' ); ?></strong> <?php echo esc_html( sukusastra_get_meta( $post_id, '_ss_book_title', get_the_title() ) ); ?></p>
 					<?php if ( sukusastra_get_meta( $post_id, '_ss_book_author' ) ) : ?>
 						<p><strong><?php esc_html_e( 'Penulis:', 'sukusastra' ); ?></strong> <?php echo esc_html( sukusastra_get_meta( $post_id, '_ss_book_author' ) ); ?></p>
@@ -39,13 +53,20 @@ get_header(); ?>
 						<p><strong><?php esc_html_e( 'Penerbit:', 'sukusastra' ); ?></strong> <?php echo esc_html( sukusastra_get_meta( $post_id, '_ss_book_publisher' ) ); ?></p>
 					<?php endif; ?>
 					<?php if ( sukusastra_get_meta( $post_id, '_ss_book_year' ) ) : ?>
-						<p><strong><?php esc_html_e( 'Tahun:', 'sukusastra' ); ?></strong> <?php echo esc_html( sukusastra_get_meta( $post_id, '_ss_book_year' ) ); ?></p>
+						<p><strong><?php esc_html_e( 'Tahun Terbit:', 'sukusastra' ); ?></strong> <?php echo esc_html( sukusastra_get_meta( $post_id, '_ss_book_year' ) ); ?></p>
+					<?php endif; ?>
+					<?php if ( sukusastra_get_meta( $post_id, '_ss_book_edition' ) ) : ?>
+						<p><strong><?php esc_html_e( 'Cetakan:', 'sukusastra' ); ?></strong> <?php echo esc_html( sukusastra_get_meta( $post_id, '_ss_book_edition' ) ); ?></p>
+					<?php endif; ?>
+					<?php if ( sukusastra_get_meta( $post_id, '_ss_book_pages' ) ) : ?>
+						<p><strong><?php esc_html_e( 'Halaman:', 'sukusastra' ); ?></strong> <?php echo esc_html( sukusastra_get_meta( $post_id, '_ss_book_pages' ) ); ?></p>
 					<?php endif; ?>
 					<?php if ( $orig_author ) : ?>
 						<p><strong><?php esc_html_e( 'Resensator:', 'sukusastra' ); ?></strong> <a class="underline hover:text-red-700 dark:hover:text-red-300" href="<?php echo esc_url( get_permalink( $orig_author->ID ) ); ?>"><?php echo esc_html( $orig_author->post_title ); ?></a></p>
 					<?php elseif ( sukusastra_get_meta( $post_id, '_ss_reviewer' ) ) : ?>
 						<p><strong><?php esc_html_e( 'Resensator:', 'sukusastra' ); ?></strong> <?php echo esc_html( sukusastra_get_meta( $post_id, '_ss_reviewer' ) ); ?></p>
 					<?php endif; ?>
+
 					<?php
 					$shopee_url   = sukusastra_get_meta( $post_id, '_ss_shopee_url' );
 					$tokopedia_url = sukusastra_get_meta( $post_id, '_ss_tokopedia_url' );
@@ -111,7 +132,7 @@ get_header(); ?>
 			<div>
 				<p class="ss-eyebrow mb-2">
 					<?php 
-					esc_html_e( 'Review Buku', 'sukusastra' );
+					printf( '%s (%s)', esc_html__( 'Review Buku', 'sukusastra' ), esc_html( $book_type_label ) );
 					if ( $orig_author ) {
 						printf(
 							' · <a class="underline hover:text-red-700 dark:hover:text-red-300" href="%1$s">%2$s</a>',
@@ -130,6 +151,20 @@ get_header(); ?>
 				<?php endif; ?>
 				
 				<div class="ss-reading mt-8"><?php the_content(); ?></div>
+
+				<?php 
+				$tags = get_the_tags();
+				if ( $tags ) : 
+					?>
+					<div class="mt-8 flex flex-wrap gap-2 items-center">
+						<span class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-zinc-500 mr-1"><?php esc_html_e( 'Topik:', 'sukusastra' ); ?></span>
+						<?php foreach ( $tags as $tag ) : ?>
+							<a href="<?php echo esc_url( get_tag_link( $tag->term_id ) ); ?>" class="px-3 py-1 text-xs font-semibold rounded-full border border-slate-200 hover:border-red-700 hover:text-red-700 dark:border-zinc-800 dark:hover:border-red-400 dark:hover:text-red-400 text-slate-650 dark:text-zinc-400 transition-colors no-underline">
+								#<?php echo esc_html( $tag->name ); ?>
+							</a>
+						<?php endforeach; ?>
+					</div>
+				<?php endif; ?>
 			</div>
 			</div>
 		</div>

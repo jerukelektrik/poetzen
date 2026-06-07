@@ -272,3 +272,488 @@ function sukusastra_sidebar_popular_posts( int $exclude_id = 0, int $limit = 5 )
 	}
 	return new WP_Query( $args );
 }
+
+add_action( 'pre_get_posts', 'sukusastra_penulis_archive_filter' );
+function sukusastra_penulis_archive_filter( WP_Query $query ): void {
+	if ( is_admin() || ! $query->is_main_query() ) {
+		return;
+	}
+
+	if ( is_post_type_archive( 'penulis' ) ) {
+		// 1. Keyword search filter
+		$search = isset( $_GET['cari_penulis'] ) ? sanitize_text_field( wp_unslash( $_GET['cari_penulis'] ) ) : '';
+		if ( '' !== $search ) {
+			$query->set( 's', $search );
+		}
+
+		// 2. Sorting filter
+		$urut = isset( $_GET['urut_penulis'] ) ? sanitize_key( wp_unslash( $_GET['urut_penulis'] ) ) : 'a-z';
+		if ( 'z-a' === $urut ) {
+			$query->set( 'orderby', 'title' );
+			$query->set( 'order', 'DESC' );
+		} else {
+			$query->set( 'orderby', 'title' );
+			$query->set( 'order', 'ASC' );
+		}
+		
+		// 3. Ensure we query enough authors per page
+		$query->set( 'posts_per_page', 12 );
+	}
+}
+
+add_action( 'pre_get_posts', 'sukusastra_archive_custom_filters' );
+function sukusastra_archive_custom_filters( WP_Query $query ): void {
+	if ( is_admin() || ! $query->is_main_query() ) {
+		return;
+	}
+
+	if ( is_category() || is_tag() || is_tax() ) {
+		// 1. Filter by author search
+		$author_search = isset( $_GET['cari_penulis'] ) ? sanitize_text_field( wp_unslash( $_GET['cari_penulis'] ) ) : '';
+		if ( '' !== $author_search ) {
+			$matching_authors = get_posts( array(
+				'post_type'      => 'penulis',
+				'posts_per_page' => -1,
+				's'              => $author_search,
+				'fields'         => 'ids',
+				'post_status'    => 'publish',
+			) );
+
+			if ( ! empty( $matching_authors ) && ! is_wp_error( $matching_authors ) ) {
+				$query->set( 'meta_query', array(
+					array(
+						'key'     => '_ss_original_author_id',
+						'value'   => $matching_authors,
+						'compare' => 'IN',
+					),
+				) );
+			} else {
+				$query->set( 'post__in', array( 0 ) ); // Force empty results if no author matches
+			}
+		}
+
+		// 2. Sorting
+		$sort_by = isset( $_GET['sort_by'] ) ? sanitize_key( wp_unslash( $_GET['sort_by'] ) ) : 'terbaru';
+		if ( 'abjad_a_z' === $sort_by ) {
+			$query->set( 'orderby', 'title' );
+			$query->set( 'order', 'ASC' );
+		} elseif ( 'abjad_z_a' === $sort_by ) {
+			$query->set( 'orderby', 'title' );
+			$query->set( 'order', 'DESC' );
+		} elseif ( 'terpopuler' === $sort_by ) {
+			$query->set( 'meta_key', '_ss_post_views' );
+			$query->set( 'orderby', 'meta_value_num date' );
+			$query->set( 'order', 'DESC' );
+		} else {
+			$query->set( 'orderby', 'date' );
+			$query->set( 'order', 'DESC' );
+		}
+	}
+}
+
+add_action( 'pre_get_posts', 'sukusastra_review_buku_archive_filter' );
+function sukusastra_review_buku_archive_filter( WP_Query $query ): void {
+	if ( is_admin() || ! $query->is_main_query() ) {
+		return;
+	}
+
+	if ( $query->is_post_type_archive( 'review_buku' ) ) {
+		// 1. Keyword search filter
+		$search = isset( $_GET['cari_buku'] ) ? sanitize_text_field( wp_unslash( $_GET['cari_buku'] ) ) : '';
+		if ( '' !== $search ) {
+			// Find post IDs matching title or content
+			$post_ids_standard = get_posts( array(
+				'post_type'      => 'review_buku',
+				'posts_per_page' => -1,
+				's'              => $search,
+				'fields'         => 'ids',
+				'post_status'    => 'publish',
+			) );
+
+			// Find post IDs matching meta fields: book title, book author, reviewer
+			$post_ids_meta = get_posts( array(
+				'post_type'      => 'review_buku',
+				'posts_per_page' => -1,
+				'fields'         => 'ids',
+				'post_status'    => 'publish',
+				'meta_query'     => array(
+					'relation' => 'OR',
+					array(
+						'key'     => '_ss_book_title',
+						'value'   => $search,
+						'compare' => 'LIKE',
+					),
+					array(
+						'key'     => '_ss_book_author',
+						'value'   => $search,
+						'compare' => 'LIKE',
+					),
+					array(
+						'key'     => '_ss_reviewer',
+						'value'   => $search,
+						'compare' => 'LIKE',
+					),
+				),
+			) );
+
+			// Find post IDs matching linked author (CPT penulis) name
+			$matching_authors = get_posts( array(
+				'post_type'      => 'penulis',
+				'posts_per_page' => -1,
+				's'              => $search,
+				'fields'         => 'ids',
+				'post_status'    => 'publish',
+			) );
+
+			$post_ids_linked_author = array();
+			if ( ! empty( $matching_authors ) && ! is_wp_error( $matching_authors ) ) {
+				$post_ids_linked_author = get_posts( array(
+					'post_type'      => 'review_buku',
+					'posts_per_page' => -1,
+					'fields'         => 'ids',
+					'post_status'    => 'publish',
+					'meta_query'     => array(
+						array(
+							'key'     => '_ss_original_author_id',
+							'value'   => $matching_authors,
+							'compare' => 'IN',
+						),
+					),
+				) );
+			}
+
+			// Combine all matched IDs
+			$combined_ids = array_unique( array_merge( $post_ids_standard, $post_ids_meta, $post_ids_linked_author ) );
+
+			if ( ! empty( $combined_ids ) ) {
+				$query->set( 'post__in', $combined_ids );
+			} else {
+				$query->set( 'post__in', array( 0 ) ); // Force empty results
+			}
+		}
+
+		// 2. Jenis Buku filter
+		$jenis_buku = isset( $_GET['jenis_buku'] ) ? sanitize_key( wp_unslash( $_GET['jenis_buku'] ) ) : '';
+		if ( in_array( $jenis_buku, array( 'puisi', 'cerpen', 'novel', 'nonfiksi' ), true ) ) {
+			$meta_query = $query->get( 'meta_query' );
+			if ( ! is_array( $meta_query ) ) {
+				$meta_query = array();
+			}
+			$meta_query[] = array(
+				'key'     => '_ss_book_type',
+				'value'   => $jenis_buku,
+				'compare' => '=',
+			);
+			$query->set( 'meta_query', $meta_query );
+		}
+
+		// 3. Sorting filter (sort_by)
+		$sort_by = isset( $_GET['sort_by'] ) ? sanitize_key( wp_unslash( $_GET['sort_by'] ) ) : 'terbaru';
+		if ( 'terpopuler' === $sort_by ) {
+			$query->set( 'meta_key', '_ss_post_views' );
+			$query->set( 'orderby', 'meta_value_num date' );
+			$query->set( 'order', 'DESC' );
+		} else {
+			$query->set( 'orderby', 'date' );
+			$query->set( 'order', 'DESC' );
+		}
+
+		// 4. Posts per page
+		$query->set( 'posts_per_page', 8 );
+	}
+}
+
+add_action( 'pre_get_posts', 'sukusastra_berita_archive_filter' );
+function sukusastra_berita_archive_filter( WP_Query $query ): void {
+	if ( is_admin() || ! $query->is_main_query() ) {
+		return;
+	}
+
+	if ( $query->is_post_type_archive( 'berita' ) ) {
+		// 1. Keyword search filter
+		$search = isset( $_GET['cari_berita'] ) ? sanitize_text_field( wp_unslash( $_GET['cari_berita'] ) ) : '';
+		if ( '' !== $search ) {
+			// Find post IDs matching title or content in CPT berita
+			$post_ids_standard = get_posts( array(
+				'post_type'      => 'berita',
+				'posts_per_page' => -1,
+				's'              => $search,
+				'fields'         => 'ids',
+				'post_status'    => 'publish',
+			) );
+
+			// Find post IDs matching linked author (CPT penulis) name
+			$matching_authors = get_posts( array(
+				'post_type'      => 'penulis',
+				'posts_per_page' => -1,
+				's'              => $search,
+				'fields'         => 'ids',
+				'post_status'    => 'publish',
+			) );
+
+			$post_ids_linked_author = array();
+			if ( ! empty( $matching_authors ) && ! is_wp_error( $matching_authors ) ) {
+				$post_ids_linked_author = get_posts( array(
+					'post_type'      => 'berita',
+					'posts_per_page' => -1,
+					'fields'         => 'ids',
+					'post_status'    => 'publish',
+					'meta_query'     => array(
+						array(
+							'key'     => '_ss_original_author_id',
+							'value'   => $matching_authors,
+							'compare' => 'IN',
+						),
+					),
+				) );
+			}
+
+			// Combine all matched IDs
+			$combined_ids = array_unique( array_merge( $post_ids_standard, $post_ids_linked_author ) );
+
+			if ( ! empty( $combined_ids ) ) {
+				$query->set( 'post__in', $combined_ids );
+			} else {
+				$query->set( 'post__in', array( 0 ) ); // Force empty results
+			}
+		}
+
+		// 2. Sorting filter (sort_by)
+		$sort_by = isset( $_GET['sort_by'] ) ? sanitize_key( wp_unslash( $_GET['sort_by'] ) ) : 'terbaru';
+		if ( 'terpopuler' === $sort_by ) {
+			$query->set( 'meta_key', '_ss_post_views' );
+			$query->set( 'orderby', 'meta_value_num date' );
+			$query->set( 'order', 'DESC' );
+		} else {
+			$query->set( 'orderby', 'date' );
+			$query->set( 'order', 'DESC' );
+		}
+
+		// 3. Posts per page (9 works perfectly for a 3-column grid)
+		$query->set( 'posts_per_page', 9 );
+	}
+}
+
+function sukusastra_get_related_articles( int $post_id ): array {
+	// 1. Check if manually selected
+	$manual_ids_str = sukusastra_get_meta( $post_id, '_ss_related_post_id', '' );
+	if ( $manual_ids_str ) {
+		$manual_ids = array_filter( array_map( 'intval', explode( ',', $manual_ids_str ) ) );
+		if ( ! empty( $manual_ids ) ) {
+			$manual_posts = get_posts(
+				array(
+					'post_type'      => array( 'post', 'review_buku', 'berita' ),
+					'post__in'       => $manual_ids,
+					'posts_per_page' => count( $manual_ids ),
+					'post_status'    => 'publish',
+					'orderby'        => 'post__in', // preserve order selected in admin
+				)
+			);
+			if ( ! empty( $manual_posts ) ) {
+				return $manual_posts;
+			}
+		}
+	}
+
+	// 2. Otherwise, get automatically from the same category/post type
+	$post_type = get_post_type( $post_id );
+	$args = array(
+		'post_type'           => $post_type,
+		'posts_per_page'      => 2, // 2 posts by default for automatic fallback
+		'post__not_in'        => array( $post_id ),
+		'post_status'         => 'publish',
+		'ignore_sticky_posts' => true,
+		'orderby'             => 'date',
+		'order'               => 'DESC',
+	);
+
+	if ( 'post' === $post_type ) {
+		$categories = get_the_category( $post_id );
+		if ( ! empty( $categories ) ) {
+			$args['category__in'] = array_map( function( $cat ) { return $cat->term_id; }, $categories );
+		}
+	}
+
+	$related_query = new WP_Query( $args );
+	$related_posts = array();
+	if ( $related_query->have_posts() ) {
+		$related_posts = $related_query->posts;
+		wp_reset_postdata();
+	}
+
+	// 3. Fallback to standard post type if empty
+	if ( empty( $related_posts ) && 'post' !== $post_type ) {
+		$args['post_type'] = 'post';
+		$fallback_query = new WP_Query( $args );
+		if ( $fallback_query->have_posts() ) {
+			$related_posts = $fallback_query->posts;
+			wp_reset_postdata();
+		}
+	}
+
+	return $related_posts;
+}
+
+function sukusastra_render_related_posts_block( array $related_posts ): string {
+	if ( empty( $related_posts ) ) {
+		return '';
+	}
+
+	$label = esc_html__( 'Baca Juga', 'sukusastra' );
+	$items_html = '';
+
+	foreach ( $related_posts as $related_post ) {
+		$orig_author = sukusastra_get_original_author( $related_post->ID );
+		if ( $orig_author ) {
+			$author_name = $orig_author->post_title;
+		} else {
+			$author_post = get_post( $related_post->ID );
+			$author_name = get_the_author_meta( 'display_name', $author_post->post_author );
+		}
+
+		$date = get_the_date( '', $related_post );
+
+		$thumbnail_html = '';
+		if ( has_post_thumbnail( $related_post->ID ) ) {
+			$thumbnail_html = get_the_post_thumbnail( $related_post->ID, 'thumbnail', array( 'class' => 'w-full h-full object-cover hover:scale-105 transition-transform duration-500' ) );
+		} else {
+			$thumbnail_html = sprintf(
+				'<div class="w-full h-full bg-slate-100 dark:bg-zinc-800 flex items-center justify-center text-slate-450 text-[10px] font-bold font-serif">%s</div>',
+				esc_html( mb_substr( $related_post->post_title, 0, 2 ) )
+			);
+		}
+
+		$title = esc_html( $related_post->post_title );
+		$url   = esc_url( get_permalink( $related_post->ID ) );
+
+		$is_multi = count( $related_posts ) > 1;
+		$thumb_class = $is_multi ? 'w-14 h-14' : 'w-20 h-20';
+		$title_class = $is_multi ? 'text-sm' : 'text-base';
+		$meta_text_class = $is_multi ? 'text-[9px]' : 'text-[10px]';
+
+		$items_html .= sprintf(
+			'<div class="flex gap-3 items-center min-w-0">
+				<a href="%1$s" class="block %2$s shrink-0 overflow-hidden rounded-xl border border-slate-200/50 dark:border-zinc-800/60 shadow-sm">
+					%3$s
+				</a>
+				<div class="flex-1 min-w-0">
+					<div class="%4$s font-bold uppercase tracking-wider text-slate-450 dark:text-zinc-550">
+						<span class="text-slate-800 dark:text-zinc-200 font-bold">%5$s</span>
+						<span class="text-slate-300 dark:text-zinc-700 font-normal">·</span>
+						<span class="font-semibold normal-case text-slate-500 dark:text-zinc-400">%6$s</span>
+					</div>
+					<h5 class="%7$s font-black leading-snug text-slate-900 dark:text-zinc-50 mt-0.5 mb-0">
+						<a href="%1$s" class="no-underline hover:text-red-700 dark:hover:text-red-400 transition-colors">
+							%8$s
+						</a>
+					</h5>
+				</div>
+			</div>',
+			$url,
+			$thumb_class,
+			$thumbnail_html,
+			$meta_text_class,
+			esc_html( $author_name ),
+			esc_html( $date ),
+			$title_class,
+			$title
+		);
+	}
+
+	return sprintf(
+		'<div class="ss-related-inline my-8 p-5 rounded-3xl border border-slate-200 bg-slate-100/85 dark:border-zinc-800 dark:bg-zinc-800/40 not-prose">
+			<span class="text-red-700 dark:text-red-400 text-[10px] font-black uppercase tracking-wider block mb-3.5">%1$s</span>
+			<div class="grid gap-4">
+				%2$s
+			</div>
+		</div>',
+		$label,
+		$items_html
+	);
+}
+
+add_shortcode( 'baca_juga', 'sukusastra_baca_juga_shortcode' );
+function sukusastra_baca_juga_shortcode( array $atts = array() ): string {
+	$post_id = get_the_ID();
+	if ( ! $post_id ) {
+		return '';
+	}
+
+	$atts = shortcode_atts(
+		array(
+			'item' => '',
+		),
+		$atts,
+		'baca_juga'
+	);
+
+	$related_posts = sukusastra_get_related_articles( $post_id );
+	if ( empty( $related_posts ) ) {
+		return '';
+	}
+
+	$selected_posts = array();
+	if ( '' !== $atts['item'] ) {
+		$indices = array_filter( array_map( 'intval', explode( ',', $atts['item'] ) ) );
+		foreach ( $indices as $index ) {
+			$zero_index = $index - 1;
+			if ( isset( $related_posts[ $zero_index ] ) ) {
+				$selected_posts[] = $related_posts[ $zero_index ];
+			}
+		}
+	} else {
+		$selected_posts = $related_posts;
+	}
+
+	return sukusastra_render_related_posts_block( $selected_posts );
+}
+
+add_filter( 'the_content', 'sukusastra_inject_related_article' );
+function sukusastra_inject_related_article( string $content ): string {
+	if ( ! is_single() || ! in_the_loop() || ! is_main_query() ) {
+		return $content;
+	}
+
+	$post_type = get_post_type();
+	if ( ! in_array( $post_type, array( 'post', 'review_buku', 'berita' ), true ) ) {
+		return $content;
+	}
+
+	// If the user already placed the shortcode manually, do not auto-inject
+	if ( has_shortcode( $content, 'baca_juga' ) ) {
+		return $content;
+	}
+
+	$related_posts = sukusastra_get_related_articles( get_the_ID() );
+	if ( empty( $related_posts ) ) {
+		return $content;
+	}
+
+	// 1. Post 1 goes to paragraph 2
+	$first_post_html = sukusastra_render_related_posts_block( array( $related_posts[0] ) );
+	
+	// 2. Posts 2 and onwards go to the end of the post
+	$remaining_posts_html = '';
+	if (count( $related_posts ) > 1 ) {
+		$remaining_posts = array_slice( $related_posts, 1 );
+		$remaining_posts_html = sukusastra_render_related_posts_block( $remaining_posts );
+	}
+
+	// Insert post 1 after the second paragraph (or at the end if fewer than 2 paragraphs)
+	$paragraphs = explode( '</p>', $content );
+	$p_count = count( $paragraphs );
+	if ( $p_count > 2 ) {
+		// Insert after paragraph index 1 (the second paragraph)
+		array_splice( $paragraphs, 2, 0, array( $first_post_html ) );
+		$new_content = implode( '</p>', $paragraphs );
+	} else {
+		// Just append it at the end
+		$new_content = $content . $first_post_html;
+	}
+
+	// Append remaining posts at the end of the text
+	return $new_content . $remaining_posts_html;
+}
+
+
+

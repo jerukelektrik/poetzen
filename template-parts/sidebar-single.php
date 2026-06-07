@@ -18,19 +18,13 @@ if ( 'event' === $post_type ) {
 }
 
 $orig_author = sukusastra_get_original_author( get_the_ID() );
+
+$aside_classes = 'grid content-start gap-6';
+if ( 'review_buku' !== $post_type ) {
+	$aside_classes .= ' lg:sticky lg:top-24 self-start';
+}
 ?>
-<aside class="grid gap-6">
-	<!-- Event Action Block (Only for single events) -->
-	<?php if ( 'event' === $post_type && isset( $state ) ) : ?>
-		<div class="ss-card rounded grid gap-3">
-			<p class="text-xs font-bold uppercase tracking-wide text-slate-500 dark:text-zinc-400"><?php esc_html_e( 'Pendaftaran', 'sukusastra' ); ?></p>
-			<?php if ( $state['enabled'] ) : ?>
-				<a class="ss-button w-full text-center block" href="<?php echo esc_url( $state['url'] ); ?>"><?php echo esc_html( $state['label'] ); ?></a>
-			<?php else : ?>
-				<span class="ss-button-disabled w-full text-center block" aria-disabled="true"><?php echo esc_html( $state['label'] ); ?></span>
-			<?php endif; ?>
-		</div>
-	<?php endif; ?>
+<aside class="<?php echo esc_attr( $aside_classes ); ?>">
 
 	<!-- Author Widget (Only shown if original CPT penulis exists) -->
 	<?php if ( $orig_author ) : ?>
@@ -138,9 +132,6 @@ $orig_author = sukusastra_get_original_author( get_the_ID() );
 			<?php endif; ?>
 		</div>
 	</section>
-
-	<!-- Related Reading (Original fallback) -->
-	<?php get_template_part( 'template-parts/related-posts' ); ?>
 
 	<!-- Event Terbaru Widget -->
 	<section class="rounded-md border border-slate-200 p-5 dark:border-zinc-800 bg-white dark:bg-[#262B4E]/40 shadow-sm">

@@ -10,14 +10,26 @@
 
 <footer class="border-t border-slate-800 bg-slate-950 pt-12 pb-10 text-slate-400 dark:border-zinc-850 dark:bg-zinc-950 dark:text-zinc-500">
 	<div class="ss-container">
-		<!-- 1. Centered Logo -->
-		<div class="flex justify-center pb-8">
+		<!-- 1. Centered Logo & Bio -->
+		<div class="flex flex-col items-center pb-8">
 			<a class="flex items-center no-underline" href="<?php echo esc_url( home_url( '/' ) ); ?>">
-				<!-- Logo for Light Mode (rendered white on dark background) -->
-				<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo-white.svg' ); ?>" alt="<?php bloginfo( 'name' ); ?>" class="w-[120px] h-[120px] object-contain logo-light">
-				<!-- Logo for Dark Mode -->
-				<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo-white.svg' ); ?>" alt="<?php bloginfo( 'name' ); ?>" class="w-[120px] h-[120px] object-contain logo-dark">
+				<!-- Logo in footer (uses dark-mode/white logo or light-mode logo fallback) -->
+				<?php 
+				$footer_logo = sukusastra_get_option( 'logo_dark' );
+				if ( ! $footer_logo ) {
+					$footer_logo = sukusastra_get_option( 'logo_light', get_template_directory_uri() . '/assets/images/logo-white.svg' );
+				}
+				?>
+				<img src="<?php echo esc_url( $footer_logo ); ?>" alt="<?php bloginfo( 'name' ); ?>" class="w-[120px] h-[120px] object-contain logo-light">
+				<img src="<?php echo esc_url( $footer_logo ); ?>" alt="<?php bloginfo( 'name' ); ?>" class="w-[120px] h-[120px] object-contain logo-dark">
 			</a>
+			<?php 
+			$footer_bio = sukusastra_get_option( 'footer_bio' );
+			if ( $footer_bio ) : ?>
+				<p class="text-sm text-center text-slate-400 dark:text-zinc-500 mt-4 max-w-2xl font-sans leading-relaxed">
+					<?php echo wp_kses_post( $footer_bio ); ?>
+				</p>
+			<?php endif; ?>
 		</div>
 
 		<!-- 2. Main Link Grid -->
@@ -108,26 +120,45 @@
 			<div class="flex items-center gap-4 text-slate-400 dark:text-zinc-400">
 				<?php
 				$socials = array(
+					'youtube' => array(
+						'label'   => 'YouTube',
+						'default' => 'https://youtube.com/@sukusastra',
+						'svg'     => '<svg class="w-4 h-4 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M23.498 6.163a3.003 3.003 0 0 0-2.11-2.11C19.518 3.545 12 3.545 12 3.545s-7.518 0-9.388.508a3.003 3.003 0 0 0-2.11 2.11C0 8.033 0 12 0 12s0 3.967.502 5.837a3.003 3.003 0 0 0 2.11 2.11c1.87.508 9.388.508 9.388.508s7.518 0 9.388-.508a3.003 3.003 0 0 0 2.11-2.11C24 15.967 24 12 24 12s0-3.967-.502-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>'
+					),
 					'instagram' => array(
-						'label' => 'Instagram',
-						'svg'   => '<svg class="w-4 h-4 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051C.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>'
+						'label'   => 'Instagram',
+						'default' => 'https://instagram.com/sukusastra',
+						'svg'     => '<svg class="w-4 h-4 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051C.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>'
+					),
+					'tiktok' => array(
+						'label'   => 'TikTok',
+						'default' => 'https://tiktok.com/@sukusastra',
+						'svg'     => '<svg class="w-4 h-4 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.02 1.77 4.05 1.13.97 2.61 1.43 4.1 1.47v3.82c-1.87-.02-3.68-.72-5.02-2.02-.02 3.42-.01 6.85-.02 10.27-.01 1.77-.52 3.56-1.58 4.96-1.53 1.95-4.14 2.87-6.57 2.39-2.73-.54-4.97-2.75-5.38-5.51-.55-3.69 1.96-7.39 5.62-8.03.88-.15 1.79-.11 2.68.08v3.9c-.83-.23-1.74-.2-2.51.22-.96.53-1.54 1.57-1.47 2.67.06 1.48 1.34 2.69 2.83 2.62 1.55-.07 2.76-1.39 2.72-2.95.02-5.46.01-10.92.02-16.38-.01-.31-.02-.62-.02-.93z"/></svg>'
+					),
+					'linkedin' => array(
+						'label'   => 'LinkedIn',
+						'default' => 'https://linkedin.com/company/sukusastra',
+						'svg'     => '<svg class="w-4 h-4 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.779-1.75-1.75s.784-1.75 1.75-1.75 1.75.779 1.75 1.75-.784 1.75-1.75 1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>'
 					),
 					'twitter' => array(
-						'label' => 'Twitter / X',
-						'svg'   => '<svg class="w-4 h-4 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>'
+						'label'   => 'Twitter / X',
+						'default' => 'https://twitter.com/sukusastra',
+						'svg'     => '<svg class="w-4 h-4 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>'
+					),
+					'threads' => array(
+						'label'   => 'Threads',
+						'default' => 'https://threads.net/@sukusastra',
+						'svg'     => '<svg class="w-4 h-4 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12.63 2c-5.523 0-10 4.477-10 10s4.477 10 10 10c1.88 0 3.644-.52 5.158-1.428l-1.077-1.503c-1.192.684-2.585 1.08-4.08 1.08-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8c0 1.488-.352 2.825-1.018 3.79-.628.908-1.545 1.41-2.582 1.41-1.198 0-2-.882-2-2v-4.5c0-.827-.673-1.5-1.5-1.5s-1.5.673-1.5 1.5v4.5c0 .827.673 1.5 1.5 1.5.424 0 .798-.18 1.075-.465.344.978 1.258 1.665 2.425 1.665 1.83 0 3.328-1.026 4.22-2.316.892-1.29 1.355-3.056 1.355-5.074 0-5.523-4.477-10-10-10zm0 7.5c-.827 0-1.5.673-1.5 1.5s.673 1.5 1.5 1.5 1.5-.673 1.5-1.5-.673-1.5-1.5-1.5z"/></svg>'
 					),
 					'facebook' => array(
-						'label' => 'Facebook',
-						'svg'   => '<svg class="w-4 h-4 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c4.56-.93 8-4.96 8-9.75z"/></svg>'
-					),
-					'youtube' => array(
-						'label' => 'YouTube',
-						'svg'   => '<svg class="w-4 h-4 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M23.498 6.163a3.003 3.003 0 0 0-2.11-2.11C19.518 3.545 12 3.545 12 3.545s-7.518 0-9.388.508a3.003 3.003 0 0 0-2.11 2.11C0 8.033 0 12 0 12s0 3.967.502 5.837a3.003 3.003 0 0 0 2.11 2.11c1.87.508 9.388.508 9.388.508s7.518 0 9.388-.508a3.003 3.003 0 0 0 2.11-2.11C24 15.967 24 12 24 12s0-3.967-.502-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>'
+						'label'   => 'Facebook',
+						'default' => 'https://facebook.com/sukusastra',
+						'svg'     => '<svg class="w-4 h-4 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c4.56-.93 8-4.96 8-9.75z"/></svg>'
 					)
 				);
 
 				foreach ( $socials as $key => $social ) {
-					$url = sukusastra_get_option( $key );
+					$url = sukusastra_get_option( $key, $social['default'] );
 					if ( $url ) {
 						printf(
 							'<a class="hover:text-red-400 transition-colors" href="%1$s" target="_blank" rel="noopener" aria-label="%2$s">%3$s</a>',

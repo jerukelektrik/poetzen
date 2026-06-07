@@ -14,11 +14,78 @@
 	if ( $header_scripts ) {
 		echo $header_scripts . "\n";
 	}
+
+	// Google Search Console Verification
+	$gsc_id = sukusastra_get_option( 'gsc_id' );
+	if ( $gsc_id ) {
+		printf( '<meta name="google-site-verification" content="%s">' . "\n", esc_attr( $gsc_id ) );
+	}
+
+	// Google Analytics
+	$ga_id = sukusastra_get_option( 'ga_id' );
+	if ( $ga_id ) {
+		?>
+		<!-- Global site tag (gtag.js) - Google Analytics -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo esc_attr( $ga_id ); ?>"></script>
+		<script>
+		  window.dataLayer = window.dataLayer || [];
+		  function gtag(){dataLayer.push(arguments);}
+		  gtag('js', new Date());
+		  gtag('config', '<?php echo esc_attr( $ga_id ); ?>');
+		</script>
+		<?php
+	}
+
+	// Google Tag Manager (Head)
+	$gtm_id = sukusastra_get_option( 'gtm_id' );
+	if ( $gtm_id ) {
+		?>
+		<!-- Google Tag Manager -->
+		<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+		new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+		j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+		'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+		})(window,document,'script','dataLayer','<?php echo esc_attr( $gtm_id ); ?>');</script>
+		<!-- End Google Tag Manager -->
+		<?php
+	}
+
+	// Meta Pixel
+	$meta_pixel_id = sukusastra_get_option( 'meta_pixel_id' );
+	if ( $meta_pixel_id ) {
+		?>
+		<!-- Meta Pixel Code -->
+		<script>
+		!function(f,b,e,v,n,t,s)
+		{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+		n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+		if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+		n.queue=[];t=b.createElement(e);t.async=!0;
+		t.src=v;s=b.getElementsByTagName(e)[0];
+		s.parentNode.insertBefore(t,s)}(window, document,'script',
+		'https://connect.facebook.net/en_US/fbevents.js');
+		fbq('init', '<?php echo esc_attr( $meta_pixel_id ); ?>');
+		fbq('track', 'PageView');
+		</script>
+		<noscript><img height="1" width="1" style="display:none"
+		src="https://www.facebook.com/tr?id=<?php echo esc_attr( $meta_pixel_id ); ?>&ev=PageView&noscript=1"
+		/></noscript>
+		<!-- End Meta Pixel Code -->
+		<?php
+	}
 	?>
 	<?php wp_head(); ?>
 </head>
 <body <?php body_class( 'min-h-screen bg-slate-50 text-slate-950 dark:bg-[#343B6A] dark:text-zinc-50' ); ?>>
 <?php wp_body_open(); ?>
+<?php
+$gtm_id = sukusastra_get_option( 'gtm_id' );
+if ( $gtm_id ) : ?>
+	<!-- Google Tag Manager (noscript) -->
+	<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=<?php echo esc_attr( $gtm_id ); ?>"
+	height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+	<!-- End Google Tag Manager (noscript) -->
+<?php endif; ?>
 <a class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:bg-white focus:p-3 focus:text-slate-950 dark:focus:bg-zinc-900 dark:focus:text-white" href="#main-content">
 	<?php esc_html_e( 'Lewati ke konten', 'sukusastra' ); ?>
 </a>
@@ -43,9 +110,15 @@
 	<div class="ss-container flex min-h-14 items-center justify-between gap-4 py-2">
 		<a class="flex items-center no-underline" href="<?php echo esc_url( home_url( '/' ) ); ?>">
 			<!-- Logo for Light Mode -->
-			<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo.svg' ); ?>" alt="<?php bloginfo( 'name' ); ?>" class="h-[120px] w-[120px] -my-6 relative z-10 object-contain logo-light">
+			<?php 
+			$logo_light = sukusastra_get_option( 'logo_light', get_template_directory_uri() . '/assets/images/logo.svg' );
+			?>
+			<img src="<?php echo esc_url( $logo_light ); ?>" alt="<?php bloginfo( 'name' ); ?>" class="h-[120px] w-[120px] -my-6 relative z-10 object-contain logo-light">
 			<!-- Logo for Dark Mode -->
-			<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo-white.svg' ); ?>" alt="<?php bloginfo( 'name' ); ?>" class="h-[120px] w-[120px] -my-6 relative z-10 object-contain logo-dark">
+			<?php 
+			$logo_dark = sukusastra_get_option( 'logo_dark', get_template_directory_uri() . '/assets/images/logo-white.svg' );
+			?>
+			<img src="<?php echo esc_url( $logo_dark ); ?>" alt="<?php bloginfo( 'name' ); ?>" class="h-[120px] w-[120px] -my-6 relative z-10 object-contain logo-dark">
 		</a>
 
 		<!-- Mobile Navigation Toggle -->
@@ -69,10 +142,20 @@
 
 		<!-- Action Buttons -->
 		<div class="hidden items-center gap-2 md:flex">
-			<a class="ss-button" href="<?php echo esc_url( home_url( '/ketentuan-pengiriman-karya/' ) ); ?>">
-				<?php esc_html_e( 'Kirim Karya', 'sukusastra' ); ?>
+			<a class="ss-button-kirim" href="<?php echo esc_url( home_url( '/ketentuan-pengiriman-karya/' ) ); ?>">
+				<svg class="w-4 h-4 text-current" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+					<path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6M9 16h3M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h7M14 3l5 5" />
+					<path stroke-linecap="round" stroke-linejoin="round" d="M14 3v5h5" />
+					<!-- Sparkle 1 -->
+					<path d="M19 13.5c0 .8.6 1.5 1.5 1.5c-.9 0-1.5.7-1.5 1.5c0-.8-.6-1.5-1.5-1.5c.9 0 1.5-.7 1.5-1.5Z" fill="currentColor" stroke="none" />
+					<!-- Sparkle 2 -->
+					<path d="M21.5 17.5c0 .5.4 1 1 1c-.6 0-1 .5-1 1c0-.5-.4-1-1-1c.6 0 1-.5 1-1Z" fill="currentColor" stroke="none" />
+				</svg>
+				<span><?php esc_html_e( 'Kirim Karya', 'sukusastra' ); ?></span>
 			</a>
 		</div>
+
+
 	</div>
 </header>
 

@@ -22,6 +22,7 @@ function sukusastra_register_metaboxes(): void {
 	add_meta_box( 'sukusastra_original_author_meta', __( 'Penulis Asli (Tokoh)', 'sukusastra' ), 'sukusastra_render_original_author_metabox', 'post', 'normal', 'default' );
 	add_meta_box( 'sukusastra_pesan_moral_meta', __( 'Pesan Moral', 'sukusastra' ), 'sukusastra_render_pesan_moral_metabox', 'post', 'normal', 'default' );
 	add_meta_box( 'sukusastra_penulis_meta', __( 'Metadata Penulis/Tokoh', 'sukusastra' ), 'sukusastra_render_penulis_metabox', 'penulis', 'normal', 'default' );
+	add_meta_box( 'sukusastra_related_post_meta', __( 'Artikel Terkait', 'sukusastra' ), 'sukusastra_render_related_post_metabox', array( 'post', 'review_buku', 'berita' ), 'normal', 'default' );
 }
 
 function sukusastra_render_editorial_metabox( WP_Post $post ): void {
@@ -139,6 +140,18 @@ function sukusastra_render_review_metabox( WP_Post $post ): void {
 	});
 	</script>
 	<?php
+	$book_type = sukusastra_get_meta( $post->ID, '_ss_book_type', 'novel' );
+	?>
+	<p>
+		<label for="_ss_book_type"><strong><?php esc_html_e( 'Jenis Buku (Kategori)', 'sukusastra' ); ?></strong></label><br>
+		<select class="widefat" id="_ss_book_type" name="_ss_book_type">
+			<option value="puisi" <?php echo sukusastra_selected( $book_type, 'puisi' ); ?>><?php esc_html_e( 'Kumpulan Puisi', 'sukusastra' ); ?></option>
+			<option value="cerpen" <?php echo sukusastra_selected( $book_type, 'cerpen' ); ?>><?php esc_html_e( 'Kumpulan Cerpen', 'sukusastra' ); ?></option>
+			<option value="novel" <?php echo sukusastra_selected( $book_type, 'novel' ); ?>><?php esc_html_e( 'Novel', 'sukusastra' ); ?></option>
+			<option value="nonfiksi" <?php echo sukusastra_selected( $book_type, 'nonfiksi' ); ?>><?php esc_html_e( 'Nonfiksi', 'sukusastra' ); ?></option>
+		</select>
+	</p>
+	<?php
 	sukusastra_render_text_fields(
 		$post->ID,
 		array(
@@ -146,6 +159,8 @@ function sukusastra_render_review_metabox( WP_Post $post ): void {
 			'_ss_book_author'       => __( 'Penulis Buku', 'sukusastra' ),
 			'_ss_book_publisher'    => __( 'Penerbit', 'sukusastra' ),
 			'_ss_book_year'         => __( 'Tahun Terbit', 'sukusastra' ),
+			'_ss_book_edition'      => __( 'Cetakan (misal: Cetakan I, Agustus 2017)', 'sukusastra' ),
+			'_ss_book_pages'        => __( 'Halaman (Jumlah Halaman)', 'sukusastra' ),
 			'_ss_reviewer'          => __( 'Reviewer', 'sukusastra' ),
 			'_ss_review_summary'    => __( 'Ringkasan Pendek', 'sukusastra' ),
 			'_ss_shopee_url'        => array(
@@ -247,6 +262,156 @@ function sukusastra_render_original_author_metabox( WP_Post $post ): void {
 	<?php
 }
 
+function sukusastra_render_related_post_metabox( WP_Post $post ): void {
+	wp_nonce_field( 'sukusastra_save_related_meta', 'sukusastra_related_meta_nonce' );
+	$selected_ids_str = sukusastra_get_meta( $post->ID, '_ss_related_post_id', '' );
+	$selected_ids = array_filter( array_map( 'intval', explode( ',', $selected_ids_str ) ) );
+	?>
+	<div class="ss-related-search-wrapper" style="margin-bottom: 10px;">
+		<label><strong><?php esc_html_e( 'Pilih Artikel Terkait (Manual - Bisa Lebih dari 1)', 'sukusastra' ); ?></strong></label>
+		
+		<!-- Show currently selected posts list -->
+		<div id="ss-related-selected-list" style="margin-top: 8px; margin-bottom: 12px; display: grid; gap: 4px;">
+			<?php 
+			foreach ( $selected_ids as $id ) {
+				$item_post = get_post( $id );
+				if ( $item_post ) {
+					$item_title = sprintf( '[%1$s] %2$s', esc_html( sukusastra_get_post_type_label( $item_post->ID ) ), esc_html( $item_post->post_title ) );
+					?>
+					<div class="ss-related-selected-item" data-id="<?php echo esc_attr( (string) $id ); ?>" style="display: flex; align-items: center; justify-content: space-between; padding: 6px 10px; border: 1px solid #ccc; background: #fafafa; border-radius: 4px;">
+						<span style="font-weight: bold; font-size: 12px;"><?php echo esc_html( $item_title ); ?></span>
+						<button type="button" class="button button-small ss-related-remove-item-btn" style="margin-left: 10px;"><?php esc_html_e( 'Hapus', 'sukusastra' ); ?></button>
+					</div>
+					<?php
+				}
+			}
+			?>
+		</div>
+
+		<!-- Hidden field to store actual post IDs comma-separated -->
+		<input type="hidden" name="_ss_related_post_id" id="ss_related_post_id" value="<?php echo esc_attr( $selected_ids_str ); ?>">
+
+		<!-- Search Input -->
+		<div id="ss-related-search-container" style="margin-top: 8px;">
+			<input type="text" id="ss_related_search" placeholder="<?php esc_attr_e( 'Ketik judul artikel untuk mencari dan menambahkan...', 'sukusastra' ); ?>" class="widefat" autocomplete="off" style="height: 36px;">
+			<div id="ss-related-search-results" style="border: 1px solid #ddd; border-top: none; max-height: 200px; overflow-y: auto; background: #fff; display: none; border-radius: 0 0 4px 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); z-index: 9999; position: relative;"></div>
+		</div>
+		
+		<p class="description" style="margin-top: 6px;">
+			<?php esc_html_e( 'Cari dan klik artikel di atas untuk menambahkan ke list artikel terkait. Jika daftar kosong, sistem akan otomatis menampilkan artikel terbaru dari kategori yang sama.', 'sukusastra' ); ?>
+		</p>
+	</div>
+
+	<script>
+	jQuery(document).ready(function($) {
+		var searchInput = $('#ss_related_search');
+		var resultsBox = $('#ss-related-search-results');
+		var selectedList = $('#ss-related-selected-list');
+		var hiddenInput = $('#ss_related_post_id');
+		var currentPostId = <?php echo (int) $post->ID; ?>;
+		var timer;
+
+		function getSelectedIds() {
+			var val = hiddenInput.val().trim();
+			if (!val) return [];
+			return val.split(',').map(Number).filter(Boolean);
+		}
+
+		function updateHiddenInput(ids) {
+			hiddenInput.val(ids.join(','));
+		}
+
+		searchInput.on('keyup input', function() {
+			clearTimeout(timer);
+			var query = $(this).val().trim();
+			if (query.length < 2) {
+				resultsBox.hide().empty();
+				return;
+			}
+
+			timer = setTimeout(function() {
+				resultsBox.html('<div style="padding: 10px; color: #666; font-size:12px;"><?php echo esc_js( __( 'Mencari...', 'sukusastra' ) ); ?></div>').show();
+				
+				$.ajax({
+					url: ajaxurl,
+					type: 'POST',
+					dataType: 'json',
+					data: {
+						action: 'sukusastra_search_related_posts',
+						q: query,
+						exclude: currentPostId
+					},
+					success: function(response) {
+						if (response.success && response.data.length > 0) {
+							resultsBox.empty();
+							$.each(response.data, function(i, item) {
+								var row = $('<div style="padding: 10px; border-bottom: 1px solid #eee; cursor: pointer; transition: background 0.2s; font-size:13px;" class="ss-search-item"></div>');
+								row.html('<strong>[' + item.type + ']</strong> ' + item.title);
+								row.hover(
+									function() { $(this).css('background', '#f0f0f0'); },
+									function() { $(this).css('background', '#fff'); }
+								);
+								row.on('click', function() {
+									var ids = getSelectedIds();
+									if (ids.indexOf(item.id) !== -1) {
+										alert('<?php echo esc_js( __( 'Artikel ini sudah ada di dalam daftar.', 'sukusastra' ) ); ?>');
+										return;
+									}
+									
+									ids.push(item.id);
+									updateHiddenInput(ids);
+
+									var displayTitle = '[' + item.type + '] ' + item.title;
+									var itemHtml = $('<div class="ss-related-selected-item" data-id="' + item.id + '" style="display: flex; align-items: center; justify-content: space-between; padding: 6px 10px; border: 1px solid #ccc; background: #fafafa; border-radius: 4px;">' +
+										'<span style="font-weight: bold; font-size: 12px;">' + displayTitle + '</span>' +
+										'<button type="button" class="button button-small ss-related-remove-item-btn" style="margin-left: 10px;"><?php echo esc_js( __( 'Hapus', 'sukusastra' ) ); ?></button>' +
+									'</div>');
+									
+									selectedList.append(itemHtml);
+									resultsBox.hide().empty();
+									searchInput.val('');
+								});
+								resultsBox.append(row);
+							});
+						} else {
+							resultsBox.html('<div style="padding: 10px; color: #999; font-size:12px;"><?php echo esc_js( __( 'Tidak ada hasil ditemukan', 'sukusastra' ) ); ?></div>');
+						}
+					},
+					error: function() {
+						resultsBox.html('<div style="padding: 10px; color: #a00; font-size:12px;"><?php echo esc_js( __( 'Error saat memuat data', 'sukusastra' ) ); ?></div>');
+					}
+				});
+			}, 300);
+		});
+
+		// Remove button handler
+		selectedList.on('click', '.ss-related-remove-item-btn', function(e) {
+			e.preventDefault();
+			var item = $(this).closest('.ss-related-selected-item');
+			var itemId = Number(item.attr('data-id'));
+			var ids = getSelectedIds();
+			var index = ids.indexOf(itemId);
+			
+			if (index !== -1) {
+				ids.splice(index, 1);
+				updateHiddenInput(ids);
+			}
+			item.remove();
+		});
+
+		// Hide results list when clicking outside
+		$(document).on('click', function(e) {
+			if (!$(e.target).closest('.ss-related-search-wrapper').length) {
+				resultsBox.hide();
+			}
+		});
+	});
+	</script>
+	<?php
+}
+
+
+
 function sukusastra_render_penulis_metabox( WP_Post $post ): void {
 	wp_nonce_field( 'sukusastra_save_penulis_meta', 'sukusastra_penulis_meta_nonce' );
 
@@ -300,6 +465,9 @@ function sukusastra_save_metaboxes( int $post_id ): void {
 			'_ss_book_author',
 			'_ss_book_publisher',
 			'_ss_book_year',
+			'_ss_book_edition',
+			'_ss_book_pages',
+			'_ss_book_type',
 			'_ss_reviewer',
 			'_ss_review_summary',
 			'_ss_shopee_url',
@@ -362,4 +530,51 @@ function sukusastra_save_metaboxes( int $post_id ): void {
 			}
 		}
 	}
+
+	// 4. Save related post linkage (if nonce exists)
+	if ( isset( $_POST['sukusastra_related_meta_nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['sukusastra_related_meta_nonce'] ) ), 'sukusastra_save_related_meta' ) ) {
+		$related_id = isset( $_POST['_ss_related_post_id'] ) ? sanitize_text_field( wp_unslash( $_POST['_ss_related_post_id'] ) ) : '';
+		update_post_meta( $post_id, '_ss_related_post_id', $related_id );
+	}
 }
+
+add_action( 'wp_ajax_sukusastra_search_related_posts', 'wp_ajax_sukusastra_search_related_posts_callback' );
+function wp_ajax_sukusastra_search_related_posts_callback(): void {
+	// Verify user permissions
+	if ( ! current_user_can( 'edit_posts' ) ) {
+		wp_send_json_error( 'Unauthorized' );
+	}
+
+	$query = isset( $_POST['q'] ) ? sanitize_text_field( wp_unslash( $_POST['q'] ) ) : '';
+	$exclude = isset( $_POST['exclude'] ) ? (int) $_POST['exclude'] : 0;
+
+	if ( strlen( $query ) < 2 ) {
+		wp_send_json_success( array() );
+	}
+
+	$args = array(
+		'post_type'      => array( 'post', 'review_buku', 'berita' ),
+		'posts_per_page' => 10,
+		's'              => $query,
+		'post_status'    => 'publish',
+		'orderby'        => 'relevance',
+	);
+
+	if ( $exclude > 0 ) {
+		$args['post__not_in'] = array( $exclude );
+	}
+
+	$posts = get_posts( $args );
+	$data = array();
+
+	foreach ( $posts as $p ) {
+		$data[] = array(
+			'id'    => $p->ID,
+			'title' => esc_html( $p->post_title ),
+			'type'  => esc_html( sukusastra_get_post_type_label( $p->ID ) ),
+		);
+	}
+
+	wp_send_json_success( $data );
+}
+

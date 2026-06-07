@@ -16,7 +16,7 @@ get_header(); ?>
 	<section class="ss-section">
 		<div class="ss-container">
 			<?php sukusastra_breadcrumbs(); ?>
-			<div class="grid gap-10 lg:grid-cols-[280px_minmax(0,760px)]">
+			<div class="grid gap-y-16 gap-x-10 lg:grid-cols-[280px_minmax(0,760px)]">
 			<!-- Author Sidebar Profile info -->
 			<aside class="grid content-start gap-6">
 				<?php if ( has_post_thumbnail() ) : ?>
@@ -126,14 +126,16 @@ get_header(); ?>
 								<?php endwhile; ?>
 							</div>
 
-							<div class="mt-8 border-t border-slate-200/20 pt-6">
+							<div class="mt-8 border-t border-slate-200/20 pt-6 pagination">
 								<?php
 								echo paginate_links(
 									array(
-										'total'    => $works_query->max_num_pages,
-										'current'  => $paged,
-										'format'   => '?paged=%#%',
-										'add_args' => array( 'filter_karya' => $selected_filter ),
+										'total'     => $works_query->max_num_pages,
+										'current'   => $paged,
+										'format'    => '?paged=%#%',
+										'add_args'  => array( 'filter_karya' => $selected_filter ),
+										'prev_text' => '<span class="sr-only">' . esc_html__( 'Sebelumnya', 'sukusastra' ) . '</span><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>',
+										'next_text' => '<span class="sr-only">' . esc_html__( 'Berikutnya', 'sukusastra' ) . '</span><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>',
 									)
 								);
 								?>

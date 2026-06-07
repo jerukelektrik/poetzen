@@ -1,8 +1,8 @@
 {
-  "name": "sukusastra-theme",
+  "name": "poetzen-theme",
   "version": "0.1.0",
   "private": true,
-  "description": "Classic WordPress theme for Suku Sastra.",
+  "description": "Classic WordPress theme Poetzen.",
   "scripts": {
     "build:css": "tailwindcss -i ./src/input.css -o ./assets/css/theme.css --minify",
     "watch:css": "tailwindcss -i ./src/input.css -o ./assets/css/theme.css --watch",

@@ -9,7 +9,7 @@ get_header(); ?>
 	<article class="ss-section">
 		<div class="ss-container">
 			<?php sukusastra_breadcrumbs(); ?>
-			<div class="grid gap-10 lg:grid-cols-[minmax(0,760px)_320px]">
+			<div class="grid gap-y-16 gap-x-10 lg:grid-cols-[minmax(0,760px)_320px]">
 				<div>
 				<h1 class="ss-page-title"><?php the_title(); ?></h1>
 				<?php if ( has_post_thumbnail() ) : ?>

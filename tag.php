@@ -26,7 +26,7 @@ get_header(); ?>
 			<?php endif; ?>
 		</div>
 		<div class="mt-6 border-t border-slate-200/20 pt-6">
-			<?php the_posts_pagination(); ?>
+			<?php sukusastra_pagination(); ?>
 		</div>
 		</div>
 	</div>

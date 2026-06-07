@@ -1,8 +1,8 @@
 <?php
 /**
- * Theme bootstrap for Suku Sastra.
+ * Theme bootstrap for Poetzen.
  *
- * @package SukuSastra
+ * @package Poetzen
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

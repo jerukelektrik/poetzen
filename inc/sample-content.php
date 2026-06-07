@@ -31,7 +31,7 @@ function sukusastra_sample_content_notice(): void {
 	?>
 	<div class="notice notice-info">
 		<p>
-			<strong><?php esc_html_e( 'Revamp Suku Sastra', 'sukusastra' ); ?></strong>: 
+			<strong><?php esc_html_e( 'Revamp Poetzen', 'sukusastra' ); ?></strong>: 
 			<?php esc_html_e( 'Klik tombol di bawah ini untuk membuat konten sampel (Puisi, Cerpen, Esai, Review Buku, Berita, Event) beserta kategori penulis secara otomatis.', 'sukusastra' ); ?>
 		</p>
 		<p>
@@ -493,6 +493,92 @@ function sukusastra_generate_samples(): void {
 		update_post_meta( $event_3_id, '_ss_post_views', 87 );
 		if ( ! has_post_thumbnail( $event_3_id ) ) {
 			sukusastra_attach_image_from_url( $event_3_id, 'https://images.unsplash.com/photo-1514306191717-452ec28c7814?w=800' );
+		}
+	}
+
+	// 12. Sample Event 4: Kongres Penulis & Sastrawan Muda
+	$existing = get_posts( array(
+		'post_type'   => 'event',
+		'title'       => 'Kongres Penulis & Sastrawan Muda',
+		'post_status' => 'publish',
+		'numberposts' => 1,
+	) );
+	if ( ! empty( $existing ) ) {
+		$event_4_id = $existing[0]->ID;
+	} else {
+		$event_4_id = wp_insert_post(
+			array(
+				'post_title'   => 'Kongres Penulis & Sastrawan Muda',
+				'post_content' => '<p>Temu akbar penulis dan sastrawan muda se-Indonesia.</p>',
+				'post_excerpt' => 'Kongres nasional membahas masa depan industri literasi dan kepenulisan kreatif.',
+				'post_status'  => 'publish',
+				'post_type'    => 'event',
+			)
+		);
+	}
+	if ( $event_4_id && ! is_wp_error( $event_4_id ) ) {
+		$next_year = (int) date( 'Y' ) + 1;
+		update_post_meta( $event_4_id, '_ss_event_start', "{$next_year}-11-20" );
+		update_post_meta( $event_4_id, '_ss_event_end', "{$next_year}-11-22" );
+		update_post_meta( $event_4_id, '_ss_event_location', 'Taman Budaya Yogyakarta' );
+		update_post_meta( $event_4_id, '_ss_event_status', 'upcoming' );
+		update_post_meta( $event_4_id, '_ss_ticket_availability', 'available' );
+		update_post_meta( $event_4_id, '_ss_booking_label', 'Registrasi' );
+		update_post_meta( $event_4_id, '_ss_booking_url', 'https://forms.gle/sample-event-4' );
+		update_post_meta( $event_4_id, '_ss_paid_ticket', '1' );
+		update_post_meta( $event_4_id, '_ss_post_views', 92 );
+		if ( ! has_post_thumbnail( $event_4_id ) ) {
+			sukusastra_attach_image_from_url( $event_4_id, 'https://images.unsplash.com/photo-1511578314322-379afb476865?w=800' );
+		}
+	}
+
+	// 13. Create Static Pages
+	$static_pages = array(
+		'tentang-kami' => array(
+			'title'    => 'Tentang Kami',
+			'template' => 'page-about.php',
+			'content'  => '<h3><strong>Mukadimah Suku Sastra</strong></h3><p>Suku Sastra lahir dan tumbuh dalam suasana sastra dan budaya yang dicirikan oleh kemunculan banyak pusat. Suku Sastra menyadari diri sebagai salah satu dari pusat itu dan bersedia berkompetisi secara wajar dan sehat untuk mengajukan idealitasnya.</p><p>Idealitas itu adalah lingkungan dan/atau ekosistem sastra yang dinamis sesuai dengan semangat zamannya.</p><h3><strong>Yayasan Komunitas Sastra Suku Sastra</strong></h3><p>Yayasan Komunitas Sastra Suku Sastra (YKS3) merupakan organisasi nirlaba yang fokus pada pengembangan, pelestarian, dan publikasi karya-karya literasi dan kesusastraan melalui kerja-kerja eksploratif.</p><p>YKS3 menjadi ruang gagasan alternatif sebagai kebutuhan mendesak infrastruktur literasi dan kesusastraan di luar kebijakan pemerintah dan lingkungan akademik, namun tidak menutup kemungkinan bersinggungan dengan keduanya.</p><p>Kerja-kerja eksploratif yang dilakukan Suku Sastra dapat menumbuhkan pengalaman yang cair dan hangat sehingga melahirkan alternatif-alternatif pandangan yang memperkaya kebudayaan kita.</p>',
+		),
+		'hubungi-kami' => array(
+			'title'    => 'Hubungi Kami',
+			'template' => 'page-contact.php',
+			'content'  => '<p>Silakan gunakan formulir di samping untuk mengirimkan pertanyaan, saran, kerja sama kemitraan, atau kritik membangun langsung ke meja redaksi kami.</p><p>Redaksi Suku Sastra sangat terbuka terhadap kolaborasi kebudayaan, publikasi warta komunitas, maupun kerja sama program literasi kreatif lainnya.</p>',
+		),
+		'redaksi' => array(
+			'title'    => 'Redaksi',
+			'template' => 'page-redaksi.php',
+			'content'  => '<h3><strong>Mukadimah Redaksi Suku Sastra</strong></h3><p>Sebagai penjaga gerbang karya sastra, Dewan Redaktur Suku Sastra berkomitmen penuh dalam memilih, menyunting, dan menyajikan karya sastra berkualitas kepada pembaca setia. Setiap karya yang masuk akan melalui proses kurasi yang ketat dan objektif oleh dewan redaktur kami.</p>',
+		),
+		'ketentuan-pengiriman-karya' => array(
+			'title'    => 'Ketentuan Pengiriman Karya',
+			'template' => 'page-submit-work.php',
+			'content'  => '<p>SukuSastra.com mengundang pecinta sastra untuk mengirimkan karya sastra baik berupa puisi, cerpen, petikan novel, esai, resensi buku, terjemahan, maupun laporan tentang peristiwa sastra. SukuSastra.com akan memberikan sekadar apresiasi untuk karya yang dimuat.</p><p>Pengiriman karya dilakukan melalui formulir Google Form resmi Suku Sastra. Kami sangat menghargai orisinalitas karya dan tulisan yang memiliki kebaruan gagasan serta kesegaran diksi sastrawi.</p>',
+		),
+	);
+
+	foreach ( $static_pages as $slug => $page_data ) {
+		$page_exists = get_page_by_path( $slug );
+		if ( ! $page_exists ) {
+			$page_id = wp_insert_post(
+				array(
+					'post_title'   => $page_data['title'],
+					'post_content' => $page_data['content'],
+					'post_status'  => 'publish',
+					'post_type'    => 'page',
+					'post_name'    => $slug,
+				)
+			);
+			if ( $page_id && ! is_wp_error( $page_id ) ) {
+				update_post_meta( $page_id, '_wp_page_template', $page_data['template'] );
+				
+				// Sideload sample headers for pages
+				if ( 'tentang-kami' === $slug ) {
+					sukusastra_attach_image_from_url( $page_id, 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=1200' );
+				}
+			}
+		} else {
+			// Update template if page already exists to match Poetzen templates
+			update_post_meta( $page_exists->ID, '_wp_page_template', $page_data['template'] );
 		}
 	}
 

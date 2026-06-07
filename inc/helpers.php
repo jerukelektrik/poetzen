@@ -213,3 +213,15 @@ function sukusastra_breadcrumbs(): void {
 
 	echo '</nav>';
 }
+
+/**
+ * Render custom paginated navigation with SVG icons.
+ */
+function sukusastra_pagination(): void {
+	the_posts_pagination( array(
+		'prev_text'          => '<span class="sr-only">' . esc_html__( 'Sebelumnya', 'sukusastra' ) . '</span><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>',
+		'next_text'          => '<span class="sr-only">' . esc_html__( 'Berikutnya', 'sukusastra' ) . '</span><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>',
+		'before_page_number' => '<span class="meta-nav screen-reader-text">' . esc_html__( 'Halaman', 'sukusastra' ) . ' </span>',
+	) );
+}
+

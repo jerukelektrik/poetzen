@@ -10,7 +10,7 @@ get_header(); ?>
 	<article class="ss-section">
 		<div class="ss-container">
 			<?php sukusastra_breadcrumbs(); ?>
-			<div class="grid gap-10 lg:grid-cols-[minmax(0,760px)_320px]">
+			<div class="grid gap-y-16 gap-x-10 lg:grid-cols-[minmax(0,760px)_320px]">
 				<div>
 				<p class="ss-eyebrow mb-2"><?php esc_html_e( 'Berita', 'sukusastra' ); ?></p>
 				<h1 class="ss-page-title"><?php the_title(); ?></h1>
@@ -27,6 +27,20 @@ get_header(); ?>
 				<?php endif; ?>
 				
 				<div class="ss-reading mt-8"><?php the_content(); ?></div>
+
+				<?php 
+				$tags = get_the_tags();
+				if ( $tags ) : 
+					?>
+					<div class="mt-8 flex flex-wrap gap-2 items-center">
+						<span class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-zinc-500 mr-1"><?php esc_html_e( 'Topik:', 'sukusastra' ); ?></span>
+						<?php foreach ( $tags as $tag ) : ?>
+							<a href="<?php echo esc_url( get_tag_link( $tag->term_id ) ); ?>" class="px-3 py-1 text-xs font-semibold rounded-full border border-slate-200 hover:border-red-700 hover:text-red-700 dark:border-zinc-800 dark:hover:border-red-400 dark:hover:text-red-400 text-slate-650 dark:text-zinc-400 transition-colors no-underline">
+								#<?php echo esc_html( $tag->name ); ?>
+							</a>
+						<?php endforeach; ?>
+					</div>
+				<?php endif; ?>
 				
 				<?php if ( sukusastra_get_meta( get_the_ID(), '_ss_source_url' ) ) : ?>
 					<div class="mt-8 pt-6 border-t border-slate-200 dark:border-zinc-800">

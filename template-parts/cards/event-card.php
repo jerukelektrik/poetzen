@@ -12,19 +12,89 @@ $state = sukusastra_event_cta_state(
 	sukusastra_get_meta( $post_id, '_ss_booking_label', 'Booking' ),
 	sukusastra_get_meta( $post_id, '_ss_booking_url' )
 );
+
+$status = sukusastra_get_meta( $post_id, '_ss_event_status', 'upcoming' );
+$ticket_availability = sukusastra_get_meta( $post_id, '_ss_ticket_availability', 'available' );
+$end_date = sukusastra_get_meta( $post_id, '_ss_event_end' );
+$paid = sukusastra_get_meta( $post_id, '_ss_paid_ticket', '0' );
+
+$status_pill = '';
+$pill_class = '';
+
+if ( 'cancelled' === $status ) {
+	$status_pill = __( 'Dibatalkan', 'sukusastra' );
+	$pill_class = 'bg-red-50 text-red-700 dark:bg-red-950/30 dark:text-red-400 border border-red-200/50 dark:border-red-900/30';
+} elseif ( 'past' === $status || sukusastra_event_date_has_passed( $end_date ) ) {
+	$status_pill = __( 'Sudah Selesai', 'sukusastra' );
+	$pill_class = 'bg-slate-100 text-slate-600 dark:bg-zinc-800/80 dark:text-zinc-400 border border-slate-200/50 dark:border-zinc-700/50';
+} elseif ( 'sold_out' === $ticket_availability ) {
+	$status_pill = __( 'Tiket Habis', 'sukusastra' );
+	$pill_class = 'bg-red-50 text-red-700 dark:bg-red-950/30 dark:text-red-400 border border-red-200/50 dark:border-red-900/30';
+} else {
+	// Ticket is available & Event is upcoming
+	if ( '1' === $paid ) {
+		$status_pill = __( 'Tiket Terbatas', 'sukusastra' );
+		$pill_class = 'bg-purple-50 text-purple-700 dark:bg-purple-950/30 dark:text-purple-400 border border-purple-200/50 dark:border-purple-900/30';
+	} else {
+		$status_pill = __( 'Pendaftaran Gratis', 'sukusastra' );
+		$pill_class = 'bg-amber-50 text-amber-850 dark:bg-amber-950/30 dark:text-amber-400 border border-amber-200/50 dark:border-amber-900/30';
+	}
+}
+
+$start_date_raw = sukusastra_get_meta( $post_id, '_ss_event_start' );
+$formatted_date = '';
+if ( $start_date_raw ) {
+	$timestamp = strtotime( $start_date_raw );
+	if ( $timestamp ) {
+		$formatted_date = date_i18n( 'D, d M Y', $timestamp );
+	}
+}
 ?>
-<article <?php post_class( 'ss-card grid gap-3' ); ?>>
-	<p class="ss-eyebrow"><?php esc_html_e( 'Event', 'sukusastra' ); ?></p>
-	<h3 class="ss-card-title">
-		<a class="ss-card-title-link" href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
-	</h3>
-	<p class="ss-body">
-		<?php echo esc_html( sukusastra_get_meta( $post_id, '_ss_event_start' ) ); ?>
-		<?php echo sukusastra_get_meta( $post_id, '_ss_event_location' ) ? ' · ' . esc_html( sukusastra_get_meta( $post_id, '_ss_event_location' ) ) : ''; ?>
-	</p>
-	<?php if ( $state['enabled'] ) : ?>
-		<a class="ss-button w-fit" href="<?php echo esc_url( $state['url'] ); ?>"><?php echo esc_html( $state['label'] ); ?></a>
-	<?php else : ?>
-		<span class="ss-button-disabled w-fit" aria-disabled="true"><?php echo esc_html( $state['label'] ); ?></span>
-	<?php endif; ?>
+<article <?php post_class( 'group flex flex-col justify-between overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:border-slate-350 dark:border-zinc-800/80 dark:bg-[#262B4E] dark:hover:border-red-700/30 min-w-0' ); ?>>
+	<!-- Image wrapper flush with borders -->
+	<a class="block no-underline overflow-hidden aspect-[16/10] shrink-0" href="<?php the_permalink(); ?>">
+		<?php if ( has_post_thumbnail() ) : ?>
+			<?php the_post_thumbnail( 'sukusastra-card', array( 'class' => 'w-full h-full object-cover group-hover:scale-105 transition-transform duration-500' ) ); ?>
+		<?php else : ?>
+			<div class="flex w-full h-full items-center justify-center bg-slate-100 dark:bg-zinc-800 p-6 text-center font-serif text-xl font-bold text-slate-500 dark:text-zinc-400 group-hover:scale-105 transition-transform duration-500">
+				<?php echo esc_html( get_the_title() ); ?>
+			</div>
+		<?php endif; ?>
+	</a>
+
+	<!-- Content Block with padding -->
+	<div class="flex flex-col gap-2 p-5 pt-4 flex-grow">
+		<!-- Pill Badge -->
+		<?php if ( $status_pill ) : ?>
+			<span class="w-fit px-3 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider <?php echo esc_attr( $pill_class ); ?>">
+				<?php echo esc_html( $status_pill ); ?>
+			</span>
+		<?php endif; ?>
+
+		<!-- Title -->
+		<h3 class="text-base font-black leading-snug text-slate-900 dark:text-zinc-50 group-hover:text-red-700 dark:group-hover:text-red-400 transition-colors mt-1">
+			<a class="no-underline hover:text-red-700 dark:hover:text-red-400 transition-colors" href="<?php the_permalink(); ?>">
+				<?php the_title(); ?>
+			</a>
+		</h3>
+
+		<!-- Event Info (Date & Location) -->
+		<div class="text-xs font-semibold text-slate-500 dark:text-zinc-400 mt-1 flex flex-col gap-0.5">
+			<span><?php echo esc_html( $formatted_date ); ?></span>
+			<?php if ( sukusastra_get_meta( $post_id, '_ss_event_location' ) ) : ?>
+				<span class="text-slate-400 dark:text-zinc-505 font-bold"><?php echo esc_html( sukusastra_get_meta( $post_id, '_ss_event_location' ) ); ?></span>
+			<?php endif; ?>
+		</div>
+
+		<!-- Price / Cost at bottom -->
+		<div class="mt-auto pt-3 text-xs font-black text-slate-900 dark:text-zinc-50">
+			<?php if ( '1' === $paid ) : ?>
+				<span>Mulai Berbayar</span>
+			<?php else : ?>
+				<span class="text-red-750 dark:text-red-400">Gratis</span>
+			<?php endif; ?>
+		</div>
+	</div>
 </article>
+
+
