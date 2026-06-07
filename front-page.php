@@ -6,11 +6,11 @@
  */
 get_header();
 
-// Fetch latest 3 posts for the Hero Grid
+// Fetch latest 5 posts for the Hero Grid
 $hero_query = new WP_Query(
 	array(
 		'post_type'           => 'post',
-		'posts_per_page'      => 3,
+		'posts_per_page'      => 5,
 		'ignore_sticky_posts' => true,
 		'meta_query'          => array(
 			'relation' => 'OR',
@@ -28,100 +28,246 @@ $hero_query = new WP_Query(
 );
 ?>
 
-<!-- Editorial Hero Grid -->
+<!-- Editorial Hero Grid & News Ticker -->
 <section class="ss-section border-t-0 bg-slate-55/30 dark:bg-black/20">
 	<div class="ss-container">
-		<?php if ( $hero_query->have_posts() ) : ?>
-			<div class="grid gap-6 md:grid-cols-3">
-				<?php 
-				$count = 0;
-				while ( $hero_query->have_posts() ) : $hero_query->the_post();
-					$count++;
-					$categories = get_the_category();
-					$category_name = ! empty( $categories ) ? $categories[0]->name : esc_html__( 'Karya', 'sukusastra' );
-					$orig_author = sukusastra_get_original_author( get_the_ID() );
+		<?php 
+		// Fetch ongoing/upcoming events for the News Update ticker
+		$news_update_events = new WP_Query( array(
+			'post_type'      => 'event',
+			'posts_per_page' => 10,
+			'meta_key'       => '_ss_event_start',
+			'orderby'        => 'meta_value',
+			'order'          => 'ASC',
+			'meta_query'     => array(
+				'relation' => 'AND',
+				array(
+					'key'     => '_ss_event_status',
+					'value'   => 'upcoming',
+					'compare' => '=',
+				),
+				array(
+					'relation' => 'OR',
+					array(
+						'key'     => '_ss_event_end',
+						'value'   => date( 'Y-m-d' ),
+						'compare' => '>=',
+						'type'    => 'DATE',
+					),
+					array(
+						'key'     => '_ss_event_end',
+						'compare' => 'NOT EXISTS',
+					),
+				),
+			),
+		) );
+		
+		if ( ! $news_update_events->have_posts() ) {
+			// Fallback: Latest events regardless of status
+			$news_update_events = new WP_Query( array(
+				'post_type'      => 'event',
+				'posts_per_page' => 10,
+				'orderby'        => 'date',
+				'order'          => 'DESC',
+				'post_status'    => 'publish'
+			) );
+		}
+		if ( ! $news_update_events->have_posts() ) {
+			// Fallback: Latest posts
+			$news_update_events = new WP_Query( array(
+				'post_type'      => 'post',
+				'posts_per_page' => 10,
+				'orderby'        => 'date',
+				'order'          => 'DESC',
+				'post_status'    => 'publish'
+			) );
+		}
+
+		if ( $news_update_events->have_posts() ) :
+		?>
+		<!-- 1. News Update Ticker Bar -->
+		<div class="mb-8 flex items-center border border-slate-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-900/80 backdrop-blur rounded-full p-1 pr-6 shadow-sm overflow-hidden">
+			<div class="flex items-center bg-amber-400 text-amber-950 px-4 py-1.5 rounded-full text-xs font-black shrink-0 shadow-sm">
+				<!-- Bell SVG Icon -->
+				<svg class="w-3.5 h-3.5 mr-1.5 fill-none stroke-current stroke-2" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
+				</svg>
+				<span>News Update:</span>
+			</div>
+			<div class="flex-1 overflow-hidden relative mx-4 text-xs font-semibold text-slate-700 dark:text-zinc-300">
+				<div class="animate-marquee whitespace-nowrap flex items-center">
+					<?php 
+					$ticker_items = array();
+					while ( $news_update_events->have_posts() ) : $news_update_events->the_post();
+						$ticker_items[] = sprintf(
+							'<a href="%1$s" class="hover:text-red-700 dark:hover:text-red-400 transition-colors">%2$s</a>',
+							esc_url( get_permalink() ),
+							esc_html( get_the_title() )
+						);
+					endwhile;
+					wp_reset_postdata();
 					
-					if ( 1 === $count ) : 
-						// Main Feature Card (Spans 2 columns on desktop)
-						?>
-						<article <?php post_class( 'relative overflow-hidden rounded-2xl group aspect-[16/9] w-full md:col-span-2 shadow-md border border-slate-200/10' ); ?>>
-							<a class="absolute inset-0 z-0 block" href="<?php the_permalink(); ?>">
-								<?php if ( has_post_thumbnail() ) : ?>
-									<?php the_post_thumbnail( 'sukusastra-hero', array( 'class' => 'w-full h-full object-cover group-hover:scale-105 transition-transform duration-500' ) ); ?>
-								<?php else : ?>
-									<div class="w-full h-full bg-gradient-to-br from-zinc-800 to-zinc-900 group-hover:scale-105 transition-transform duration-500"></div>
-								<?php endif; ?>
-								<!-- Overlay Gradient -->
-								<div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent z-1"></div>
-							</a>
-							<!-- Text Content -->
-							<div class="absolute bottom-0 inset-x-0 p-6 z-10 pointer-events-none flex flex-col gap-2 justify-end">
-								<div class="flex flex-wrap items-center gap-2 text-xs ss-hero-meta">
-									<span class="ss-hero-category"><?php echo esc_html( $category_name ); ?></span>
-									<span>&bull;</span>
-									<span><?php echo get_the_date(); ?></span>
-									<?php if ( $orig_author ) : ?>
-										<span>&bull;</span>
-										<a class="pointer-events-auto text-zinc-300 hover:text-red-300 transition-colors no-underline z-20 relative" href="<?php echo esc_url( get_permalink( $orig_author->ID ) ); ?>">
-											<?php echo esc_html( $orig_author->post_title ); ?>
-										</a>
-									<?php else : ?>
-										<span>&bull;</span>
-										<span class="text-zinc-350"><?php echo esc_html( get_the_author() ); ?></span>
-									<?php endif; ?>
-								</div>
-								<h2 class="text-xl md:text-3xl font-black text-white leading-tight tracking-tight line-clamp-2">
-									<a class="pointer-events-auto text-white hover:text-red-300 transition-colors no-underline" href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
-								</h2>
-								<p class="hidden sm:block text-xs md:text-sm text-zinc-300 line-clamp-2 mt-1 max-w-2xl"><?php echo esc_html( wp_strip_all_tags( get_the_excerpt() ) ); ?></p>
-							</div>
-						</article>
-						
-						<!-- Stack for Side Features -->
-						<div class="grid gap-6 md:grid-rows-2">
-						<?php 
-					else : 
-						// Side Features (Span 1 column)
-						?>
-						<article <?php post_class( 'relative overflow-hidden rounded-2xl group aspect-[16/9] md:aspect-auto md:h-full w-full shadow-md border border-slate-200/10' ); ?>>
-							<a class="absolute inset-0 z-0 block" href="<?php the_permalink(); ?>">
-								<?php if ( has_post_thumbnail() ) : ?>
-									<?php the_post_thumbnail( 'sukusastra-cover', array( 'class' => 'w-full h-full object-cover group-hover:scale-105 transition-transform duration-500' ) ); ?>
-								<?php else : ?>
-									<div class="w-full h-full bg-gradient-to-br from-zinc-800 to-zinc-900 group-hover:scale-105 transition-transform duration-500"></div>
-								<?php endif; ?>
-								<!-- Overlay Gradient -->
-								<div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent z-1"></div>
-							</a>
-							<!-- Text Content -->
-							<div class="absolute bottom-0 inset-x-0 p-5 z-10 pointer-events-none flex flex-col gap-1.5 justify-end">
-								<div class="flex flex-wrap items-center gap-2 text-[11px] ss-hero-meta">
-									<span class="ss-hero-category"><?php echo esc_html( $category_name ); ?></span>
-									<span>&bull;</span>
-									<span><?php echo get_the_date(); ?></span>
-									<?php if ( $orig_author ) : ?>
-										<span>&bull;</span>
-										<a class="pointer-events-auto text-zinc-300 hover:text-red-300 transition-colors no-underline z-20 relative max-w-[120px] truncate" href="<?php echo esc_url( get_permalink( $orig_author->ID ) ); ?>" title="<?php echo esc_attr( $orig_author->post_title ); ?>">
-											<?php echo esc_html( $orig_author->post_title ); ?>
-										</a>
-									<?php else : ?>
-										<span>&bull;</span>
-										<span class="text-zinc-350 max-w-[120px] truncate" title="<?php echo esc_attr( get_the_author() ); ?>"><?php echo esc_html( get_the_author() ); ?></span>
-									<?php endif; ?>
-								</div>
-								<h3 class="text-base md:text-lg font-black text-white leading-snug tracking-tight line-clamp-2">
-									<a class="pointer-events-auto text-white hover:text-red-300 transition-colors no-underline" href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
-								</h3>
-							</div>
-						</article>
-						<?php 
-					endif;
-				endwhile; 
-				wp_reset_postdata();
-				if ( $count > 1 ) {
-					echo '</div>'; // Close side stack
+					$ticker_html = implode( ' <span class="mx-4 text-slate-350 dark:text-zinc-650">•</span> ', $ticker_items );
+					echo $ticker_html . ' <span class="mx-4 text-slate-350 dark:text-zinc-650">•</span> ' . $ticker_html;
+					?>
+				</div>
+			</div>
+		</div>
+		<?php endif; ?>
+		<!-- 2. Hero 3-Column Layout (1 Large Card + 2 Columns of Borderless Side Stacks) -->
+		<?php if ( $hero_query->have_posts() ) : ?>
+			<div class="grid gap-6 lg:grid-cols-3">
+				<?php 
+				$hero_posts = array();
+				while ( $hero_query->have_posts() ) {
+					$hero_query->the_post();
+					$categories = get_the_category();
+					$hero_posts[] = array(
+						'id'        => get_the_ID(),
+						'title'     => get_the_title(),
+						'permalink' => get_permalink(),
+						'date'      => get_the_date(),
+						'time_ago'  => human_time_diff( get_the_time('U'), current_time('timestamp') ) . ' ' . esc_html__( 'lalu', 'sukusastra' ),
+						'excerpt'   => wp_strip_all_tags( get_the_excerpt() ),
+						'thumbnail' => has_post_thumbnail() ? get_the_post_thumbnail_url( get_the_ID(), 'large' ) : '',
+						'category'  => ! empty( $categories ) ? $categories[0]->name : esc_html__( 'Karya', 'sukusastra' ),
+						'author'    => sukusastra_get_original_author( get_the_ID() )
+					);
 				}
-				?>
+				wp_reset_postdata();
+				
+				// Render Column 1: Main Feature (First Post - Spans 1 Column)
+				if ( isset( $hero_posts[0] ) ) :
+					$main_post = $hero_posts[0];
+					?>
+					<div class="lg:col-span-1">
+						<article class="relative h-full min-h-[360px] lg:min-h-[440px] rounded-2xl overflow-hidden group shadow-sm border border-slate-200/10 flex flex-col justify-end bg-slate-900">
+							<a class="absolute inset-0 z-0 block" href="<?php echo esc_url( $main_post['permalink'] ); ?>">
+								<?php if ( $main_post['thumbnail'] ) : ?>
+									<img src="<?php echo esc_url( $main_post['thumbnail'] ); ?>" alt="<?php echo esc_attr( $main_post['title'] ); ?>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-85">
+								<?php else : ?>
+									<div class="w-full h-full bg-gradient-to-br from-zinc-800 to-zinc-900 group-hover:scale-105 transition-transform duration-500 opacity-85"></div>
+								<?php endif; ?>
+								<!-- Overlay Gradient -->
+								<div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent z-1"></div>
+							</a>
+							
+							<!-- Top Badge -->
+							<div class="absolute top-4 left-4 z-10">
+								<span class="bg-red-700 text-white text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-md shadow-sm">
+									<?php esc_html_e( 'TERBARU', 'sukusastra' ); ?>
+								</span>
+							</div>
+							
+							<!-- Center Play Icon -->
+							<div class="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+								<div class="w-14 h-14 rounded-full bg-white/95 dark:bg-zinc-900/95 text-slate-950 dark:text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300 pointer-events-auto cursor-pointer">
+									<svg class="w-5 h-5 fill-current ml-0.5" viewBox="0 0 24 24">
+										<path d="M8 5v14l11-7z"/>
+									</svg>
+								</div>
+							</div>
+
+							<!-- Content Overlay -->
+							<div class="p-6 z-10 pointer-events-none flex flex-col gap-2 relative">
+								<div class="flex items-center gap-2 text-[10px] ss-hero-meta uppercase tracking-wider font-bold">
+									<span class="ss-hero-category"><?php echo esc_html( $main_post['category'] ); ?></span>
+									<span>&bull;</span>
+									<span><?php echo esc_html( $main_post['time_ago'] ); ?></span>
+								</div>
+								<h2 class="text-xl md:text-2xl font-black text-white leading-tight tracking-tight line-clamp-2">
+									<a class="pointer-events-auto text-white hover:text-red-300 transition-colors no-underline" href="<?php echo esc_url( $main_post['permalink'] ); ?>">
+										<?php echo esc_html( $main_post['title'] ); ?>
+									</a>
+								</h2>
+							</div>
+						</article>
+					</div>
+				<?php endif; ?>
+
+				<!-- Column 2: Stack of 2 horizontal borderless list items -->
+				<div class="lg:col-span-1 flex flex-col gap-5">
+					<?php 
+					for ( $i = 1; $i <= 2; $i++ ) : 
+						if ( isset( $hero_posts[$i] ) ) :
+							$p = $hero_posts[$i];
+							?>
+							<article class="flex gap-4 items-center group py-2 border-b border-slate-100/50 dark:border-zinc-800/30 last:border-0">
+								<?php if ( $p['thumbnail'] ) : ?>
+									<a href="<?php echo esc_url( $p['permalink'] ); ?>" class="w-24 h-18 lg:w-28 lg:h-20 shrink-0 rounded-xl overflow-hidden border border-slate-200/50 dark:border-zinc-800/50 shadow-inner">
+										<img src="<?php echo esc_url( $p['thumbnail'] ); ?>" alt="<?php echo esc_attr( $p['title'] ); ?>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+									</a>
+								<?php else : ?>
+									<a href="<?php echo esc_url( $p['permalink'] ); ?>" class="w-24 h-18 lg:w-28 lg:h-20 shrink-0 rounded-xl bg-gradient-to-br from-zinc-800 to-zinc-900 group-hover:scale-105 transition-transform duration-500 border border-slate-200/50 dark:border-zinc-800/50"></a>
+								<?php endif; ?>
+								
+								<div class="grid gap-1 flex-1 min-w-0">
+									<div class="flex flex-wrap items-center gap-1.5 text-[9px] uppercase tracking-wider font-bold text-slate-400 dark:text-zinc-500">
+										<span class="text-red-700 dark:text-red-400"><?php echo esc_html( $p['category'] ); ?></span>
+										<span>&bull;</span>
+										<span><?php echo esc_html( $p['time_ago'] ); ?></span>
+									</div>
+									<h3 class="text-sm font-bold text-slate-900 dark:text-zinc-100 leading-snug line-clamp-2">
+										<a class="no-underline hover:text-red-700 dark:hover:text-red-300" href="<?php echo esc_url( $p['permalink'] ); ?>">
+											<?php echo esc_html( $p['title'] ); ?>
+										</a>
+									</h3>
+									<div class="text-[10px] text-slate-400 dark:text-zinc-500 truncate font-semibold">
+										<?php if ( $p['author'] ) : ?>
+											<?php echo esc_html( $p['author']->post_title ); ?>
+										<?php else : ?>
+											<?php bloginfo( 'name' ); ?>
+										<?php endif; ?>
+									</div>
+								</div>
+							</article>
+							<?php 
+						endif;
+					endfor; 
+					?>
+				</div>
+
+				<!-- Column 3: Stack of 2 horizontal borderless list items -->
+				<div class="lg:col-span-1 flex flex-col gap-5">
+					<?php 
+					for ( $i = 3; $i <= 4; $i++ ) : 
+						if ( isset( $hero_posts[$i] ) ) :
+							$p = $hero_posts[$i];
+							?>
+							<article class="flex gap-4 items-center group py-2 border-b border-slate-100/50 dark:border-zinc-800/30 last:border-0">
+								<?php if ( $p['thumbnail'] ) : ?>
+									<a href="<?php echo esc_url( $p['permalink'] ); ?>" class="w-24 h-18 lg:w-28 lg:h-20 shrink-0 rounded-xl overflow-hidden border border-slate-200/50 dark:border-zinc-800/50 shadow-inner">
+										<img src="<?php echo esc_url( $p['thumbnail'] ); ?>" alt="<?php echo esc_attr( $p['title'] ); ?>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+									</a>
+								<?php else : ?>
+									<a href="<?php echo esc_url( $p['permalink'] ); ?>" class="w-24 h-18 lg:w-28 lg:h-20 shrink-0 rounded-xl bg-gradient-to-br from-zinc-800 to-zinc-900 group-hover:scale-105 transition-transform duration-500 border border-slate-200/50 dark:border-zinc-800/50"></a>
+								<?php endif; ?>
+								
+								<div class="grid gap-1 flex-1 min-w-0">
+									<div class="flex flex-wrap items-center gap-1.5 text-[9px] uppercase tracking-wider font-bold text-slate-400 dark:text-zinc-500">
+										<span class="text-red-700 dark:text-red-400"><?php echo esc_html( $p['category'] ); ?></span>
+										<span>&bull;</span>
+										<span><?php echo esc_html( $p['time_ago'] ); ?></span>
+									</div>
+									<h3 class="text-sm font-bold text-slate-900 dark:text-zinc-100 leading-snug line-clamp-2">
+										<a class="no-underline hover:text-red-700 dark:hover:text-red-300" href="<?php echo esc_url( $p['permalink'] ); ?>">
+											<?php echo esc_html( $p['title'] ); ?>
+										</a>
+									</h3>
+									<div class="text-[10px] text-slate-400 dark:text-zinc-500 truncate font-semibold">
+										<?php if ( $p['author'] ) : ?>
+											<?php echo esc_html( $p['author']->post_title ); ?>
+										<?php else : ?>
+											<?php bloginfo( 'name' ); ?>
+										<?php endif; ?>
+									</div>
+								</div>
+							</article>
+							<?php 
+						endif;
+					endfor; 
+					?>
+				</div>
 			</div>
 		<?php else : ?>
 			<p class="text-center py-12 text-slate-500 dark:text-zinc-400"><?php esc_html_e( 'Belum ada terbitan terbaru.', 'sukusastra' ); ?></p>
