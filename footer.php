@@ -4,231 +4,141 @@
  *
  * @package SukuSastra
  */
-
-// Query 5 CPT penulis for orbit banner
-$orbit_avatars = array();
-$penulis_query = new WP_Query( array(
-	'post_type'      => 'penulis',
-	'posts_per_page' => 5,
-	'post_status'    => 'publish',
-) );
-
-if ( $penulis_query->have_posts() ) {
-	while ( $penulis_query->have_posts() ) {
-		$penulis_query->the_post();
-		$title = get_the_title();
-		$letter = substr( $title, 0, 1 );
-		if ( has_post_thumbnail() ) {
-			$orbit_avatars[] = array(
-				'type' => 'image',
-				'data' => get_the_post_thumbnail_url( get_the_ID(), 'thumbnail' ),
-				'link' => get_permalink(),
-			);
-		} else {
-			$orbit_avatars[] = array(
-				'type' => 'letter',
-				'data' => $letter,
-				'link' => get_permalink(),
-			);
-		}
-	}
-	wp_reset_postdata();
-}
-
-$fallback_names = array( 'Sapardi', 'Chairil', 'Leila', 'Goenawan', 'Sutardji' );
-$fallback_colors = array( 'bg-red-700', 'bg-blue-700', 'bg-emerald-700', 'bg-amber-700', 'bg-purple-700' );
-for ( $i = count( $orbit_avatars ); $i < 5; $i++ ) {
-	$orbit_avatars[] = array(
-		'type'  => 'letter',
-		'data'  => substr( $fallback_names[ $i ], 0, 1 ),
-		'link'  => home_url( '/penulis/' ),
-		'color' => $fallback_colors[ $i ],
-	);
-}
-
-if ( ! function_exists( 'sukusastra_render_orbit_avatar' ) ) {
-	function sukusastra_render_orbit_avatar( $avatar ) {
-		if ( 'image' === $avatar['type'] ) {
-			return sprintf(
-				'<a href="%1$s" class="block w-full h-full"><img src="%2$s" class="w-full h-full object-cover hover:scale-110 transition-transform duration-300"></a>',
-				esc_url( $avatar['link'] ),
-				esc_url( $avatar['data'] )
-			);
-		} else {
-			$bg = isset( $avatar['color'] ) ? $avatar['color'] : 'bg-red-700';
-			return sprintf(
-				'<a href="%1$s" class="flex w-full h-full items-center justify-center %2$s text-white text-[10px] font-black hover:scale-110 transition-transform duration-300">%3$s</a>',
-				esc_url( $avatar['link'] ),
-				esc_attr( $bg ),
-				esc_html( $avatar['data'] )
-			);
-		}
-	}
-}
 ?>
+
 </main>
 
-<footer class="border-t border-slate-200 bg-white pt-16 pb-10 dark:border-zinc-800 dark:bg-[#262B4E]">
-	<!-- SquareUi style Concentric Orbit CTA Banner -->
-	<div class="ss-container mb-12">
-		<div class="bg-slate-50 dark:bg-[#343B6A]/30 border border-slate-200/60 dark:border-zinc-800/80 rounded-3xl p-8 md:p-12 shadow-sm grid md:grid-cols-[1.2fr_1fr] gap-8 items-center overflow-hidden">
-			<!-- Left Column: Content -->
+<footer class="border-t border-slate-800 bg-slate-950 pt-12 pb-10 text-slate-400 dark:border-zinc-850 dark:bg-zinc-950 dark:text-zinc-500">
+	<div class="ss-container">
+		<!-- 1. Centered Logo -->
+		<div class="flex justify-center pb-8">
+			<a class="flex items-center no-underline" href="<?php echo esc_url( home_url( '/' ) ); ?>">
+				<!-- Logo for Light Mode (rendered white on dark background) -->
+				<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo-white.svg' ); ?>" alt="<?php bloginfo( 'name' ); ?>" class="h-12 object-contain logo-light">
+				<!-- Logo for Dark Mode -->
+				<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo-white.svg' ); ?>" alt="<?php bloginfo( 'name' ); ?>" class="h-12 object-contain logo-dark">
+			</a>
+		</div>
+
+		<!-- 2. Main Link Grid -->
+		<div class="border-t border-slate-800 dark:border-zinc-800 py-10 grid gap-8 sm:grid-cols-2 md:grid-cols-4">
+			<!-- Column 1: Rubrik (Sections) -->
 			<div>
-				<p class="ss-eyebrow mb-2">
-					<?php esc_html_e( 'Kirim Karya', 'sukusastra' ); ?>
-				</p>
-				<h2 class="ss-section-title md:text-3.5xl font-serif mb-3 leading-tight">
-					<?php esc_html_e( 'Punya Karya Sastra Terbaikmu?', 'sukusastra' ); ?>
-				</h2>
-				<p class="ss-body-serif max-w-md mb-6">
-					<?php esc_html_e( 'Kirimkan puisi, cerpen, esai, atau review bukumu. Kami menerbitkan karya sastra pilihan setiap minggunya untuk dinikmati pembaca seluruh Indonesia.', 'sukusastra' ); ?>
-				</p>
-				<a href="<?php echo esc_url( home_url( '/ketentuan-pengiriman-karya/' ) ); ?>" class="inline-flex items-center justify-center gap-2 rounded-full bg-slate-950 px-6 py-3 text-sm font-bold text-white hover:bg-red-700 transition dark:bg-zinc-100 dark:text-zinc-950 dark:hover:bg-red-400 shadow-sm w-fit group no-underline">
-					<?php esc_html_e( 'Kirim Karya Sekarang', 'sukusastra' ); ?>
-					<svg class="w-4 h-4 fill-none stroke-current stroke-2 transform group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" viewBox="0 0 24 24">
-						<path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-					</svg>
-				</a>
+				<h4 class="ss-footer-label text-slate-500 dark:text-zinc-550 mb-4"><?php esc_html_e( 'Rubrik', 'sukusastra' ); ?></h4>
+				<ul class="grid gap-2 text-xs text-slate-300 dark:text-zinc-400">
+					<li><a class="no-underline hover:text-red-400 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/category/puisi/' ) ); ?>"><?php esc_html_e( 'Puisi', 'sukusastra' ); ?></a></li>
+					<li><a class="no-underline hover:text-red-400 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/category/cerpen/' ) ); ?>"><?php esc_html_e( 'Cerpen', 'sukusastra' ); ?></a></li>
+					<li><a class="no-underline hover:text-red-400 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/category/esai/' ) ); ?>"><?php esc_html_e( 'Esai', 'sukusastra' ); ?></a></li>
+				</ul>
 			</div>
 
-			<!-- Right Column: concentric orbit rings -->
-			<div class="hidden md:flex justify-center items-center relative h-[280px]">
-				<!-- Center Logo/Icon -->
-				<div class="z-10 w-12 h-12 rounded-full bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 flex items-center justify-center shadow-md">
-					<svg class="w-6 h-6 text-red-700 dark:text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.582.477 5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-					</svg>
-				</div>
+			<!-- Column 2: Rubrik Continued -->
+			<div>
+				<div class="hidden md:block h-[34px]"></div> <!-- alignment spacer -->
+				<ul class="grid gap-2 text-xs text-slate-300 dark:text-zinc-400">
+					<li><a class="no-underline hover:text-red-400 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/review-buku/' ) ); ?>"><?php esc_html_e( 'Review Buku', 'sukusastra' ); ?></a></li>
+					<li><a class="no-underline hover:text-red-400 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/berita/' ) ); ?>"><?php esc_html_e( 'Berita', 'sukusastra' ); ?></a></li>
+					<li><a class="no-underline hover:text-red-400 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/event/' ) ); ?>"><?php esc_html_e( 'Event & Agenda', 'sukusastra' ); ?></a></li>
+				</ul>
+			</div>
 
-				<!-- Ring 1 (Inner, 110px) -->
-				<div class="absolute w-[110px] h-[110px] rounded-full border border-dashed border-slate-200/80 dark:border-zinc-800/80 animate-[spin_40s_linear_infinite]">
-					<!-- Avatar 1 -->
-					<div class="absolute -top-3 left-[43px] w-6 h-6 rounded-full overflow-hidden border border-slate-200 dark:border-zinc-700 shadow-sm bg-white">
-						<?php echo sukusastra_render_orbit_avatar( $orbit_avatars[0] ); ?>
-					</div>
-				</div>
+			<!-- Column 3: Lainnya (More) -->
+			<div>
+				<h4 class="ss-footer-label text-slate-500 dark:text-zinc-550 mb-4"><?php esc_html_e( 'Lainnya', 'sukusastra' ); ?></h4>
+				<ul class="grid gap-2 text-xs text-slate-300 dark:text-zinc-400">
+					<li><a class="no-underline hover:text-red-400 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/tentang-kami/' ) ); ?>"><?php esc_html_e( 'Tentang Kami', 'sukusastra' ); ?></a></li>
+					<li><a class="no-underline hover:text-red-400 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/redaksi/' ) ); ?>"><?php esc_html_e( 'Redaksi', 'sukusastra' ); ?></a></li>
+					<li><a class="no-underline hover:text-red-400 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/ketentuan-pengiriman-karya/' ) ); ?>"><?php esc_html_e( 'Ketentuan Kirim Karya', 'sukusastra' ); ?></a></li>
+				</ul>
+			</div>
 
-				<!-- Ring 2 (Middle, 190px) -->
-				<div class="absolute w-[190px] h-[190px] rounded-full border border-dashed border-slate-200/80 dark:border-zinc-800/80 animate-[spin_60s_linear_infinite_reverse]">
-					<!-- Avatar 2 -->
-					<div class="absolute top-[83px] -left-3 w-6 h-6 rounded-full overflow-hidden border border-slate-200 dark:border-zinc-700 shadow-sm bg-white">
-						<?php echo sukusastra_render_orbit_avatar( $orbit_avatars[1] ); ?>
-					</div>
-					<!-- Avatar 3 -->
-					<div class="absolute top-[83px] -right-3 w-6 h-6 rounded-full overflow-hidden border border-slate-200 dark:border-zinc-700 shadow-sm bg-white">
-						<?php echo sukusastra_render_orbit_avatar( $orbit_avatars[2] ); ?>
-					</div>
-				</div>
-
-				<!-- Ring 3 (Outer, 270px) -->
-				<div class="absolute w-[270px] h-[270px] rounded-full border border-dashed border-slate-200/80 dark:border-zinc-800/80 animate-[spin_80s_linear_infinite]">
-					<!-- Avatar 4 -->
-					<div class="absolute -top-3 left-[123px] w-6 h-6 rounded-full overflow-hidden border border-slate-200 dark:border-zinc-700 shadow-sm bg-white">
-						<?php echo sukusastra_render_orbit_avatar( $orbit_avatars[3] ); ?>
-					</div>
-					<!-- Avatar 5 -->
-					<div class="absolute bottom-6 left-[39px] w-6 h-6 rounded-full overflow-hidden border border-slate-200 dark:border-zinc-700 shadow-sm bg-white">
-						<?php echo sukusastra_render_orbit_avatar( $orbit_avatars[4] ); ?>
-					</div>
-				</div>
+			<!-- Column 4: Newsletter -->
+			<div>
+				<h4 class="ss-footer-label text-slate-500 dark:text-zinc-550 mb-4"><?php esc_html_e( 'Newsletter', 'sukusastra' ); ?></h4>
+				<p class="text-xs leading-5 text-slate-400 dark:text-zinc-500 mb-3 font-serif">
+					<?php esc_html_e( 'Dapatkan kurasi karya sastra terbaik langsung di emailmu.', 'sukusastra' ); ?>
+				</p>
+				<form class="flex items-center bg-slate-900 border border-slate-800 p-1 pl-3.5 rounded-full w-full max-w-[260px] shadow-inner" action="#" method="post">
+					<span class="text-slate-500 text-[10px] font-bold shrink-0">@</span>
+					<input type="email" class="bg-transparent border-0 outline-none text-xs flex-1 text-slate-100 placeholder-slate-500 py-1.5 px-2 font-medium" placeholder="<?php esc_attr_e( 'Alamat email...', 'sukusastra' ); ?>" required />
+					<button type="submit" class="w-8 h-8 rounded-full bg-zinc-100 text-zinc-950 flex items-center justify-center hover:bg-red-700 hover:text-white transition cursor-pointer shadow-sm shrink-0">
+						<svg class="w-3.5 h-3.5 fill-none stroke-current stroke-2" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+						</svg>
+					</button>
+				</form>
 			</div>
 		</div>
-	</div>
 
-	<!-- Main Footer Columns -->
-	<div class="ss-container grid gap-10 sm:grid-cols-2 md:grid-cols-4 border-b border-slate-100 dark:border-zinc-800/80 pb-12">
-		<!-- Column 1: About -->
-		<div class="grid gap-3 content-start">
-			<h3 class="text-base font-black text-slate-900 dark:text-zinc-50 font-serif tracking-tight flex items-center gap-2">
-				<svg class="w-5 h-5 text-red-700 dark:text-red-400 fill-none" stroke="currentColor" viewBox="0 0 24 24">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.582.477 5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-				</svg>
-				<?php esc_html_e( 'Suku Sastra', 'sukusastra' ); ?>
-			</h3>
-			<p class="text-xs leading-6 text-slate-500 dark:text-zinc-400 max-w-xs font-serif">
-				<?php esc_html_e( 'Media sastra independen untuk membaca, menulis, menerbitkan, dan mendiskusikan karya sastra terbaik Indonesia.', 'sukusastra' ); ?>
-			</p>
+		<!-- 3. Secondary Links Grid -->
+		<div class="border-t border-slate-800 dark:border-zinc-800 py-8 grid gap-6 sm:grid-cols-2 md:grid-cols-4 text-xs">
+			<div>
+				<ul class="grid gap-2 text-slate-400 dark:text-zinc-500">
+					<li><a class="no-underline hover:text-red-400 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/tentang-kami/' ) ); ?>"><?php esc_html_e( 'Tentang Kami', 'sukusastra' ); ?></a></li>
+					<li><a class="no-underline hover:text-red-400 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/hubungi-kami/' ) ); ?>"><?php esc_html_e( 'Hubungi Kami', 'sukusastra' ); ?></a></li>
+				</ul>
+			</div>
+			<div>
+				<ul class="grid gap-2 text-slate-400 dark:text-zinc-500">
+					<li><a class="no-underline hover:text-red-400 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/faq/' ) ); ?>"><?php esc_html_e( 'F.A.Q.', 'sukusastra' ); ?></a></li>
+					<li><a class="no-underline hover:text-red-400 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/redaksi/' ) ); ?>"><?php esc_html_e( 'Redaksi', 'sukusastra' ); ?></a></li>
+				</ul>
+			</div>
+			<div>
+				<ul class="grid gap-2 text-slate-400 dark:text-zinc-500">
+					<li><a class="no-underline hover:text-red-400 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/ketentuan-pengiriman-karya/' ) ); ?>"><?php esc_html_e( 'Ketentuan Kirim Karya', 'sukusastra' ); ?></a></li>
+				</ul>
+			</div>
+			<div>
+				<ul class="grid gap-2 text-slate-400 dark:text-zinc-500">
+					<li><a class="no-underline hover:text-red-400 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/kebijakan-privasi/' ) ); ?>"><?php esc_html_e( 'Kebijakan Privasi', 'sukusastra' ); ?></a></li>
+				</ul>
+			</div>
 		</div>
 
-		<!-- Column 2: Karya & Rubrik -->
-		<div class="grid gap-3 content-start">
-			<h4 class="ss-footer-label">
-				<?php esc_html_e( 'Karya & Rubrik', 'sukusastra' ); ?>
-			</h4>
-			<ul class="grid gap-2 ss-footer-link">
-				<li><a class="no-underline hover:text-red-700 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/category/puisi/' ) ); ?>"><?php esc_html_e( 'Puisi', 'sukusastra' ); ?></a></li>
-				<li><a class="no-underline hover:text-red-700 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/category/cerpen/' ) ); ?>"><?php esc_html_e( 'Cerpen', 'sukusastra' ); ?></a></li>
-				<li><a class="no-underline hover:text-red-700 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/category/esai/' ) ); ?>"><?php esc_html_e( 'Esai', 'sukusastra' ); ?></a></li>
-				<li><a class="no-underline hover:text-red-700 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/review-buku/' ) ); ?>"><?php esc_html_e( 'Review Buku', 'sukusastra' ); ?></a></li>
-				<li><a class="no-underline hover:text-red-700 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/event/' ) ); ?>"><?php esc_html_e( 'Event & Agenda', 'sukusastra' ); ?></a></li>
-			</ul>
-		</div>
-
-		<!-- Column 3: Media Sosial -->
-		<div class="grid gap-3 content-start">
-			<h4 class="ss-footer-label">
-				<?php esc_html_e( 'Media Sosial', 'sukusastra' ); ?>
-			</h4>
-			<ul class="grid gap-2 ss-footer-link">
+		<!-- 4. Bottom Copyright & Social Icons -->
+		<div class="border-t border-slate-800 dark:border-zinc-800 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-[11px] text-slate-500 dark:text-zinc-500">
+			<div>
+				<?php 
+				$copyright = sukusastra_get_option( 'copyright', sprintf( '&copy; %s Suku Sastra. Hak Cipta Dilindungi.', date( 'Y' ) ) );
+				echo wp_kses_post( $copyright ); 
+				?>
+			</div>
+			
+			<div class="flex items-center gap-4 text-slate-400 dark:text-zinc-400">
 				<?php
-				$social_keys = array(
-					'instagram' => 'Instagram',
-					'twitter'   => 'Twitter / X',
-					'facebook'  => 'Facebook',
-					'youtube'   => 'YouTube',
+				$socials = array(
+					'instagram' => array(
+						'label' => 'Instagram',
+						'svg'   => '<svg class="w-4 h-4 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051C.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>'
+					),
+					'twitter' => array(
+						'label' => 'Twitter / X',
+						'svg'   => '<svg class="w-4 h-4 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>'
+					),
+					'facebook' => array(
+						'label' => 'Facebook',
+						'svg'   => '<svg class="w-4 h-4 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c4.56-.93 8-4.96 8-9.75z"/></svg>'
+					),
+					'youtube' => array(
+						'label' => 'YouTube',
+						'svg'   => '<svg class="w-4 h-4 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M23.498 6.163a3.003 3.003 0 0 0-2.11-2.11C19.518 3.545 12 3.545 12 3.545s-7.518 0-9.388.508a3.003 3.003 0 0 0-2.11 2.11C0 8.033 0 12 0 12s0 3.967.502 5.837a3.003 3.003 0 0 0 2.11 2.11c1.87.508 9.388.508 9.388.508s7.518 0 9.388-.508a3.003 3.003 0 0 0 2.11-2.11C24 15.967 24 12 24 12s0-3.967-.502-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>'
+					)
 				);
-				foreach ( $social_keys as $key => $label ) {
+
+				foreach ( $socials as $key => $social ) {
 					$url = sukusastra_get_option( $key );
 					if ( $url ) {
 						printf(
-							'<li><a class="inline-flex items-center gap-1 no-underline hover:text-red-700 dark:hover:text-red-400 transition-colors" href="%1$s" target="_blank" rel="noopener">%2$s <span class="text-[9px] text-slate-400 dark:text-zinc-600 font-normal">↗</span></a></li>',
+							'<a class="hover:text-red-400 transition-colors" href="%1$s" target="_blank" rel="noopener" aria-label="%2$s">%3$s</a>',
 							esc_url( $url ),
-							esc_html( $label )
+							esc_attr( $social['label'] ),
+							$social['svg']
 						);
 					}
 				}
 				?>
-			</ul>
-		</div>
-
-		<!-- Column 4: Newsletter -->
-		<div class="grid gap-3 content-start">
-			<h4 class="ss-footer-label">
-				<?php esc_html_e( 'Newsletter', 'sukusastra' ); ?>
-			</h4>
-			<p class="ss-body-serif text-xs leading-5">
-				<?php esc_html_e( 'Dapatkan kurasi karya sastra terbaik langsung di emailmu.', 'sukusastra' ); ?>
-			</p>
-			<form class="flex items-center bg-slate-50 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 p-1 pl-3.5 rounded-full mt-2 w-full max-w-[260px] shadow-inner" action="#" method="post">
-				<span class="text-slate-400 dark:text-zinc-600 text-[10px] font-bold shrink-0">@</span>
-				<input type="email" class="bg-transparent border-0 outline-none text-xs flex-1 text-slate-800 dark:text-zinc-100 placeholder-slate-400 py-1.5 px-2 font-medium" placeholder="<?php esc_attr_e( 'Alamat email...', 'sukusastra' ); ?>" required />
-				<button type="submit" class="w-8 h-8 rounded-full bg-slate-950 text-white flex items-center justify-center hover:bg-red-700 transition dark:bg-zinc-100 dark:text-zinc-950 dark:hover:bg-red-400 cursor-pointer shadow-sm shrink-0">
-					<svg class="w-3.5 h-3.5 fill-none stroke-current stroke-2" viewBox="0 0 24 24">
-						<path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-					</svg>
-				</button>
-			</form>
-		</div>
-	</div>
-
-	<!-- Bottom Row: Copyright & Framer-like icons -->
-	<div class="ss-container flex flex-col sm:flex-row justify-between items-center gap-4 pt-8 ss-copyright">
-		<div>
-			<?php 
-			$copyright = sukusastra_get_option( 'copyright', sprintf( '&copy; %s poetzen. Hak Cipta Dilindungi.', date( 'Y' ) ) );
-			echo wp_kses_post( $copyright ); 
-			?>
-		</div>
-		
-		<div class="flex items-center gap-3">
-			<span><?php esc_html_e( 'Jelajahi ekosistem kami', 'sukusastra' ); ?></span>
-			<span>·</span>
-			<a class="hover:text-slate-700 dark:hover:text-zinc-300 transition-colors" href="<?php echo esc_url( home_url( '/' ) ); ?>" aria-label="<?php esc_attr_e( 'Website', 'sukusastra' ); ?>">
-				<svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
-			</a>
-			<a class="hover:text-slate-700 dark:hover:text-zinc-300 transition-colors" href="<?php echo esc_url( sukusastra_get_option( 'twitter' ) ); ?>" target="_blank" rel="noopener" aria-label="Twitter / X">
-				<svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-			</a>
+			</div>
 		</div>
 	</div>
 </footer>

@@ -28,6 +28,7 @@
   }
 
   a {
+    color: inherit;
     @apply underline-offset-4 transition-colors;
   }
 
