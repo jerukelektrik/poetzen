@@ -114,7 +114,7 @@ $hero_query = new WP_Query(
 			</div>
 		</div>
 		<?php endif; ?>
-		<!-- 2. Hero 3-Column Layout (1 Large Card + 2 Columns of Borderless Side Stacks) -->
+		<!-- 2. Hero 3-Column Layout (1 Widescreen Video Card + 2 Columns of Side Feeds) -->
 		<?php if ( $hero_query->have_posts() ) : ?>
 			<div class="grid gap-6 lg:grid-cols-3">
 				<?php 
@@ -136,63 +136,47 @@ $hero_query = new WP_Query(
 				}
 				wp_reset_postdata();
 				
-				// Render Column 1: Main Feature (First Post - Spans 1 Column)
+				// Render Column 1: Main Feature (Widescreen Video Thumbnail only, no text overlays)
 				if ( isset( $hero_posts[0] ) ) :
 					$main_post = $hero_posts[0];
 					?>
 					<div class="lg:col-span-1">
-						<article class="relative h-full min-h-[360px] lg:min-h-[440px] rounded-2xl overflow-hidden group shadow-sm border border-slate-200/10 flex flex-col justify-end bg-slate-900">
+						<article class="relative w-full h-[190px] lg:h-[220px] rounded-2xl overflow-hidden group shadow-sm bg-slate-900 border border-slate-200/10">
 							<a class="absolute inset-0 z-0 block" href="<?php echo esc_url( $main_post['permalink'] ); ?>">
 								<?php if ( $main_post['thumbnail'] ) : ?>
-									<img src="<?php echo esc_url( $main_post['thumbnail'] ); ?>" alt="<?php echo esc_attr( $main_post['title'] ); ?>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-85">
+									<img src="<?php echo esc_url( $main_post['thumbnail'] ); ?>" alt="<?php echo esc_attr( $main_post['title'] ); ?>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-95">
 								<?php else : ?>
-									<div class="w-full h-full bg-gradient-to-br from-zinc-800 to-zinc-900 group-hover:scale-105 transition-transform duration-500 opacity-85"></div>
+									<div class="w-full h-full bg-gradient-to-br from-zinc-800 to-zinc-900 group-hover:scale-105 transition-transform duration-500 opacity-95"></div>
 								<?php endif; ?>
-								<!-- Overlay Gradient -->
-								<div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent z-1"></div>
 							</a>
 							
-							<!-- Top Badge -->
-							<div class="absolute top-4 left-4 z-10">
-								<span class="bg-red-700 text-white text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-md shadow-sm">
-									<?php esc_html_e( 'TERBARU', 'sukusastra' ); ?>
+							<!-- Top Left "LIVE NOW" Badge -->
+							<div class="absolute top-3 left-3 z-10">
+								<span class="bg-red-700 text-white text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-sm shadow-sm">
+									<?php esc_html_e( 'LIVE NOW', 'sukusastra' ); ?>
 								</span>
 							</div>
 							
-							<!-- Center Play Icon -->
+							<!-- Center Widescreen Player Button -->
 							<div class="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
-								<div class="w-14 h-14 rounded-full bg-white/95 dark:bg-zinc-900/95 text-slate-950 dark:text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300 pointer-events-auto cursor-pointer">
-									<svg class="w-5 h-5 fill-current ml-0.5" viewBox="0 0 24 24">
+								<div class="w-12 h-8 rounded-lg bg-white text-slate-950 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300 pointer-events-auto cursor-pointer">
+									<svg class="w-4 h-4 fill-current ml-0.5 text-slate-900" viewBox="0 0 24 24">
 										<path d="M8 5v14l11-7z"/>
 									</svg>
 								</div>
-							</div>
-
-							<!-- Content Overlay -->
-							<div class="p-6 z-10 pointer-events-none flex flex-col gap-2 relative">
-								<div class="flex items-center gap-2 text-[10px] ss-hero-meta uppercase tracking-wider font-bold">
-									<span class="ss-hero-category"><?php echo esc_html( $main_post['category'] ); ?></span>
-									<span>&bull;</span>
-									<span><?php echo esc_html( $main_post['time_ago'] ); ?></span>
-								</div>
-								<h2 class="text-xl md:text-2xl font-black text-white leading-tight tracking-tight line-clamp-2">
-									<a class="pointer-events-auto text-white hover:text-red-300 transition-colors no-underline" href="<?php echo esc_url( $main_post['permalink'] ); ?>">
-										<?php echo esc_html( $main_post['title'] ); ?>
-									</a>
-								</h2>
 							</div>
 						</article>
 					</div>
 				<?php endif; ?>
 
 				<!-- Column 2: Stack of 2 horizontal borderless list items -->
-				<div class="lg:col-span-1 flex flex-col gap-5">
+				<div class="lg:col-span-1 flex flex-col gap-4">
 					<?php 
 					for ( $i = 1; $i <= 2; $i++ ) : 
 						if ( isset( $hero_posts[$i] ) ) :
 							$p = $hero_posts[$i];
 							?>
-							<article class="flex gap-4 items-center group py-2 border-b border-slate-100/50 dark:border-zinc-800/30 last:border-0">
+							<article class="flex gap-4 items-start py-2 border-b border-slate-100/50 dark:border-zinc-800/30 last:border-0">
 								<?php if ( $p['thumbnail'] ) : ?>
 									<a href="<?php echo esc_url( $p['permalink'] ); ?>" class="w-24 h-18 lg:w-28 lg:h-20 shrink-0 rounded-xl overflow-hidden border border-slate-200/50 dark:border-zinc-800/50 shadow-inner">
 										<img src="<?php echo esc_url( $p['thumbnail'] ); ?>" alt="<?php echo esc_attr( $p['title'] ); ?>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
@@ -201,11 +185,10 @@ $hero_query = new WP_Query(
 									<a href="<?php echo esc_url( $p['permalink'] ); ?>" class="w-24 h-18 lg:w-28 lg:h-20 shrink-0 rounded-xl bg-gradient-to-br from-zinc-800 to-zinc-900 group-hover:scale-105 transition-transform duration-500 border border-slate-200/50 dark:border-zinc-800/50"></a>
 								<?php endif; ?>
 								
-								<div class="grid gap-1 flex-1 min-w-0">
-									<div class="flex flex-wrap items-center gap-1.5 text-[9px] uppercase tracking-wider font-bold text-slate-400 dark:text-zinc-500">
-										<span class="text-red-700 dark:text-red-400"><?php echo esc_html( $p['category'] ); ?></span>
-										<span>&bull;</span>
-										<span><?php echo esc_html( $p['time_ago'] ); ?></span>
+								<div class="grid gap-0.5 flex-1 min-w-0">
+									<div class="flex items-center gap-2 text-[10px] font-semibold">
+										<span class="text-slate-400 dark:text-zinc-500"><?php echo esc_html( $p['time_ago'] ); ?></span>
+										<span class="text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-wider"><?php echo esc_html( $p['category'] ); ?></span>
 									</div>
 									<h3 class="text-sm font-bold text-slate-900 dark:text-zinc-100 leading-snug line-clamp-2">
 										<a class="no-underline hover:text-red-700 dark:hover:text-red-300" href="<?php echo esc_url( $p['permalink'] ); ?>">
@@ -228,13 +211,13 @@ $hero_query = new WP_Query(
 				</div>
 
 				<!-- Column 3: Stack of 2 horizontal borderless list items -->
-				<div class="lg:col-span-1 flex flex-col gap-5">
+				<div class="lg:col-span-1 flex flex-col gap-4">
 					<?php 
 					for ( $i = 3; $i <= 4; $i++ ) : 
 						if ( isset( $hero_posts[$i] ) ) :
 							$p = $hero_posts[$i];
 							?>
-							<article class="flex gap-4 items-center group py-2 border-b border-slate-100/50 dark:border-zinc-800/30 last:border-0">
+							<article class="flex gap-4 items-start py-2 border-b border-slate-100/50 dark:border-zinc-800/30 last:border-0">
 								<?php if ( $p['thumbnail'] ) : ?>
 									<a href="<?php echo esc_url( $p['permalink'] ); ?>" class="w-24 h-18 lg:w-28 lg:h-20 shrink-0 rounded-xl overflow-hidden border border-slate-200/50 dark:border-zinc-800/50 shadow-inner">
 										<img src="<?php echo esc_url( $p['thumbnail'] ); ?>" alt="<?php echo esc_attr( $p['title'] ); ?>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
@@ -243,22 +226,26 @@ $hero_query = new WP_Query(
 									<a href="<?php echo esc_url( $p['permalink'] ); ?>" class="w-24 h-18 lg:w-28 lg:h-20 shrink-0 rounded-xl bg-gradient-to-br from-zinc-800 to-zinc-900 group-hover:scale-105 transition-transform duration-500 border border-slate-200/50 dark:border-zinc-800/50"></a>
 								<?php endif; ?>
 								
-								<div class="grid gap-1 flex-1 min-w-0">
-									<div class="flex flex-wrap items-center gap-1.5 text-[9px] uppercase tracking-wider font-bold text-slate-400 dark:text-zinc-500">
-										<span class="text-red-700 dark:text-red-400"><?php echo esc_html( $p['category'] ); ?></span>
-										<span>&bull;</span>
-										<span><?php echo esc_html( $p['time_ago'] ); ?></span>
+								<div class="grid gap-0.5 flex-1 min-w-0">
+									<div class="flex items-center gap-2 text-[10px] font-semibold">
+										<span class="text-slate-400 dark:text-zinc-500"><?php echo esc_html( $p['time_ago'] ); ?></span>
+										<span class="text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-wider"><?php echo esc_html( $p['category'] ); ?></span>
 									</div>
 									<h3 class="text-sm font-bold text-slate-900 dark:text-zinc-100 leading-snug line-clamp-2">
 										<a class="no-underline hover:text-red-700 dark:hover:text-red-300" href="<?php echo esc_url( $p['permalink'] ); ?>">
 											<?php echo esc_html( $p['title'] ); ?>
 										</a>
 									</h3>
-									<div class="text-[10px] text-slate-400 dark:text-zinc-500 truncate font-semibold">
-										<?php if ( $p['author'] ) : ?>
-											<?php echo esc_html( $p['author']->post_title ); ?>
-										<?php else : ?>
-											<?php bloginfo( 'name' ); ?>
+									<div class="text-[10px] text-slate-400 dark:text-zinc-500 truncate font-semibold flex items-center">
+										<span>
+											<?php if ( $p['author'] ) : ?>
+												<?php echo esc_html( $p['author']->post_title ); ?>
+											<?php else : ?>
+												<?php bloginfo( 'name' ); ?>
+											<?php endif; ?>
+										</span>
+										<?php if ( 4 === $i ) : ?>
+											<span class="ml-2 bg-slate-900 text-white text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-sm shrink-0">VIDEO</span>
 										<?php endif; ?>
 									</div>
 								</div>
