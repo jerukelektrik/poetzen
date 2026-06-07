@@ -6,11 +6,11 @@
  */
 get_header();
 
-// Fetch latest 4 posts for the Hero Grid
+// Fetch latest 5 posts for the Hero Grid
 $hero_query = new WP_Query(
 	array(
 		'post_type'           => 'post',
-		'posts_per_page'      => 4,
+		'posts_per_page'      => 5,
 		'ignore_sticky_posts' => true,
 		'meta_query'          => array(
 			'relation' => 'OR',
@@ -197,28 +197,37 @@ $hero_query = new WP_Query(
 					</div>
 				<?php endif; ?>
 
-				<!-- Column 2: Stack of 3 horizontal borderless side items -->
-				<div class="lg:col-span-1 flex flex-col gap-5 justify-center">
+				<!-- Column 2: Stack of 4 horizontal side items -->
+				<div class="lg:col-span-1 flex flex-col gap-4 justify-center">
 					<?php 
-					for ( $i = 1; $i <= 3; $i++ ) : 
+					for ( $i = 1; $i <= 4; $i++ ) : 
 						if ( isset( $hero_posts[$i] ) ) :
 							$p = $hero_posts[$i];
 							?>
-							<article class="ss-card rounded-3xl p-5 shadow-sm hover:shadow-md transition-all flex items-center justify-between gap-4">
-								<!-- Left Content Column -->
-								<div class="flex flex-col gap-3 flex-1 min-w-0">
+							<article class="ss-card rounded-3xl p-4 shadow-sm hover:shadow-md transition-all flex items-center justify-between gap-4">
+								<!-- Left: Thumbnail image -->
+								<?php if ( $p['thumbnail'] ) : ?>
+									<a href="<?php echo esc_url( $p['permalink'] ); ?>" class="w-20 h-20 shrink-0 rounded-2xl overflow-hidden border border-slate-200/50 dark:border-zinc-800/50 shadow-inner">
+										<img src="<?php echo esc_url( $p['thumbnail'] ); ?>" alt="<?php echo esc_attr( $p['title'] ); ?>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+									</a>
+								<?php else : ?>
+									<a href="<?php echo esc_url( $p['permalink'] ); ?>" class="w-20 h-20 shrink-0 rounded-2xl bg-gradient-to-br from-zinc-800 to-zinc-900 group-hover:scale-105 transition-transform duration-500 border border-slate-200/50 dark:border-zinc-800/50"></a>
+								<?php endif; ?>
+
+								<!-- Middle: Text Column -->
+								<div class="flex flex-col gap-2 flex-1 min-w-0">
 									<!-- Title -->
-									<h3 class="text-base font-black text-slate-900 dark:text-zinc-100 leading-snug line-clamp-2">
+									<h3 class="text-sm font-black text-slate-900 dark:text-zinc-100 leading-snug line-clamp-2">
 										<a class="no-underline hover:text-red-700 dark:hover:text-red-300" href="<?php echo esc_url( $p['permalink'] ); ?>">
 											<?php echo esc_html( $p['title'] ); ?>
 										</a>
 									</h3>
 									<!-- Badge & Date/Author Row -->
-									<div class="flex flex-wrap items-center gap-2.5">
-										<span class="bg-red-50 dark:bg-red-950/30 text-red-700 dark:text-red-400 text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full border border-red-200/50 dark:border-red-900/30 shrink-0">
+									<div class="flex flex-wrap items-center gap-2">
+										<span class="bg-red-50 dark:bg-red-950/30 text-red-700 dark:text-red-400 text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border border-red-200/50 dark:border-red-900/30 shrink-0">
 											<?php echo esc_html( $p['category'] ); ?>
 										</span>
-										<span class="text-[10px] font-semibold text-slate-400 dark:text-zinc-500 flex items-center gap-1.5 min-w-0 truncate">
+										<span class="text-[9px] font-semibold text-slate-400 dark:text-zinc-500 flex items-center gap-1 min-w-0 truncate">
 											<span><?php echo esc_html( $p['date'] ); ?></span>
 											<span class="opacity-50">•</span>
 											<span class="font-bold text-slate-600 dark:text-zinc-400 truncate"><?php echo esc_html( $p['author_name'] ); ?></span>
@@ -227,8 +236,8 @@ $hero_query = new WP_Query(
 								</div>
 								
 								<!-- Right Circular Arrow Button -->
-								<a href="<?php echo esc_url( $p['permalink'] ); ?>" class="w-10 h-10 rounded-full border border-slate-200 dark:border-zinc-700 hover:border-slate-400 dark:hover:border-zinc-500 hover:bg-slate-50 dark:hover:bg-zinc-800 flex items-center justify-center text-slate-700 dark:text-zinc-300 shrink-0 shadow-sm transition-all hover:scale-105" aria-hidden="true">
-									<svg class="w-4 h-4 stroke-current fill-none stroke-2" viewBox="0 0 24 24">
+								<a href="<?php echo esc_url( $p['permalink'] ); ?>" class="w-8 h-8 rounded-full border border-slate-200 dark:border-zinc-700 hover:border-slate-400 dark:hover:border-zinc-500 hover:bg-slate-50 dark:hover:bg-zinc-800 flex items-center justify-center text-slate-700 dark:text-zinc-300 shrink-0 shadow-sm transition-all hover:scale-105" aria-hidden="true">
+									<svg class="w-3.5 h-3.5 stroke-current fill-none stroke-2" viewBox="0 0 24 24">
 										<path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
 									</svg>
 								</a>
