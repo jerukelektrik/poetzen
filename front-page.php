@@ -156,26 +156,24 @@ $hero_query = new WP_Query(
 					$main_post = $hero_posts[0];
 					?>
 					<div class="lg:col-span-2">
-						<article class="ss-card flex flex-col justify-between h-full rounded-3xl p-5 shadow-sm">
-							<div class="flex flex-col">
-								<!-- 1. Large Widescreen Image -->
-								<div class="relative w-full aspect-[16/10] rounded-2xl overflow-hidden group shadow-sm bg-slate-900 border border-slate-200/10">
-									<a class="absolute inset-0 z-0 block" href="<?php echo esc_url( $main_post['permalink'] ); ?>">
-										<?php if ( $main_post['thumbnail'] ) : ?>
-											<img src="<?php echo esc_url( $main_post['thumbnail'] ); ?>" alt="<?php echo esc_attr( $main_post['title'] ); ?>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-95">
-										<?php else : ?>
-											<div class="w-full h-full bg-gradient-to-br from-zinc-800 to-zinc-900 group-hover:scale-105 transition-transform duration-500 opacity-95"></div>
-										<?php endif; ?>
-									</a>
-								</div>
-								
-								<!-- 2. Title printed underneath -->
-								<h2 class="text-xl md:text-3xl font-black text-slate-900 dark:text-zinc-50 leading-tight mt-4 line-clamp-2">
-									<a class="no-underline hover:text-red-700 dark:hover:text-red-300" href="<?php echo esc_url( $main_post['permalink'] ); ?>">
-										<?php echo esc_html( $main_post['title'] ); ?>
-									</a>
-								</h2>
+						<article class="ss-card flex flex-col rounded-3xl p-5 shadow-sm h-full">
+							<!-- 1. Large Widescreen Image -->
+							<div class="relative w-full aspect-[16/10] rounded-2xl overflow-hidden group shadow-sm bg-slate-900 border border-slate-200/10">
+								<a class="absolute inset-0 z-0 block" href="<?php echo esc_url( $main_post['permalink'] ); ?>">
+									<?php if ( $main_post['thumbnail'] ) : ?>
+										<img src="<?php echo esc_url( $main_post['thumbnail'] ); ?>" alt="<?php echo esc_attr( $main_post['title'] ); ?>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-95">
+									<?php else : ?>
+										<div class="w-full h-full bg-gradient-to-br from-zinc-800 to-zinc-900 group-hover:scale-105 transition-transform duration-500 opacity-95"></div>
+									<?php endif; ?>
+								</a>
 							</div>
+							
+							<!-- 2. Title printed underneath -->
+							<h2 class="text-xl md:text-3xl font-black text-slate-900 dark:text-zinc-50 leading-tight mt-4 line-clamp-2">
+								<a class="no-underline hover:text-red-700 dark:hover:text-red-300" href="<?php echo esc_url( $main_post['permalink'] ); ?>">
+									<?php echo esc_html( $main_post['title'] ); ?>
+								</a>
+							</h2>
 							
 							<!-- 3. Author Row underneath -->
 							<div class="flex items-center gap-3 mt-4">
