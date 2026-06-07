@@ -116,7 +116,7 @@ $hero_query = new WP_Query(
 		<?php endif; ?>
 		<!-- 2. Hero 3-Column Layout (1 Widescreen Video Card + 2 Columns of Side Feeds) -->
 		<?php if ( $hero_query->have_posts() ) : ?>
-			<div class="grid gap-6 lg:grid-cols-3">
+			<div class="grid gap-6 grid-cols-1 lg:grid-cols-10">
 				<?php 
 				$hero_posts = array();
 				while ( $hero_query->have_posts() ) {
@@ -140,8 +140,8 @@ $hero_query = new WP_Query(
 				if ( isset( $hero_posts[0] ) ) :
 					$main_post = $hero_posts[0];
 					?>
-					<div class="lg:col-span-1">
-						<article class="relative w-full h-[190px] lg:h-[220px] rounded-2xl overflow-hidden group shadow-sm bg-slate-900 border border-slate-200/10">
+					<div class="lg:col-span-4 flex flex-col justify-center">
+						<article class="relative w-full aspect-[16/9] rounded-2xl overflow-hidden group shadow-sm bg-slate-900 border border-slate-200/10">
 							<a class="absolute inset-0 z-0 block" href="<?php echo esc_url( $main_post['permalink'] ); ?>">
 								<?php if ( $main_post['thumbnail'] ) : ?>
 									<img src="<?php echo esc_url( $main_post['thumbnail'] ); ?>" alt="<?php echo esc_attr( $main_post['title'] ); ?>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-95">
@@ -170,7 +170,7 @@ $hero_query = new WP_Query(
 				<?php endif; ?>
 
 				<!-- Column 2: Stack of 2 horizontal borderless list items -->
-				<div class="lg:col-span-1 flex flex-col gap-4">
+				<div class="lg:col-span-3 flex flex-col gap-4 justify-center">
 					<?php 
 					for ( $i = 1; $i <= 2; $i++ ) : 
 						if ( isset( $hero_posts[$i] ) ) :
@@ -211,7 +211,7 @@ $hero_query = new WP_Query(
 				</div>
 
 				<!-- Column 3: Stack of 2 horizontal borderless list items -->
-				<div class="lg:col-span-1 flex flex-col gap-4">
+				<div class="lg:col-span-3 flex flex-col gap-4 justify-center">
 					<?php 
 					for ( $i = 3; $i <= 4; $i++ ) : 
 						if ( isset( $hero_posts[$i] ) ) :
