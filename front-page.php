@@ -156,71 +156,82 @@ $hero_query = new WP_Query(
 					$main_post = $hero_posts[0];
 					?>
 					<div class="lg:col-span-2">
-						<article class="ss-card flex flex-col rounded-3xl p-5 shadow-sm h-full">
-							<!-- 1. Large Widescreen Image -->
-							<div class="relative w-full aspect-[16/10] rounded-2xl overflow-hidden group shadow-sm bg-slate-900 border border-slate-200/10">
-								<a class="absolute inset-0 z-0 block" href="<?php echo esc_url( $main_post['permalink'] ); ?>">
-									<?php if ( $main_post['thumbnail'] ) : ?>
-										<img src="<?php echo esc_url( $main_post['thumbnail'] ); ?>" alt="<?php echo esc_attr( $main_post['title'] ); ?>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-95">
-									<?php else : ?>
-										<div class="w-full h-full bg-gradient-to-br from-zinc-800 to-zinc-900 group-hover:scale-105 transition-transform duration-500 opacity-95"></div>
-									<?php endif; ?>
-								</a>
+						<article class="relative w-full aspect-[16/10] rounded-3xl overflow-hidden group shadow-md border border-slate-200/10 bg-slate-900 flex flex-col justify-between p-6 sm:p-8">
+							<!-- Background Image -->
+							<div class="absolute inset-0 z-0">
+								<?php if ( $main_post['thumbnail'] ) : ?>
+									<img src="<?php echo esc_url( $main_post['thumbnail'] ); ?>" alt="<?php echo esc_attr( $main_post['title'] ); ?>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-70">
+								<?php else : ?>
+									<div class="w-full h-full bg-gradient-to-br from-zinc-800 to-zinc-900 group-hover:scale-105 transition-transform duration-500 opacity-70"></div>
+								<?php endif; ?>
+								<!-- Dark gradient overlay for typography readability -->
+								<div class="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/80"></div>
 							</div>
 							
-							<!-- 2. Title printed underneath -->
-							<h2 class="text-xl md:text-3xl font-black text-slate-900 dark:text-zinc-50 leading-tight mt-4 line-clamp-2">
-								<a class="no-underline hover:text-red-700 dark:hover:text-red-300" href="<?php echo esc_url( $main_post['permalink'] ); ?>">
-									<?php echo esc_html( $main_post['title'] ); ?>
-								</a>
-							</h2>
+							<!-- Top Row: Category Pill & Date/Author -->
+							<div class="relative z-10 flex items-center justify-between w-full">
+								<span class="bg-red-700/90 text-white text-[11px] font-black uppercase tracking-wider px-3.5 py-1.5 rounded-full shadow-sm backdrop-blur-sm">
+									<?php echo esc_html( $main_post['category'] ); ?>
+								</span>
+								<span class="text-[11px] font-semibold text-white/95 drop-shadow flex items-center gap-1.5">
+									<span><?php echo esc_html( $main_post['date'] ); ?></span>
+									<span class="opacity-60">•</span>
+									<span class="font-bold"><?php echo esc_html( $main_post['author_name'] ); ?></span>
+								</span>
+							</div>
 							
-							<!-- 3. Author Row underneath -->
-							<div class="flex items-center gap-3 mt-4">
-								<img class="w-8 h-8 rounded-full object-cover border border-slate-100 dark:border-zinc-800 shadow-sm" src="<?php echo esc_url( $main_post['avatar'] ); ?>" alt="<?php echo esc_attr( $main_post['author_name'] ); ?>">
-								<div class="grid gap-0.5">
-									<span class="text-xs font-bold text-slate-900 dark:text-zinc-100 leading-none"><?php echo esc_html( $main_post['author_name'] ); ?></span>
-									<span class="text-[10px] text-slate-400 dark:text-zinc-500 font-semibold leading-none mt-0.5"><?php echo esc_html( $main_post['time_ago'] ); ?></span>
-								</div>
+							<!-- Bottom Row: Title & Circular Arrow -->
+							<div class="relative z-10 flex items-end justify-between w-full gap-4 mt-auto">
+								<h2 class="text-2xl sm:text-4xl font-black text-white leading-tight tracking-tight drop-shadow-md line-clamp-3 max-w-[85%]">
+									<a class="no-underline text-white hover:text-red-200 transition-colors" href="<?php echo esc_url( $main_post['permalink'] ); ?>">
+										<?php echo esc_html( $main_post['title'] ); ?>
+									</a>
+								</h2>
+								<a href="<?php echo esc_url( $main_post['permalink'] ); ?>" class="w-12 h-12 rounded-full border border-white/80 hover:border-white hover:bg-white/10 flex items-center justify-center text-white shrink-0 shadow transition-all hover:scale-105" aria-hidden="true">
+									<svg class="w-5 h-5 stroke-current fill-none stroke-2" viewBox="0 0 24 24">
+										<path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+									</svg>
+								</a>
 							</div>
 						</article>
 					</div>
 				<?php endif; ?>
 
 				<!-- Column 2: Stack of 3 horizontal borderless side items -->
-				<div class="lg:col-span-1 flex flex-col gap-6">
+				<div class="lg:col-span-1 flex flex-col gap-5 justify-center">
 					<?php 
 					for ( $i = 1; $i <= 3; $i++ ) : 
 						if ( isset( $hero_posts[$i] ) ) :
 							$p = $hero_posts[$i];
 							?>
-							<article class="flex gap-4 items-center">
-								<!-- Left: Thumbnail image -->
-								<?php if ( $p['thumbnail'] ) : ?>
-									<a href="<?php echo esc_url( $p['permalink'] ); ?>" class="w-24 h-18 lg:w-28 lg:h-20 shrink-0 rounded-2xl overflow-hidden border border-slate-200/50 dark:border-zinc-800/50 shadow-inner">
-										<img src="<?php echo esc_url( $p['thumbnail'] ); ?>" alt="<?php echo esc_attr( $p['title'] ); ?>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-									</a>
-								<?php else : ?>
-									<a href="<?php echo esc_url( $p['permalink'] ); ?>" class="w-24 h-18 lg:w-28 lg:h-20 shrink-0 rounded-2xl bg-gradient-to-br from-zinc-800 to-zinc-900 group-hover:scale-105 transition-transform duration-500 border border-slate-200/50 dark:border-zinc-800/50"></a>
-								<?php endif; ?>
-								
-								<!-- Right: Text column -->
-								<div class="flex flex-col justify-center flex-1 min-w-0">
-									<h3 class="text-sm font-bold text-slate-900 dark:text-zinc-100 leading-snug line-clamp-3">
+							<article class="ss-card rounded-3xl p-5 shadow-sm hover:shadow-md transition-all flex items-center justify-between gap-4">
+								<!-- Left Content Column -->
+								<div class="flex flex-col gap-3 flex-1 min-w-0">
+									<!-- Title -->
+									<h3 class="text-base font-black text-slate-900 dark:text-zinc-100 leading-snug line-clamp-2">
 										<a class="no-underline hover:text-red-700 dark:hover:text-red-300" href="<?php echo esc_url( $p['permalink'] ); ?>">
 											<?php echo esc_html( $p['title'] ); ?>
 										</a>
 									</h3>
-									
-									<!-- Author Row below title -->
-									<div class="flex items-center gap-2 mt-2">
-										<img class="w-6 h-6 rounded-full object-cover border border-slate-100 dark:border-zinc-800 shadow-sm" src="<?php echo esc_url( $p['avatar'] ); ?>" alt="<?php echo esc_attr( $p['author_name'] ); ?>">
-										<div class="grid gap-0.5">
-											<span class="text-[10px] font-bold text-slate-900 dark:text-zinc-100 leading-none"><?php echo esc_html( $p['author_name'] ); ?></span>
-											<span class="text-[9px] text-slate-400 dark:text-zinc-500 font-semibold leading-none mt-0.5"><?php echo esc_html( $p['time_ago'] ); ?></span>
-										</div>
+									<!-- Badge & Date/Author Row -->
+									<div class="flex flex-wrap items-center gap-2.5">
+										<span class="bg-red-50 dark:bg-red-950/30 text-red-700 dark:text-red-400 text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full border border-red-200/50 dark:border-red-900/30 shrink-0">
+											<?php echo esc_html( $p['category'] ); ?>
+										</span>
+										<span class="text-[10px] font-semibold text-slate-400 dark:text-zinc-500 flex items-center gap-1.5 min-w-0 truncate">
+											<span><?php echo esc_html( $p['date'] ); ?></span>
+											<span class="opacity-50">•</span>
+											<span class="font-bold text-slate-600 dark:text-zinc-400 truncate"><?php echo esc_html( $p['author_name'] ); ?></span>
+										</span>
 									</div>
 								</div>
+								
+								<!-- Right Circular Arrow Button -->
+								<a href="<?php echo esc_url( $p['permalink'] ); ?>" class="w-10 h-10 rounded-full border border-slate-200 dark:border-zinc-700 hover:border-slate-400 dark:hover:border-zinc-500 hover:bg-slate-50 dark:hover:bg-zinc-800 flex items-center justify-center text-slate-700 dark:text-zinc-300 shrink-0 shadow-sm transition-all hover:scale-105" aria-hidden="true">
+									<svg class="w-4 h-4 stroke-current fill-none stroke-2" viewBox="0 0 24 24">
+										<path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+									</svg>
+								</a>
 							</article>
 							<?php 
 						endif;
