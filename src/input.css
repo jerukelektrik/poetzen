@@ -1,0 +1,209 @@
+@import "tailwindcss" source("../");
+@source not "../node_modules";
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "EB Garamond", Georgia, Cambria, "Times New Roman", serif;
+  --font-display: "Playfair Display", Georgia, Cambria, "Times New Roman", serif;
+  --color-ink: #111827;
+  --color-paper: #f8fafc;
+  --color-muted: #64748b;
+  --color-line: #dbe3ef;
+  --color-accent: #b42318;
+  --color-accent-dark: #f97066;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-slate-50 text-slate-950 antialiased dark:bg-[#343B6A] dark:text-zinc-50;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display), Georgia, Cambria, serif;
+  }
+
+  a {
+    @apply underline-offset-4 transition-colors;
+  }
+
+  a:hover {
+    @apply text-red-700 dark:text-red-300;
+  }
+
+  :focus-visible {
+    @apply outline outline-2 outline-offset-2 outline-red-700 dark:outline-red-300;
+  }
+}
+
+@layer components {
+  .ss-container {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+
+  .ss-section {
+    @apply border-t border-slate-200 py-10 dark:border-zinc-800 md:py-14;
+  }
+
+  .ss-eyebrow {
+    @apply text-xs font-bold uppercase tracking-wide text-red-700 dark:text-red-300;
+  }
+
+  .ss-card {
+    @apply border border-slate-200 bg-white p-5 shadow-sm transition hover:border-slate-300 dark:border-zinc-800/80 dark:bg-[#262B4E] dark:hover:border-blue-800;
+  }
+
+  .ss-button {
+    @apply inline-flex items-center justify-center gap-2 rounded-md bg-red-700 px-4 py-2 text-sm font-bold text-white hover:bg-red-800 dark:bg-red-500 dark:text-zinc-950 dark:hover:bg-red-400;
+  }
+
+  .ss-button-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-md border border-slate-300 px-4 py-2 text-sm font-bold text-slate-900 hover:border-slate-500 dark:border-zinc-700 dark:text-zinc-50 dark:hover:border-zinc-500;
+  }
+
+  .ss-button-disabled {
+    @apply inline-flex cursor-not-allowed items-center justify-center gap-2 rounded-md bg-slate-200 px-4 py-2 text-sm font-bold text-slate-500 dark:bg-zinc-800 dark:text-zinc-500;
+  }
+
+  .ss-reading {
+    font-family: var(--font-serif), Georgia, Cambria, serif;
+    @apply max-w-none text-lg leading-8 text-slate-800 dark:text-zinc-200;
+  }
+
+  .ss-reading p {
+    @apply my-6;
+  }
+
+  .logo-light {
+    display: block;
+  }
+
+  .logo-dark {
+    display: none;
+  }
+
+  .dark .logo-light {
+    display: none !important;
+  }
+
+  .dark .logo-dark {
+    display: block !important;
+  }
+
+  /* ─── Typography System ─── */
+
+  /* Page Title (h1): used on single posts, pages, archives, search, 404 */
+  .ss-page-title {
+    @apply text-4xl md:text-5xl font-black leading-tight tracking-tight text-slate-900 dark:text-zinc-50;
+  }
+
+  /* Section Heading (h2): used on homepage feed headers, author works, sidebar widget titles */
+  .ss-section-title {
+    @apply text-2xl font-black tracking-tight text-slate-900 dark:text-zinc-50;
+  }
+
+  /* Card Title (h3): used inside post-card, review-card, news-card, event-card */
+  .ss-card-title {
+    @apply text-xl font-black leading-tight;
+  }
+
+  /* Card Title Link: the <a> inside card titles */
+  .ss-card-title-link {
+    @apply no-underline text-slate-900 hover:text-red-700 dark:text-zinc-50 dark:hover:text-red-300;
+  }
+
+  /* Body / Excerpt text: used for short descriptions under cards and content blocks */
+  .ss-body {
+    @apply text-sm leading-6 text-slate-600 dark:text-zinc-400;
+  }
+
+  /* Body with serif (literary): for quoted/italic content blocks */
+  .ss-body-serif {
+    @apply text-sm leading-6 text-slate-600 dark:text-zinc-400 font-serif;
+  }
+
+  /* Meta / Caption: tiny supplementary info (dates, types, sidebar item meta) */
+  .ss-meta {
+    @apply text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-zinc-500;
+  }
+
+  /* Footer Column Header: footer section label */
+  .ss-footer-label {
+    @apply text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-zinc-500;
+  }
+
+  /* Footer Nav Links: footer menu items */
+  .ss-footer-link {
+    @apply text-xs font-bold text-slate-600 dark:text-zinc-300;
+  }
+
+  /* Event Meta Label: label above event detail values */
+  .ss-event-label {
+    @apply block text-xs uppercase tracking-wider text-slate-500 dark:text-zinc-400 font-bold;
+  }
+
+  /* Event Meta Value: the value text beside event labels */
+  .ss-event-value {
+    @apply mt-1 block font-bold text-slate-900 dark:text-zinc-100;
+  }
+
+  /* Sidebar Item Title: small sidebar post titles */
+  .ss-sidebar-title {
+    @apply text-xs font-bold text-slate-900 dark:text-zinc-100 leading-snug line-clamp-2;
+  }
+
+  /* Sidebar Widget Heading: uppercase heading above sidebar widget sections */
+  .ss-widget-title {
+    @apply text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-zinc-500;
+  }
+
+  /* Navigation menu text */
+  .ss-nav-text {
+    @apply text-base font-bold uppercase tracking-wider;
+  }
+
+  /* Copyright / fine print text */
+  .ss-copyright {
+    @apply text-[11px] font-bold text-slate-400 dark:text-zinc-500;
+  }
+
+  /* Hero overlay category badge */
+  .ss-hero-category {
+    @apply text-red-400 font-black uppercase tracking-wider;
+  }
+
+  /* Hero overlay meta text */
+  .ss-hero-meta {
+    @apply font-bold text-zinc-300;
+  }
+
+  /* Author box heading */
+  .ss-author-name {
+    @apply font-black text-slate-900 dark:text-zinc-50 leading-tight;
+  }
+
+  /* Info block heading (like single-penulis "Informasi Tokoh") */
+  .ss-info-title {
+    @apply text-base font-bold uppercase tracking-wider text-red-700 dark:text-red-400;
+  }
+
+  .kirim-light {
+    display: block;
+  }
+
+  .kirim-dark {
+    display: none;
+  }
+
+  .dark .kirim-light {
+    display: none !important;
+  }
+
+  .dark .kirim-dark {
+    display: block !important;
+  }
+}
