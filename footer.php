@@ -14,9 +14,9 @@
 		<div class="flex justify-center pb-8">
 			<a class="flex items-center no-underline" href="<?php echo esc_url( home_url( '/' ) ); ?>">
 				<!-- Logo for Light Mode (rendered white on dark background) -->
-				<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo-white.svg' ); ?>" alt="<?php bloginfo( 'name' ); ?>" class="h-12 object-contain logo-light">
+				<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo-white.svg' ); ?>" alt="<?php bloginfo( 'name' ); ?>" class="w-[120px] h-[120px] object-contain logo-light">
 				<!-- Logo for Dark Mode -->
-				<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo-white.svg' ); ?>" alt="<?php bloginfo( 'name' ); ?>" class="h-12 object-contain logo-dark">
+				<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo-white.svg' ); ?>" alt="<?php bloginfo( 'name' ); ?>" class="w-[120px] h-[120px] object-contain logo-dark">
 			</a>
 		</div>
 
