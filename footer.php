@@ -55,7 +55,7 @@
 			<!-- Column 4: Newsletter -->
 			<div>
 				<h4 class="ss-footer-label text-slate-500 dark:text-zinc-550 mb-4"><?php esc_html_e( 'Newsletter', 'sukusastra' ); ?></h4>
-				<p class="text-xs leading-5 text-slate-400 dark:text-zinc-500 mb-3 font-serif">
+				<p class="text-xs leading-5 text-slate-400 dark:text-zinc-500 mb-3 font-sans">
 					<?php esc_html_e( 'Dapatkan kurasi karya sastra terbaik langsung di emailmu.', 'sukusastra' ); ?>
 				</p>
 				<form class="flex items-center bg-slate-900 border border-slate-800 p-1 pl-3.5 rounded-full w-full max-w-[260px] shadow-inner" action="#" method="post">
