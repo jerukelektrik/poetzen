@@ -25,8 +25,8 @@ jobs:
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
         # Path di bawah sesuaikan dengan lokasi folder tema website staging Anda di cPanel
-        # Contoh jika staging Anda ada di public_html/staging:
-        server-dir: /public_html/staging/wp-content/themes/poetzen/
+        # Contoh jika staging Anda ada di public_html/sukusastra:
+        server-dir: /public_html/sukusastra/wp-content/themes/poetzen/
         exclude: |
           **/.git*
           **/.git*/**
