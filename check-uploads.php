@@ -1,6 +1,6 @@
 <?php
 /**
- * Diagnostic script to check uploads directory structure and attachment records on staging.
+ * Diagnostic script to check uploads directory structure, attachment records, and test image registration on staging.
  */
 
 $wp_load_path = dirname( __DIR__, 3 ) . '/wp-load.php';
@@ -25,52 +25,55 @@ global $wpdb;
 $total_attachments = $wpdb->get_var( "SELECT COUNT(*) FROM $wpdb->posts WHERE post_type = 'attachment'" );
 echo "Total Attachments in Database: " . $total_attachments . "\n";
 
-// Count attachments with _wp_attached_file meta
-$total_attached_files = $wpdb->get_var( "SELECT COUNT(*) FROM $wpdb->postmeta WHERE meta_key = '_wp_attached_file'" );
-echo "Total Attachments with _wp_attached_file meta: " . $total_attached_files . "\n";
+// Require migration file to get access to registration function
+require_once __DIR__ . '/migration.php';
 
-// List last 10 attachments
-echo "\nLast 10 Attachments:\n";
-$attachments = $wpdb->get_results( "
-	SELECT p.ID, p.post_title, p.post_mime_type, pm.meta_value as attached_file 
-	FROM $wpdb->posts p
-	LEFT JOIN $wpdb->postmeta pm ON p.ID = pm.post_id AND pm.meta_key = '_wp_attached_file'
-	WHERE p.post_type = 'attachment'
-	ORDER BY p.ID DESC
-	LIMIT 10
-" );
-
-if ( ! empty( $attachments ) ) {
-	foreach ( $attachments as $att ) {
-		echo "ID: {$att->ID} | Title: {$att->post_title} | Mime: {$att->post_mime_type} | File: {$att->attached_file}\n";
-	}
-} else {
-	echo "No attachments found.\n";
-}
-
-// Check some specific image paths from JSON to see if they exist on disk and if they are in DB
-echo "\n=== Specific Path Checks ===\n";
-$paths_to_check = array(
-	"2025/09/Sehari-di-Parade-Sastra-JBS-scaled-1.jpg",
-	"2026/06/diva-pantura-1.jpg",
-	"2026/01/Kitab-Jalan-Teh-Utuh-ISBN.png",
-	"2025/03/Resensi-Buku-Keluarga-dan-Silsilah-Suka-Duka-Ismail-Basbeth.jpg",
-	"2026/06/screenshot.png"
-);
-
+// Test image registration manually on diva-pantura-1.jpg
+echo "\n=== Testing Image Registration Directly ===\n";
+$test_rel_path = "2026/06/diva-pantura-1.jpg";
 $basedir = wp_upload_dir()['basedir'];
-foreach ( $paths_to_check as $rel_path ) {
-	$full_path = $basedir . '/' . $rel_path;
-	$exists = file_exists( $full_path ) ? "YES" : "NO";
+$test_file_path = $basedir . '/' . $test_rel_path;
+
+echo "Test File Path: $test_file_path\n";
+if ( ! file_exists( $test_file_path ) ) {
+	echo "Error: Test file does not exist on disk!\n";
+} else {
+	echo "Test file exists on disk. Proceeding with registration...\n";
 	
-	// Query if registered
-	$db_id = $wpdb->get_var( $wpdb->prepare(
-		"SELECT post_id FROM $wpdb->postmeta WHERE meta_key = '_wp_attached_file' AND meta_value = %s LIMIT 1",
-		$rel_path
-	) );
-	$registered = $db_id ? "YES (ID: $db_id)" : "NO";
+	$filename = basename( $test_file_path );
+	$wp_filetype = wp_check_filetype( $filename, null );
+	echo "Mime Type: " . $wp_filetype['type'] . "\n";
 	
-	echo "Path: $rel_path\n";
-	echo "  File Exists on Disk: $exists\n";
-	echo "  Registered in DB:    $registered\n";
+	$attachment  = array(
+		'post_mime_type' => $wp_filetype['type'],
+		'post_title'     => preg_replace( '/\.[^.]+$/', '', $filename ),
+		'post_content'   => '',
+		'post_status'    => 'inherit',
+	);
+
+	$attach_id = wp_insert_attachment( $attachment, $test_file_path, 0 );
+
+	if ( is_wp_error( $attach_id ) ) {
+		echo "Registration Failed with WP_Error: " . $attach_id->get_error_message() . "\n";
+	} elseif ( $attach_id === 0 || empty( $attach_id ) ) {
+		echo "Registration Failed: wp_insert_attachment returned 0 or empty.\n";
+	} else {
+		echo "wp_insert_attachment succeeded! ID: $attach_id\n";
+		
+		// Let's test generating metadata
+		require_once ABSPATH . 'wp-admin/includes/image.php';
+		echo "image.php loaded. Generating metadata...\n";
+		
+		$attach_data = wp_generate_attachment_metadata( $attach_id, $test_file_path );
+		if ( empty( $attach_data ) ) {
+			echo "Warning: wp_generate_attachment_metadata returned empty data.\n";
+		} else {
+			echo "wp_generate_attachment_metadata succeeded!\n";
+			print_r( $attach_data );
+		}
+		
+		wp_update_attachment_metadata( $attach_id, $attach_data );
+		update_post_meta( $attach_id, '_wp_attached_file', $test_rel_path );
+		echo "Registration test completed successfully!\n";
+	}
 }
