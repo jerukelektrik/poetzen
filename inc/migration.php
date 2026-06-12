@@ -234,21 +234,27 @@ function sukusastra_render_migration_page(): void {
 						'post_status'    => 'any',
 					) );
 
-					if ( $existing->have_posts() ) {
-						$skipped_count++;
-						return;
-					}
+					$post_id = 0;
 
-					// Insert post
-					$post_id = wp_insert_post( array(
-						'post_title'   => $item['title'],
-						'post_name'    => $slug,
-						'post_content' => $item['content'],
-						'post_excerpt' => $item['excerpt'],
-						'post_date'    => $item['date'],
-						'post_type'    => $item['post_type'],
-						'post_status'  => 'publish',
-					) );
+					if ( $existing->have_posts() ) {
+						$post_id = $existing->posts[0]->ID;
+						$skipped_count++;
+					} else {
+						// Insert post
+						$post_id = wp_insert_post( array(
+							'post_title'   => $item['title'],
+							'post_name'    => $slug,
+							'post_content' => $item['content'],
+							'post_excerpt' => $item['excerpt'],
+							'post_date'    => $item['date'],
+							'post_type'    => $item['post_type'],
+							'post_status'  => 'publish',
+						) );
+
+						if ( ! is_wp_error( $post_id ) && $post_id > 0 ) {
+							$imported_count++;
+						}
+					}
 
 					if ( ! is_wp_error( $post_id ) && $post_id > 0 ) {
 						// 1. Categories
@@ -313,8 +319,6 @@ function sukusastra_render_migration_page(): void {
 								}
 							}
 						}
-
-						$imported_count++;
 					}
 				};
 
