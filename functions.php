@@ -25,6 +25,7 @@ $sukusastra_files = array(
 	'inc/queries.php',
 	'inc/sample-content.php',
 	'inc/options.php',
+	'inc/importer.php',
 );
 
 foreach ( $sukusastra_files as $sukusastra_file ) {
