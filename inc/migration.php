@@ -106,7 +106,10 @@ function sukusastra_handle_json_export(): void {
 
 	check_admin_referer( 'sukusastra_export_json_action', 'nonce' );
 
-	$only_media = isset( $_GET['export_only_media'] ) && '1' === $_GET['export_only_media'];
+	$part = isset( $_GET['part'] ) ? (int) $_GET['part'] : 1;
+	if ( $part < 1 || $part > 10 ) {
+		$part = 1;
+	}
 
 	// Query posts
 	$query_args = array(
@@ -116,9 +119,16 @@ function sukusastra_handle_json_export(): void {
 	);
 
 	$posts = get_posts( $query_args );
+	$total_posts = count( $posts );
+	
+	// Chunk the posts into 10 parts
+	$chunk_size = (int) ceil( $total_posts / 10 );
+	$offset = ( $part - 1 ) * $chunk_size;
+	$posts_chunk = array_slice( $posts, $offset, $chunk_size );
+
 	$export_data = array();
 
-	foreach ( $posts as $p ) {
+	foreach ( $posts_chunk as $p ) {
 		// Categories
 		$categories = array();
 		if ( 'post' === $p->post_type || 'review_buku' === $p->post_type || 'terbitan' === $p->post_type ) {
@@ -160,35 +170,21 @@ function sukusastra_handle_json_export(): void {
 			}
 		}
 
-		if ( $only_media ) {
-			$export_data[] = array(
-				'slug'                => $p->post_name,
-				'post_type'           => $p->post_type,
-				'categories'          => $categories,
-				'featured_image_path' => $featured_image_path,
-				'metas'               => $custom_metas,
-			);
-		} else {
-			$export_data[] = array(
-				'title'               => $p->post_title,
-				'slug'                => $p->post_name,
-				'content'             => $p->post_content,
-				'excerpt'             => $p->post_excerpt,
-				'date'                => $p->post_date,
-				'post_type'           => $p->post_type,
-				'categories'          => $categories,
-				'featured_image_path' => $featured_image_path,
-				'metas'               => $custom_metas,
-			);
-		}
+		// Export strictly image and custom meta mapping only
+		$export_data[] = array(
+			'slug'                => $p->post_name,
+			'post_type'           => $p->post_type,
+			'categories'          => $categories,
+			'featured_image_path' => $featured_image_path,
+			'metas'               => $custom_metas,
+		);
 	}
 
 	$json_content = wp_json_encode( $export_data, JSON_PRETTY_PRINT );
-	$filename_prefix = $only_media ? 'sukusastra_media_migration_' : 'sukusastra_migration_';
 
 	header( 'Content-Description: File Transfer' );
 	header( 'Content-Type: application/json; charset=utf-8' );
-	header( 'Content-Disposition: attachment; filename="' . $filename_prefix . date( 'Ymd_His' ) . '.json"' );
+	header( 'Content-Disposition: attachment; filename="sukusastra_images_part_' . $part . '_' . date( 'Ymd_His' ) . '.json"' );
 	header( 'Expires: 0' );
 	header( 'Cache-Control: must-revalidate' );
 	header( 'Pragma: public' );
@@ -264,7 +260,7 @@ function sukusastra_render_migration_page(): void {
 		$offset = isset( $_GET['offset'] ) ? (int) $_GET['offset'] : 0;
 		$imported_count = isset( $_GET['imported'] ) ? (int) $_GET['imported'] : 0;
 		$skipped_count = isset( $_GET['skipped'] ) ? (int) $_GET['skipped'] : 0;
-		$batch_size = 20; // Process 20 items per batch to prevent server resource limits
+		$batch_size = 5; // Process 5 items per batch to prevent server resource limits
 
 		$total_items = count( $data );
 		$batch_items = array_slice( $data, $offset, $batch_size );
@@ -443,24 +439,38 @@ function sukusastra_render_migration_page(): void {
 		<div style="display: flex; gap: 20px; margin-top: 20px; align-items: start;">
 			
 			<!-- Export Box -->
-			<div class="card" style="flex: 1; padding: 20px; background: #fff; border-radius: 8px;">
-				<h2><?php esc_html_e( '1. Ekspor Data (Lokal)', 'sukusastra' ); ?></h2>
-				<p><?php esc_html_e( 'Unduh seluruh artikel ke dalam file JSON terkompresi. Anda bisa mencentang pilihan di bawah jika hanya ingin memindahkan data gambar.', 'sukusastra' ); ?></p>
+			<div class="card" style="flex: 1.2; padding: 20px; background: #fff; border-radius: 8px;">
+				<h2><?php esc_html_e( '1. Ekspor Data Gambar & Meta (Lokal)', 'sukusastra' ); ?></h2>
+				<p style="margin-bottom: 20px;"><?php esc_html_e( 'Unduh data pemetaan gambar lokal Anda. Data ini dipecah menjadi 10 bagian kecil agar proses impor di server staging dijamin sukses 100% tanpa timeout.', 'sukusastra' ); ?></p>
 				
-				<form method="get" action="<?php echo esc_url( admin_url( 'tools.php' ) ); ?>" style="margin-top: 15px;">
-					<input type="hidden" name="page" value="sukusastra_migration">
-					<input type="hidden" name="action" value="export_json">
-					<input type="hidden" name="nonce" value="<?php echo esc_attr( wp_create_nonce( 'sukusastra_export_json_action' ) ); ?>">
-					
-					<label style="display: block; margin-bottom: 20px; cursor: pointer; user-select: none;">
-						<input type="checkbox" name="export_only_media" value="1" style="margin: 0 6px 0 0; vertical-align: middle;">
-						<span style="vertical-align: middle; font-weight: 600; font-size: 13px;">Hanya ekspor data gambar & metadata kustom</span>
-						<br>
-						<span class="description" style="margin-left: 22px; display: inline-block; font-size: 11px;">(Sangat direkomendasikan jika hanya ingin mencocokkan/sinkronisasi gambar yang hilang)</span>
-					</label>
-					
-					<input type="submit" class="button button-primary button-large" style="background:#b42318; border-color:#b42318; cursor: pointer;" value="<?php esc_attr_e( 'Download JSON Export', 'sukusastra' ); ?>">
-				</form>
+				<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+					<?php
+					$query_args = array(
+						'post_type'      => array( 'post', 'review_buku', 'berita', 'event', 'terbitan', 'penulis' ),
+						'posts_per_page' => -1,
+						'post_status'    => 'any',
+					);
+					$posts_query = get_posts( $query_args );
+					$total_posts = count( $posts_query );
+					$chunk_size = (int) ceil( $total_posts / 10 );
+
+					for ( $part = 1; $part <= 10; $part++ ) {
+						$start = ( $part - 1 ) * $chunk_size + 1;
+						$end = min( $total_posts, $part * $chunk_size );
+						
+						$export_url = wp_nonce_url(
+							admin_url( 'tools.php?page=sukusastra_migration&action=export_json&part=' . $part ),
+							'sukusastra_export_json_action',
+							'nonce'
+						);
+						?>
+						<a href="<?php echo esc_url( $export_url ); ?>" class="button button-secondary" style="text-align: center; padding: 6px 0; font-weight: 600; display: block; border-color: #ccc; color: #333;">
+							Part <?php echo esc_html( $part ); ?> (<?php echo esc_html( $start ); ?>-<?php echo esc_html( $end ); ?>)
+						</a>
+						<?php
+					}
+					?>
+				</div>
 			</div>
 
 			<!-- Import Box -->
