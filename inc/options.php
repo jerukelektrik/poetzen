@@ -76,6 +76,12 @@ function sukusastra_render_options_page(): void {
 						</svg>
 						<span class="ss-tab-label"><?php esc_html_e( 'Integrasi', 'sukusastra' ); ?></span>
 					</button>
+					<button type="button" class="ss-tab-btn" data-tab="monetization">
+						<svg class="ss-tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.559-1.172-.879-1.172-2.303 0-3.182 1.172-.879 3.07-.879 4.242 0l.024.018m-2.263-2.277v1.82m0 12.5v1.82" />
+						</svg>
+						<span class="ss-tab-label"><?php esc_html_e( 'Monetization', 'sukusastra' ); ?></span>
+					</button>
 				</div>
 				
 				<!-- Content Viewport -->
@@ -323,6 +329,50 @@ function sukusastra_render_options_page(): void {
 								<label class="ss-label"><?php esc_html_e( 'Meta Pixel ID', 'sukusastra' ); ?></label>
 								<p class="ss-description"><?php esc_html_e( 'Masukkan ID Meta Pixel (Facebook Pixel) Anda.', 'sukusastra' ); ?></p>
 								<input type="text" class="regular-text ss-input-text" name="sukusastra_options[meta_pixel_id]" value="<?php echo esc_attr( isset( $options['meta_pixel_id'] ) ? $options['meta_pixel_id'] : '' ); ?>" placeholder="e.g. 123456789012345">
+							</div>
+						</div>
+					</div>
+
+					<!-- Tab 6: Monetization -->
+					<div class="ss-tab-content" id="tab-monetization">
+						<div class="ss-card">
+							<h2><?php esc_html_e( 'Monetization & Ads', 'sukusastra' ); ?></h2>
+							<p class="ss-description"><?php esc_html_e( 'Pengaturan banner iklan untuk Katalog Terbitan di halaman beranda.', 'sukusastra' ); ?></p>
+							
+							<!-- Activate banner -->
+							<div class="ss-field-group flex-row">
+								<div class="ss-field-text">
+									<label class="ss-label"><?php esc_html_e( 'Aktifkan Banner Iklan', 'sukusastra' ); ?></label>
+									<p class="ss-description"><?php esc_html_e( 'Tampilkan banner iklan di atas Katalog Terbitan di beranda.', 'sukusastra' ); ?></p>
+								</div>
+								<div class="ss-toggle-wrapper">
+									<label class="ss-switch">
+										<input type="checkbox" name="sukusastra_options[monetization_banner_toggle]" value="1" <?php checked( isset( $options['monetization_banner_toggle'] ) ? $options['monetization_banner_toggle'] : '0', '1' ); ?>>
+										<span class="ss-slider"></span>
+									</label>
+								</div>
+							</div>
+							
+							<!-- Banner Image -->
+							<div class="ss-field-group">
+								<label class="ss-label"><?php esc_html_e( 'Gambar Banner', 'sukusastra' ); ?></label>
+								<p class="ss-description"><?php esc_html_e( 'Unggah atau pilih file gambar banner. Rekomendasi dimensi: 1200x150 piksel.', 'sukusastra' ); ?></p>
+								<div class="ss-media-upload-group flex items-center gap-2">
+									<input type="text" id="monetization_banner_image_input" class="regular-text ss-input-text" name="sukusastra_options[monetization_banner_image]" value="<?php echo esc_attr( isset( $options['monetization_banner_image'] ) ? $options['monetization_banner_image'] : '' ); ?>">
+									<button type="button" class="button ss-upload-btn" data-input="monetization_banner_image_input"><?php esc_html_e( 'Pilih Gambar', 'sukusastra' ); ?></button>
+								</div>
+								<div class="ss-image-preview mt-2" id="monetization_banner_image_preview">
+									<?php if ( ! empty( $options['monetization_banner_image'] ) ) : ?>
+										<img src="<?php echo esc_url( $options['monetization_banner_image'] ); ?>" alt="Banner Preview" style="max-width: 100%; height: auto; border: 1px solid #ccc; border-radius: 8px;">
+									<?php endif; ?>
+								</div>
+							</div>
+							
+							<!-- Banner Target Link -->
+							<div class="ss-field-group">
+								<label class="ss-label"><?php esc_html_e( 'Tautan Banner', 'sukusastra' ); ?></label>
+								<p class="ss-description"><?php esc_html_e( 'Tautan URL tujuan saat banner diklik.', 'sukusastra' ); ?></p>
+								<input type="url" class="regular-text ss-input-text" name="sukusastra_options[monetization_banner_link]" value="<?php echo esc_url( isset( $options['monetization_banner_link'] ) ? $options['monetization_banner_link'] : '' ); ?>" placeholder="e.g. https://sukusastra.com/katalog-terbitan/">
 							</div>
 						</div>
 					</div>
@@ -691,7 +741,8 @@ function sukusastra_sanitize_options( array $input ): array {
 		'instagram', 'twitter', 'facebook', 'youtube', 'tiktok', 'linkedin', 'threads', 'whatsapp', 'copyright', 'logo_light', 'logo_dark',
 		'gsc_id', 'ga_id', 'gtm_id', 'meta_pixel_id',
 		'color_scheme', 'font_family', 'font_size',
-		'header_bg_light', 'header_bg_dark', 'footer_bg'
+		'header_bg_light', 'header_bg_dark', 'footer_bg',
+		'monetization_banner_image', 'monetization_banner_link'
 	);
 	foreach ( $text_keys as $key ) {
 		$output[ $key ] = isset( $input[ $key ] ) ? sanitize_text_field( $input[ $key ] ) : '';
@@ -699,7 +750,7 @@ function sukusastra_sanitize_options( array $input ): array {
 
 	$output['footer_bio'] = isset( $input['footer_bio'] ) ? sanitize_textarea_field( $input['footer_bio'] ) : '';
 
-	$checkbox_keys = array( 'toggle_news_ticker', 'toggle_penulis_stories', 'toggle_schema' );
+	$checkbox_keys = array( 'toggle_news_ticker', 'toggle_penulis_stories', 'toggle_schema', 'monetization_banner_toggle' );
 	foreach ( $checkbox_keys as $key ) {
 		$output[ $key ] = isset( $input[ $key ] ) && '1' === $input[ $key ] ? '1' : '0';
 	}

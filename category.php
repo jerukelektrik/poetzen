@@ -7,8 +7,14 @@
 get_header();
 
 $cat_id = get_queried_object_id();
+$category = get_queried_object();
+$category_slug = isset( $category->slug ) ? $category->slug : '';
+$is_two_column_mobile = in_array( $category_slug, array( 'puisi', 'cerpen', 'esai' ), true );
 $is_author = sukusastra_is_author_category( $cat_id );
 $eyebrow = $is_author ? __( 'Penulis Suku Sastra', 'sukusastra' ) : __( 'Kategori', 'sukusastra' );
+$grid_classes = $is_two_column_mobile
+	? 'ss-category-archive-grid grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3 mt-4'
+	: 'grid gap-5 sm:grid-cols-2 lg:grid-cols-3 mt-4';
 ?>
 <section class="ss-section">
 	<div class="ss-container">
@@ -42,9 +48,15 @@ $eyebrow = $is_author ? __( 'Penulis Suku Sastra', 'sukusastra' ) : __( 'Kategor
 
 		<?php get_template_part( 'template-parts/filters' ); ?>
 		
-		<div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 mt-4">
+		<div class="<?php echo esc_attr( $grid_classes ); ?>">
 			<?php if ( have_posts() ) : while ( have_posts() ) : the_post(); ?>
-				<?php get_template_part( 'template-parts/cards/post-card' ); ?>
+				<?php if ( $is_two_column_mobile ) : ?>
+					<div class="ss-category-archive-card min-w-0">
+						<?php get_template_part( 'template-parts/cards/post-card' ); ?>
+					</div>
+				<?php else : ?>
+					<?php get_template_part( 'template-parts/cards/post-card' ); ?>
+				<?php endif; ?>
 			<?php endwhile; else : ?>
 				<p class="col-span-full text-center py-12 text-slate-500 dark:text-zinc-400">
 					<?php esc_html_e( 'Belum ada karya oleh penulis ini.', 'sukusastra' ); ?>

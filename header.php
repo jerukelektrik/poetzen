@@ -80,6 +80,7 @@
 <?php wp_body_open(); ?>
 <?php
 $gtm_id = sukusastra_get_option( 'gtm_id' );
+$show_mobile_capsules = is_front_page() || is_home();
 if ( $gtm_id ) : ?>
 	<!-- Google Tag Manager (noscript) -->
 	<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=<?php echo esc_attr( $gtm_id ); ?>"
@@ -91,13 +92,14 @@ if ( $gtm_id ) : ?>
 </a>
 
 <header class="sticky top-4 z-40 mx-4 mt-4 mb-6 max-w-7xl lg:mx-auto border border-slate-200 bg-white/90 backdrop-blur dark:border-zinc-800/80 dark:bg-[#262B4E]/90 rounded-2xl shadow-sm transition-all">
-	<!-- Top Bar -->
-	<div class="flex items-center justify-end px-6 py-1.5 border-b border-slate-200/50 bg-slate-50/50 dark:bg-zinc-900/30 dark:border-zinc-800/50 rounded-t-2xl">
+	<!-- Top Bar (Hidden on mobile) -->
+	<div class="hidden md:flex items-center justify-end px-6 py-1.5 border-b border-slate-200/50 bg-slate-50/50 dark:bg-zinc-900/30 dark:border-zinc-800/50 rounded-t-2xl">
 		<div class="flex items-center gap-1.5">
 			<button class="p-1 rounded-md text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100 border-0 bg-transparent cursor-pointer transition-colors" type="button" data-theme-toggle aria-label="<?php esc_attr_e( 'Ubah mode warna', 'sukusastra' ); ?>">
 				<!-- Sun Icon (visible in dark mode) -->
 				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 hidden dark:block">
-					<path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m0 13.5V21M9.75 12l-1.5-1.5m10.5 1.5l-1.5-1.5M12 7.5a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9ZM4.75 12h2.25m10.5 0h2.25M6.25 6.25l1.5 1.5m8.5 8.5l1.5 1.5" />
+					<circle cx="12" cy="12" r="4" />
+					<path stroke-linecap="round" stroke-linejoin="round" d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
 				</svg>
 				<!-- Moon Icon (visible in light mode) -->
 				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 block dark:hidden">
@@ -107,7 +109,8 @@ if ( $gtm_id ) : ?>
 		</div>
 	</div>
 
-	<div class="ss-container flex min-h-14 items-center justify-between gap-4 py-2">
+	<!-- Desktop Header Container (Hidden on mobile) -->
+	<div class="ss-container hidden md:flex min-h-14 items-center justify-between gap-4 py-2">
 		<a class="flex items-center no-underline" href="<?php echo esc_url( home_url( '/' ) ); ?>">
 			<!-- Logo for Light Mode -->
 			<?php 
@@ -121,19 +124,14 @@ if ( $gtm_id ) : ?>
 			<img src="<?php echo esc_url( $logo_dark ); ?>" alt="<?php bloginfo( 'name' ); ?>" class="h-[120px] w-[120px] -my-6 relative z-10 object-contain logo-dark">
 		</a>
 
-		<!-- Mobile Navigation Toggle -->
-		<button class="ss-button-secondary md:hidden" type="button" data-nav-toggle aria-controls="primary-menu" aria-expanded="false">
-			<?php esc_html_e( 'Menu', 'sukusastra' ); ?>
-		</button>
-
 		<!-- Primary Navigation Menu -->
-		<nav id="primary-menu" class="hidden flex-1 items-center justify-center gap-5 md:flex" aria-label="<?php esc_attr_e( 'Menu utama', 'sukusastra' ); ?>">
+		<nav id="primary-menu" class="flex-1 flex items-center justify-center gap-5" aria-label="<?php esc_attr_e( 'Menu utama', 'sukusastra' ); ?>">
 			<?php
 			wp_nav_menu(
 				array(
 					'theme_location' => 'primary',
 					'container'      => false,
-					'menu_class'     => 'flex flex-col gap-4 ss-nav-text md:flex-row md:items-center md:gap-8',
+					'menu_class'     => 'flex flex-row items-center gap-8 ss-nav-text',
 					'fallback_cb'    => 'sukusastra_primary_menu_fallback',
 				)
 			);
@@ -141,21 +139,269 @@ if ( $gtm_id ) : ?>
 		</nav>
 
 		<!-- Action Buttons -->
-		<div class="hidden items-center gap-2 md:flex">
+		<div class="flex items-center gap-2">
 			<a class="ss-button-kirim" href="<?php echo esc_url( home_url( '/ketentuan-pengiriman-karya/' ) ); ?>">
-				<svg class="w-4 h-4 text-current" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-					<path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6M9 16h3M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h7M14 3l5 5" />
-					<path stroke-linecap="round" stroke-linejoin="round" d="M14 3v5h5" />
-					<!-- Sparkle 1 -->
-					<path d="M19 13.5c0 .8.6 1.5 1.5 1.5c-.9 0-1.5.7-1.5 1.5c0-.8-.6-1.5-1.5-1.5c.9 0 1.5-.7 1.5-1.5Z" fill="currentColor" stroke="none" />
-					<!-- Sparkle 2 -->
-					<path d="M21.5 17.5c0 .5.4 1 1 1c-.6 0-1 .5-1 1c0-.5-.4-1-1-1c.6 0 1-.5 1-1Z" fill="currentColor" stroke="none" />
+				<svg class="w-4 h-4 shrink-0 text-current" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.9" aria-hidden="true">
+					<path stroke-linecap="round" stroke-linejoin="round" d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7Z" />
+					<path stroke-linecap="round" stroke-linejoin="round" d="M14 2v5h5" />
+					<path stroke-linecap="round" stroke-linejoin="round" d="M12 11v6M9 14h6" />
 				</svg>
 				<span><?php esc_html_e( 'Kirim Karya', 'sukusastra' ); ?></span>
 			</a>
 		</div>
+	</div>
 
+	<!-- Mobile Header Container (Hidden on desktop) -->
+	<div class="flex md:hidden flex-col w-full px-4 py-2.5">
+		<!-- Top Row -->
+		<div class="flex items-center justify-between gap-4 h-14">
+			<!-- Logo left -->
+			<a class="flex items-center no-underline" href="<?php echo esc_url( home_url( '/' ) ); ?>">
+				<img src="<?php echo esc_url( $logo_light ); ?>" alt="<?php bloginfo( 'name' ); ?>" class="h-[68px] w-auto object-contain logo-light relative z-10 -my-2">
+				<img src="<?php echo esc_url( $logo_dark ); ?>" alt="<?php bloginfo( 'name' ); ?>" class="h-[68px] w-auto object-contain logo-dark relative z-10 -my-2">
+			</a>
 
+			<!-- Circular Action Buttons Right -->
+			<div class="flex items-center gap-2">
+				<!-- Theme Toggle -->
+				<button class="w-[42px] h-[42px] rounded-full border border-slate-200 bg-transparent dark:border-zinc-800 flex items-center justify-center text-slate-500 hover:bg-slate-100 hover:text-red-700 hover:border-red-200 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-red-400 dark:hover:border-red-900/50 cursor-pointer transition-all duration-200 shadow-sm" type="button" data-theme-toggle aria-label="<?php esc_attr_e( 'Ubah mode warna', 'sukusastra' ); ?>">
+					<!-- Sun Icon (visible in dark mode) -->
+					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="w-5 h-5 hidden dark:block">
+						<circle cx="12" cy="12" r="4" />
+						<path stroke-linecap="round" stroke-linejoin="round" d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+					</svg>
+					<!-- Moon Icon (visible in light mode) -->
+					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="w-5 h-5 block dark:hidden">
+						<path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+					</svg>
+				</button>
+				<!-- Hamburger Menu Button -->
+				<button class="w-[42px] h-[42px] rounded-full border border-slate-200 bg-transparent dark:border-zinc-800 flex items-center justify-center text-slate-500 hover:bg-slate-100 hover:text-red-700 hover:border-red-200 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-red-400 dark:hover:border-red-900/50 cursor-pointer transition-all duration-200 shadow-sm aria-expanded:bg-red-700/10 aria-expanded:text-red-700 aria-expanded:border-red-500/30 dark:aria-expanded:bg-red-500/10 dark:aria-expanded:text-red-400 dark:aria-expanded:border-red-500/30" type="button" data-nav-toggle aria-controls="primary-menu-mobile" aria-expanded="false" aria-label="<?php esc_attr_e( 'Menu', 'sukusastra' ); ?>">
+					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="w-5 h-5">
+						<path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h11.25m-11.25 5.25h16.5" />
+					</svg>
+				</button>
+			</div>
+		</div>
+
+		<!-- Mobile Navigation Drawer Menu (Hidden by default) -->
+		<nav id="primary-menu-mobile" class="hidden flex-col gap-6 py-5 border-t border-slate-100/50 dark:border-zinc-800/50 px-2" aria-label="<?php esc_attr_e( 'Menu utama mobile', 'sukusastra' ); ?>">
+			<!-- Section 1 (Atas): Search Bar & Kirim Karya Button (50:50 Split) -->
+			<div class="grid grid-cols-2 gap-4 w-full items-center">
+				<!-- Search Form -->
+				<div class="w-full">
+					<form role="search" method="get" class="flex items-center bg-slate-50 dark:bg-zinc-900 border border-slate-200/60 dark:border-zinc-800 p-1 pl-4 rounded-full w-full shadow-inner" action="<?php echo esc_url( home_url( '/' ) ); ?>">
+						<input type="search" class="bg-transparent border-0 outline-none text-xs flex-1 text-slate-900 dark:text-zinc-50 placeholder-slate-400 py-2 px-1 w-full" placeholder="<?php esc_attr_e( 'Cari tulisan...', 'sukusastra' ); ?>" value="<?php echo get_search_query(); ?>" name="s" />
+						<button type="submit" class="w-9 h-9 rounded-full bg-red-700 text-white flex items-center justify-center hover:bg-red-800 transition cursor-pointer shrink-0">
+							<svg class="w-4 h-4 fill-none stroke-current stroke-[2.5]" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+							</svg>
+						</button>
+					</form>
+				</div>
+				<!-- Kirim Karya Button -->
+				<a class="flex items-center justify-center gap-2.5 rounded-2xl border border-red-700 bg-white/95 dark:bg-[#262B4E] dark:border-red-400 px-4 py-2.5 text-red-700 dark:text-red-400 no-underline shadow-sm hover:bg-red-50 dark:hover:bg-red-950/30 transition-all w-full cursor-pointer h-11" href="<?php echo esc_url( home_url( '/ketentuan-pengiriman-karya/' ) ); ?>">
+					<!-- File plus SVG icon -->
+					<svg class="w-5 h-5 shrink-0 text-current" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.9" aria-hidden="true">
+						<path stroke-linecap="round" stroke-linejoin="round" d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7Z" />
+						<path stroke-linecap="round" stroke-linejoin="round" d="M14 2v5h5" />
+						<path stroke-linecap="round" stroke-linejoin="round" d="M12 11v6M9 14h6" />
+					</svg>
+					<div class="flex flex-col text-left leading-[1.15] text-[11px] font-black uppercase tracking-wider">
+						<span>Kirim</span>
+						<span>Karya</span>
+					</div>
+				</a>
+			</div>
+
+			<!-- Section 2 (Bawah): 3-Column Navigation Grid -->
+			<div class="ss-mobile-menu-grid pt-2">
+				<?php
+				wp_nav_menu(
+					array(
+						'theme_location' => 'primary',
+						'container'      => false,
+						'menu_class'     => 'grid grid-cols-3 gap-y-5 gap-x-4 ss-nav-text text-center',
+						'fallback_cb'    => 'sukusastra_primary_menu_fallback',
+					)
+				);
+				?>
+			</div>
+		</nav>
+
+		<?php if ( $show_mobile_capsules ) : ?>
+		<!-- Bottom Row: Horizontal Scroll Categories Capsules (Homepage only) -->
+		<div class="pt-2 pb-2.5 -mx-4 px-4 border-t border-slate-100/50 dark:border-zinc-800/50">
+			<div id="mobile-capsules-bar" class="flex overflow-x-auto no-scrollbar gap-2">
+				<?php
+				$is_home = true;
+				$base_url = '';
+				
+				$capsules = array(
+					array(
+						'label'  => __( 'Semua', 'sukusastra' ),
+						'url'    => $base_url . '#hero',
+						'hash'   => '#hero',
+						'active' => $is_home
+					),
+					array(
+						'label'  => __( 'Puisi', 'sukusastra' ),
+						'url'    => $base_url . '#puisi',
+						'hash'   => '#puisi',
+						'active' => !$is_home && ( is_category( 'puisi' ) || ( is_single() && has_category( 'puisi' ) ) )
+					),
+					array(
+						'label'  => __( 'Cerpen', 'sukusastra' ),
+						'url'    => $base_url . '#cerpen',
+						'hash'   => '#cerpen',
+						'active' => !$is_home && ( is_category( 'cerpen' ) || ( is_single() && has_category( 'cerpen' ) ) )
+					),
+					array(
+						'label'  => __( 'Esai', 'sukusastra' ),
+						'url'    => $base_url . '#esai',
+						'hash'   => '#esai',
+						'active' => !$is_home && ( is_category( 'esai' ) || ( is_single() && has_category( 'esai' ) ) )
+					),
+					array(
+						'label'  => __( 'Review Buku', 'sukusastra' ),
+						'url'    => $base_url . '#review-buku',
+						'hash'   => '#review-buku',
+						'active' => !$is_home && ( is_post_type_archive( 'review_buku' ) || is_singular( 'review_buku' ) )
+					),
+					array(
+						'label'  => __( 'Berita', 'sukusastra' ),
+						'url'    => $base_url . '#berita',
+						'hash'   => '#berita',
+						'active' => !$is_home && ( is_post_type_archive( 'berita' ) || is_singular( 'berita' ) )
+					),
+					array(
+						'label'  => __( 'Agenda/Event', 'sukusastra' ),
+						'url'    => $base_url . '#event',
+						'hash'   => '#event',
+						'active' => !$is_home && ( is_post_type_archive( 'event' ) || is_singular( 'event' ) )
+					)
+				);
+
+				foreach ( $capsules as $capsule ) {
+					$active_class = $capsule['active'] 
+						? 'bg-red-700 text-white border-red-700 dark:bg-red-500 dark:text-zinc-950 dark:border-red-500 font-bold shadow-sm' 
+						: 'border border-slate-200 text-slate-700 hover:bg-slate-100 hover:text-red-700 hover:border-red-200 dark:border-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-red-400 dark:hover:border-red-900/50 font-medium';
+					printf(
+						'<a class="px-4 py-1.5 rounded-full text-xs no-underline shrink-0 transition-all duration-200 %s" href="%s">%s</a>',
+						esc_attr( $active_class ),
+						esc_url( $capsule['url'] ),
+						esc_html( $capsule['label'] )
+					);
+				}
+				?>
+			</div>
+		</div>
+		<?php endif; ?>
+	</div>
+
+	<?php if ( $show_mobile_capsules ) : ?>
+	<!-- Mobile Category Navigation Script -->
+	<script>
+		document.addEventListener('DOMContentLoaded', function() {
+			const headerOffset = 90; // offset for sticky header
+
+			function smoothScrollTo(targetId) {
+				const target = document.getElementById(targetId);
+				if (!target) return;
+				const elementPosition = target.getBoundingClientRect().top + window.scrollY;
+				const offsetPosition = elementPosition - headerOffset;
+				
+				window.scrollTo({
+					top: offsetPosition,
+					behavior: 'smooth'
+				});
+			}
+
+			// Smooth scroll capsule clicks
+			const capsules = document.querySelectorAll('#mobile-capsules-bar a');
+			capsules.forEach(capsule => {
+				capsule.addEventListener('click', function(e) {
+					const href = this.getAttribute('href');
+					const hashIndex = href.indexOf('#');
+					if (hashIndex !== -1) {
+						const hash = href.substring(hashIndex + 1);
+						const target = document.getElementById(hash);
+						if (target) {
+							e.preventDefault();
+							smoothScrollTo(hash);
+							updateActiveCapsule(hash);
+						}
+					}
+				});
+			});
+
+			function updateActiveCapsule(activeId) {
+				const activeClasses = ['bg-red-700', 'text-white', 'border-red-700', 'dark:bg-red-500', 'dark:text-zinc-950', 'dark:border-red-500', 'font-bold', 'shadow-sm'];
+				const inactiveClasses = ['border', 'border-slate-200', 'text-slate-700', 'hover:bg-slate-100', 'dark:border-zinc-800', 'dark:text-zinc-300', 'dark:hover:bg-zinc-800', 'dark:hover:text-red-400', 'dark:hover:border-red-900/50', 'font-medium'];
+				
+				capsules.forEach(capsule => {
+					const href = capsule.getAttribute('href');
+					const hashIndex = href.indexOf('#');
+					if (hashIndex !== -1) {
+						const hash = href.substring(hashIndex + 1);
+						if (hash === activeId) {
+							capsule.classList.remove(...inactiveClasses);
+							capsule.classList.add(...activeClasses);
+							
+							// Auto-scroll the capsules container horizontally to center the active tag
+							const container = document.getElementById('mobile-capsules-bar');
+							if (container) {
+								const containerWidth = container.offsetWidth;
+								const capsuleLeft = capsule.offsetLeft;
+								const capsuleWidth = capsule.offsetWidth;
+								const targetScroll = capsuleLeft - (containerWidth / 2) + (capsuleWidth / 2);
+								container.scrollTo({
+									left: targetScroll,
+									behavior: 'smooth'
+								});
+							}
+						} else {
+							capsule.classList.remove(...activeClasses);
+							capsule.classList.add(...inactiveClasses);
+						}
+					}
+				});
+			}
+
+			// Intersection Observer for Scrollspy
+			const isHome = window.location.pathname === '/' || window.location.pathname === '/index.php' || document.getElementById('hero');
+			if (isHome) {
+				const sectionIds = ['hero', 'puisi', 'cerpen', 'katalog-terbitan', 'esai', 'review-buku', 'berita', 'event'];
+				const sections = sectionIds.map(id => document.getElementById(id)).filter(el => el !== null);
+				
+				const observerOptions = {
+					root: null,
+					rootMargin: '-20% 0px -60% 0px',
+					threshold: 0
+				};
+				
+				const observer = new IntersectionObserver((entries) => {
+					entries.forEach(entry => {
+						if (entry.isIntersecting) {
+							const id = entry.target.getAttribute('id');
+							updateActiveCapsule(id);
+						}
+					});
+				}, observerOptions);
+				
+				sections.forEach(section => observer.observe(section));
+			}
+
+			// Initial smooth scroll if hash present on page load
+			if (window.location.hash) {
+				const hash = window.location.hash.substring(1);
+				setTimeout(() => {
+					smoothScrollTo(hash);
+				}, 400);
+			}
+		});
+	</script>
+	<?php endif; ?>
 	</div>
 </header>
 

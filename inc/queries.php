@@ -9,27 +9,56 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-function sukusastra_home_posts( string $category_slug, int $limit = 6 ): WP_Query {
-	return new WP_Query(
+function sukusastra_home_posts( string $category_slug, int $limit = 6, string $sort_by = 'terbaru' ): WP_Query {
+	$home_visibility_query = array(
+		'relation' => 'OR',
 		array(
-			'post_type'           => 'post',
-			'posts_per_page'      => $limit,
-			'category_name'       => $category_slug,
-			'ignore_sticky_posts' => true,
-			'meta_query'          => array(
-				'relation' => 'OR',
-				array(
-					'key'     => '_ss_show_home',
-					'value'   => '1',
-					'compare' => '=',
-				),
-				array(
-					'key'     => '_ss_show_home',
-					'compare' => 'NOT EXISTS',
-				),
-			),
-		)
+			'key'     => '_ss_show_home',
+			'value'   => '1',
+			'compare' => '=',
+		),
+		array(
+			'key'     => '_ss_show_home',
+			'compare' => 'NOT EXISTS',
+		),
 	);
+
+	$args = array(
+		'post_type'           => 'post',
+		'posts_per_page'      => $limit,
+		'category_name'       => $category_slug,
+		'ignore_sticky_posts' => true,
+		'meta_query'          => $home_visibility_query,
+		'orderby'             => 'date',
+		'order'               => 'DESC',
+	);
+
+	if ( 'terpopuler' === $sort_by ) {
+		$views_query = array(
+			'relation' => 'OR',
+			'views_clause' => array(
+				'key'     => '_ss_post_views',
+				'compare' => 'EXISTS',
+				'type'    => 'NUMERIC',
+			),
+			'no_views_clause' => array(
+				'key'     => '_ss_post_views',
+				'compare' => 'NOT EXISTS',
+			),
+		);
+
+		$args['meta_query'] = array(
+			'relation' => 'AND',
+			$home_visibility_query,
+			$views_query,
+		);
+		$args['orderby'] = array(
+			'views_clause' => 'DESC',
+			'date'         => 'DESC',
+		);
+	}
+
+	return new WP_Query( $args );
 }
 
 function sukusastra_latest_cpt( string $post_type, int $limit = 4 ): WP_Query {
@@ -59,6 +88,177 @@ function sukusastra_upcoming_events( int $limit = 4 ): WP_Query {
 			),
 		)
 	);
+}
+
+function sukusastra_text_matches_search_term( string $text, string $search ): bool {
+	$search = trim( $search );
+	if ( '' === $search ) {
+		return false;
+	}
+
+	return (bool) preg_match( '/(^|[^\p{L}\p{N}])' . preg_quote( $search, '/' ) . '(?=$|[^\p{L}\p{N}])/iu', $text );
+}
+
+function sukusastra_find_penulis_ids_by_search( string $search ): array {
+	global $wpdb;
+
+	$search = trim( $search );
+	if ( '' === $search ) {
+		return array();
+	}
+
+	$ids = get_posts( array(
+		'post_type'      => 'penulis',
+		'posts_per_page' => -1,
+		's'              => $search,
+		'fields'         => 'ids',
+		'post_status'    => 'publish',
+	) );
+
+	$title_like = $wpdb->get_col(
+		$wpdb->prepare(
+			"SELECT ID FROM {$wpdb->posts} WHERE post_type = %s AND post_status = %s AND post_title LIKE %s",
+			'penulis',
+			'publish',
+			'%' . $wpdb->esc_like( $search ) . '%'
+		)
+	);
+
+	$ids = array_values( array_unique( array_map( 'intval', array_merge( $ids, $title_like ) ) ) );
+	return array_values( array_filter( $ids, function( int $penulis_id ) use ( $search ): bool {
+		return sukusastra_text_matches_search_term( get_the_title( $penulis_id ), $search );
+	} ) );
+}
+
+function sukusastra_find_posts_by_author_search( string $search ): array {
+	global $wpdb;
+
+	$search = trim( $search );
+	if ( '' === $search ) {
+		return array();
+	}
+
+	$post_ids = array();
+	$penulis_ids = sukusastra_find_penulis_ids_by_search( $search );
+
+	if ( ! empty( $penulis_ids ) ) {
+		$linked_post_ids = get_posts( array(
+			'post_type'      => 'post',
+			'posts_per_page' => -1,
+			'post_status'    => 'publish',
+			'fields'         => 'ids',
+			'meta_query'     => array(
+				array(
+					'key'     => '_ss_original_author_id',
+					'value'   => $penulis_ids,
+					'compare' => 'IN',
+				),
+			),
+		) );
+		$post_ids = array_merge( $post_ids, $linked_post_ids );
+	}
+
+	$matching_users = get_users( array(
+		'search'         => '*' . $search . '*',
+		'search_columns' => array( 'display_name', 'user_login', 'user_nicename' ),
+		'fields'         => array( 'ID', 'display_name', 'user_login', 'user_nicename' ),
+	) );
+	$matching_user_ids = array();
+	foreach ( $matching_users as $matching_user ) {
+		$user_text = implode( ' ', array(
+			$matching_user->display_name,
+			$matching_user->user_login,
+			$matching_user->user_nicename,
+		) );
+		if ( sukusastra_text_matches_search_term( $user_text, $search ) ) {
+			$matching_user_ids[] = (int) $matching_user->ID;
+		}
+	}
+
+	if ( ! empty( $matching_user_ids ) ) {
+		$user_post_ids = get_posts( array(
+			'post_type'      => 'post',
+			'posts_per_page' => -1,
+			'post_status'    => 'publish',
+			'fields'         => 'ids',
+			'author__in'     => $matching_user_ids,
+		) );
+		$post_ids = array_merge( $post_ids, $user_post_ids );
+	}
+
+	$title_post_ids = $wpdb->get_col(
+		$wpdb->prepare(
+			"SELECT ID FROM {$wpdb->posts} WHERE post_type = %s AND post_status = %s AND post_title LIKE %s",
+			'post',
+			'publish',
+			'%' . $wpdb->esc_like( $search ) . '%'
+		)
+	);
+	$title_post_ids = array_filter( array_map( 'intval', $title_post_ids ), function( int $post_id ) use ( $search ): bool {
+		return sukusastra_text_matches_search_term( get_the_title( $post_id ), $search );
+	} );
+
+	return array_values( array_unique( array_map( 'intval', array_merge( $post_ids, $title_post_ids ) ) ) );
+}
+
+function sukusastra_sort_author_search_post_ids( array $post_ids, int $priority_category_id = 0, string $sort_by = 'terbaru' ): array {
+	$post_ids = array_values( array_unique( array_map( 'intval', $post_ids ) ) );
+	if ( empty( $post_ids ) ) {
+		return array();
+	}
+
+	$compare = function( int $first_id, int $second_id ) use ( $sort_by ): int {
+		if ( 'abjad_a_z' === $sort_by || 'abjad_z_a' === $sort_by ) {
+			$first_title  = strtolower( get_the_title( $first_id ) );
+			$second_title = strtolower( get_the_title( $second_id ) );
+			$result       = strcmp( $first_title, $second_title );
+			return 'abjad_z_a' === $sort_by ? -$result : $result;
+		}
+
+		if ( 'terpopuler' === $sort_by ) {
+			$first_views  = (int) get_post_meta( $first_id, '_ss_post_views', true );
+			$second_views = (int) get_post_meta( $second_id, '_ss_post_views', true );
+			if ( $first_views !== $second_views ) {
+				return $second_views <=> $first_views;
+			}
+		}
+
+		return get_post_time( 'U', true, $second_id ) <=> get_post_time( 'U', true, $first_id );
+	};
+
+	$priority_posts = array();
+	$global_posts   = array();
+	foreach ( $post_ids as $post_id ) {
+		if ( $priority_category_id > 0 && has_category( $priority_category_id, $post_id ) ) {
+			$priority_posts[] = $post_id;
+		} else {
+			$global_posts[] = $post_id;
+		}
+	}
+
+	usort( $priority_posts, $compare );
+	usort( $global_posts, $compare );
+
+	return array_merge( $priority_posts, $global_posts );
+}
+
+function sukusastra_add_query_meta_clause( WP_Query $query, array $clause ): void {
+	$meta_query = $query->get( 'meta_query' );
+	if ( ! is_array( $meta_query ) ) {
+		$meta_query = array();
+	}
+
+	if ( isset( $meta_query['relation'] ) ) {
+		$query->set( 'meta_query', array(
+			'relation' => 'AND',
+			$meta_query,
+			$clause,
+		) );
+		return;
+	}
+
+	$meta_query[] = $clause;
+	$query->set( 'meta_query', $meta_query );
 }
 
 function sukusastra_related_posts( int $post_id, int $limit = 4 ): WP_Query {
@@ -198,10 +398,14 @@ function sukusastra_event_archive_filter( WP_Query $query ): void {
 
 	if ( is_post_type_archive( 'event' ) ) {
 		$status_filter = isset( $_GET['status_event'] ) ? sanitize_key( wp_unslash( $_GET['status_event'] ) ) : '';
+		$type_filter   = isset( $_GET['tipe_event'] ) ? sanitize_key( wp_unslash( $_GET['tipe_event'] ) ) : '';
 
+		$meta_query = array( 'relation' => 'AND' );
+
+		// 1. Filter by Status (Masih Berlangsung vs Sudah Berakhir)
 		if ( 'ongoing' === $status_filter ) {
 			// Masih Berlangsung: status is 'upcoming' AND end date has not passed (or not set)
-			$query->set( 'meta_query', array(
+			$meta_query[] = array(
 				'relation' => 'AND',
 				array(
 					'key'     => '_ss_event_status',
@@ -221,10 +425,10 @@ function sukusastra_event_archive_filter( WP_Query $query ): void {
 						'compare' => 'NOT EXISTS',
 					),
 				),
-			) );
+			);
 		} elseif ( 'ended' === $status_filter ) {
 			// Sudah Berakhir: status is 'past', 'cancelled', OR end date has passed
-			$query->set( 'meta_query', array(
+			$meta_query[] = array(
 				'relation' => 'OR',
 				array(
 					'key'     => '_ss_event_status',
@@ -237,7 +441,33 @@ function sukusastra_event_archive_filter( WP_Query $query ): void {
 					'compare' => '<',
 					'type'    => 'DATE',
 				),
-			) );
+			);
+		}
+
+		// 2. Filter by Type (Acara vs Sayembara)
+		if ( 'acara' === $type_filter ) {
+			$meta_query[] = array(
+				'relation' => 'OR',
+				array(
+					'key'     => '_ss_event_type',
+					'value'   => 'acara',
+					'compare' => '=',
+				),
+				array(
+					'key'     => '_ss_event_type',
+					'compare' => 'NOT EXISTS',
+				),
+			);
+		} elseif ( 'sayembara' === $type_filter ) {
+			$meta_query[] = array(
+				'key'     => '_ss_event_type',
+				'value'   => 'sayembara',
+				'compare' => '=',
+			);
+		}
+
+		if ( count( $meta_query ) > 1 ) {
+			$query->set( 'meta_query', $meta_query );
 		}
 	}
 }
@@ -310,40 +540,55 @@ function sukusastra_archive_custom_filters( WP_Query $query ): void {
 	if ( is_category() || is_tag() || is_tax() ) {
 		// 1. Filter by author search
 		$author_search = isset( $_GET['cari_penulis'] ) ? sanitize_text_field( wp_unslash( $_GET['cari_penulis'] ) ) : '';
+		$sort_by = isset( $_GET['sort_by'] ) ? sanitize_key( wp_unslash( $_GET['sort_by'] ) ) : 'terbaru';
+		$is_author_search = '' !== $author_search;
 		if ( '' !== $author_search ) {
-			$matching_authors = get_posts( array(
-				'post_type'      => 'penulis',
-				'posts_per_page' => -1,
-				's'              => $author_search,
-				'fields'         => 'ids',
-				'post_status'    => 'publish',
-			) );
+			$matching_post_ids = sukusastra_find_posts_by_author_search( $author_search );
 
-			if ( ! empty( $matching_authors ) && ! is_wp_error( $matching_authors ) ) {
-				$query->set( 'meta_query', array(
-					array(
-						'key'     => '_ss_original_author_id',
-						'value'   => $matching_authors,
-						'compare' => 'IN',
-					),
-				) );
+			if ( ! empty( $matching_post_ids ) ) {
+				$priority_category_id = is_category() ? (int) get_queried_object_id() : 0;
+				$matching_post_ids    = sukusastra_sort_author_search_post_ids( $matching_post_ids, $priority_category_id, $sort_by );
+
+				if ( is_category() ) {
+					$query->set( 'cat', '' );
+					$query->set( 'category_name', '' );
+					$query->set( 'category__in', array() );
+					$query->set( 'category__and', array() );
+				}
+
+				$query->set( 'post__in', $matching_post_ids );
 			} else {
 				$query->set( 'post__in', array( 0 ) ); // Force empty results if no author matches
 			}
 		}
 
 		// 2. Sorting
-		$sort_by = isset( $_GET['sort_by'] ) ? sanitize_key( wp_unslash( $_GET['sort_by'] ) ) : 'terbaru';
-		if ( 'abjad_a_z' === $sort_by ) {
+		if ( $is_author_search ) {
+			$query->set( 'orderby', 'post__in' );
+			$query->set( 'order', 'ASC' );
+		} elseif ( 'abjad_a_z' === $sort_by ) {
 			$query->set( 'orderby', 'title' );
 			$query->set( 'order', 'ASC' );
 		} elseif ( 'abjad_z_a' === $sort_by ) {
 			$query->set( 'orderby', 'title' );
 			$query->set( 'order', 'DESC' );
 		} elseif ( 'terpopuler' === $sort_by ) {
-			$query->set( 'meta_key', '_ss_post_views' );
-			$query->set( 'orderby', 'meta_value_num date' );
-			$query->set( 'order', 'DESC' );
+			sukusastra_add_query_meta_clause( $query, array(
+				'relation' => 'OR',
+				'views_clause' => array(
+					'key'     => '_ss_post_views',
+					'compare' => 'EXISTS',
+					'type'    => 'NUMERIC',
+				),
+				'no_views_clause' => array(
+					'key'     => '_ss_post_views',
+					'compare' => 'NOT EXISTS',
+				),
+			) );
+			$query->set( 'orderby', array(
+				'views_clause' => 'DESC',
+				'date'         => 'DESC',
+			) );
 		} else {
 			$query->set( 'orderby', 'date' );
 			$query->set( 'order', 'DESC' );
@@ -531,6 +776,72 @@ function sukusastra_berita_archive_filter( WP_Query $query ): void {
 
 		// 3. Posts per page (9 works perfectly for a 3-column grid)
 		$query->set( 'posts_per_page', 9 );
+	}
+}
+
+add_action( 'pre_get_posts', 'sukusastra_terbitan_archive_filter' );
+function sukusastra_terbitan_archive_filter( WP_Query $query ): void {
+	if ( is_admin() || ! $query->is_main_query() ) {
+		return;
+	}
+
+	if ( $query->is_post_type_archive( 'terbitan' ) ) {
+		// 1. Keyword search filter
+		$search = isset( $_GET['cari_terbitan'] ) ? sanitize_text_field( wp_unslash( $_GET['cari_terbitan'] ) ) : '';
+		if ( '' !== $search ) {
+			// Find post IDs matching title or content in CPT terbitan
+			$post_ids_standard = get_posts( array(
+				'post_type'      => 'terbitan',
+				'posts_per_page' => -1,
+				's'              => $search,
+				'fields'         => 'ids',
+				'post_status'    => 'publish',
+			) );
+
+			// Find post IDs matching author name meta field
+			$post_ids_meta = get_posts( array(
+				'post_type'      => 'terbitan',
+				'posts_per_page' => -1,
+				'fields'         => 'ids',
+				'post_status'    => 'publish',
+				'meta_query'     => array(
+					'relation' => 'OR',
+					array(
+						'key'     => '_ss_book_author',
+						'value'   => $search,
+						'compare' => 'LIKE',
+					),
+					array(
+						'key'     => '_ss_book_translator',
+						'value'   => $search,
+						'compare' => 'LIKE',
+					),
+				),
+			) );
+
+			// Combine all matched IDs
+			$combined_ids = array_unique( array_merge( $post_ids_standard, $post_ids_meta ) );
+
+			if ( ! empty( $combined_ids ) ) {
+				$query->set( 'post__in', $combined_ids );
+			} else {
+				$query->set( 'post__in', array( 0 ) ); // Force empty results
+			}
+		}
+
+		// 2. Sorting filter (sort_by)
+		$sort_by = isset( $_GET['sort_by'] ) ? sanitize_key( wp_unslash( $_GET['sort_by'] ) ) : 'terbaru';
+		if ( 'terpopuler' === $sort_by ) {
+			$query->set( 'meta_key', '_ss_post_views' );
+			$query->set( 'orderby', 'meta_value_num date' );
+			$query->set( 'order', 'DESC' );
+		} else {
+			$query->set( 'orderby', 'date' );
+			$query->set( 'order', 'DESC' );
+		}
+
+		// 3. Posts per page (12 works perfectly for a 4-column grid of book covers)
+		$query->set( 'posts_per_page', 12 );
 	}
 }
 
@@ -729,31 +1040,53 @@ function sukusastra_inject_related_article( string $content ): string {
 		return $content;
 	}
 
-	// 1. Post 1 goes to paragraph 2
 	$first_post_html = sukusastra_render_related_posts_block( array( $related_posts[0] ) );
-	
-	// 2. Posts 2 and onwards go to the end of the post
 	$remaining_posts_html = '';
-	if (count( $related_posts ) > 1 ) {
+	if ( count( $related_posts ) > 1 ) {
 		$remaining_posts = array_slice( $related_posts, 1 );
 		$remaining_posts_html = sukusastra_render_related_posts_block( $remaining_posts );
 	}
 
-	// Insert post 1 after the second paragraph (or at the end if fewer than 2 paragraphs)
-	$paragraphs = explode( '</p>', $content );
-	$p_count = count( $paragraphs );
-	if ( $p_count > 2 ) {
-		// Insert after paragraph index 1 (the second paragraph)
-		array_splice( $paragraphs, 2, 0, array( $first_post_html ) );
-		$new_content = implode( '</p>', $paragraphs );
-	} else {
-		// Just append it at the end
-		$new_content = $content . $first_post_html;
+	preg_match_all( '/<p\b[^>]*>/i', $content, $paragraph_open_matches, PREG_OFFSET_CAPTURE );
+	preg_match_all( '/<\/p>/i', $content, $paragraph_close_matches, PREG_OFFSET_CAPTURE );
+
+	$paragraph_openings = $paragraph_open_matches[0];
+	$paragraph_closings = $paragraph_close_matches[0];
+	$paragraph_count = min( count( $paragraph_openings ), count( $paragraph_closings ) );
+
+	if ( 0 === $paragraph_count ) {
+		return $content . $first_post_html . $remaining_posts_html;
 	}
 
-	// Append remaining posts at the end of the text
-	return $new_content . $remaining_posts_html;
+	$insertions = array();
+	$first_insert_index = min( 1, $paragraph_count - 1 );
+	$insertions[] = array(
+		'offset' => $paragraph_closings[ $first_insert_index ][1] + strlen( $paragraph_closings[ $first_insert_index ][0] ),
+		'html'   => $first_post_html,
+	);
+
+	if ( '' !== $remaining_posts_html ) {
+		if ( $paragraph_count > 2 ) {
+			$second_insert_index = max( 0, $paragraph_count - 2 );
+			$second_insert_offset = $paragraph_openings[ $second_insert_index ][1];
+		} else {
+			$second_insert_offset = strlen( $content );
+		}
+
+		$insertions[] = array(
+			'offset' => $second_insert_offset,
+			'html'   => $remaining_posts_html,
+		);
+	}
+
+	usort( $insertions, function( array $first, array $second ): int {
+		return $second['offset'] <=> $first['offset'];
+	} );
+
+	$new_content = $content;
+	foreach ( $insertions as $insertion ) {
+		$new_content = substr_replace( $new_content, $insertion['html'], $insertion['offset'], 0 );
+	}
+
+	return $new_content;
 }
-
-
-

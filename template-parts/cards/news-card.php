@@ -40,7 +40,7 @@ $youtube = sukusastra_get_meta( get_the_ID(), '_ss_youtube_url' );
 
 	<!-- Title & Diagonal Arrow Icon -->
 	<div class="flex items-start justify-between gap-2 mt-2">
-		<h3 class="text-lg font-black leading-snug text-slate-900 dark:text-zinc-50 group-hover:text-red-700 dark:group-hover:text-red-400 transition-colors">
+		<h3 class="ss-news-card-title text-lg font-black leading-snug text-slate-900 dark:text-zinc-50 group-hover:text-red-700 dark:group-hover:text-red-400 transition-colors">
 			<a class="no-underline hover:text-red-700 dark:hover:text-red-400 transition-colors" href="<?php the_permalink(); ?>">
 				<?php the_title(); ?>
 			</a>
@@ -55,5 +55,4 @@ $youtube = sukusastra_get_meta( get_the_ID(), '_ss_youtube_url' );
 		<?php echo esc_html( wp_strip_all_tags( get_the_excerpt() ) ); ?>
 	</p>
 </article>
-
 

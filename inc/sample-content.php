@@ -582,9 +582,102 @@ function sukusastra_generate_samples(): void {
 		}
 	}
 
+	// Create sample terbitan (Katalog Terbitan)
+	$existing_terbitan = get_posts( array(
+		'post_type'   => 'terbitan',
+		'name'        => 'di-desa-karya-ivan-bunin',
+		'post_status' => 'publish',
+		'numberposts' => 1,
+	) );
+
+	if ( empty( $existing_terbitan ) ) {
+		$terbitan_id = wp_insert_post( array(
+			'post_title'   => 'Di Desa',
+			'post_name'    => 'di-desa-karya-ivan-bunin',
+			'post_content' => '<p>Ivan Bunin adalah sastrawan Rusia pertama yang meraih Nobel, dan dengan demikian semestinya menjadi sosok yang wajib dikenal pembaca sastra serius di Indonesia.</p><p><em>Di Desa</em> adalah potret paling jujur, kelam, sekaligus puitis tentang jiwa rakyat Rusia di ambang keruntuhan sebuah zaman. Melalui nasib dua bersaudara Krasoff, Tikhon dan Kuzma, Ivan Bunin membongkar kegetiran hidup di pelosok perdesaan Rusia yang stagnan.</p><p><em>Di Desa</em> adalah sebuah fragmen sejarah yang menangkap napas terakhir Kekaisaran Rusia sebelum dilumat revolusi.</p><p>Lengkapi koleksi buku bermutu Anda dengan kemewahan prosa salah satu maestro terbesar dunia ini.</p>',
+			'post_excerpt' => 'Di Desa adalah potret paling jujur, kelam, sekaligus puitis tentang jiwa rakyat Rusia di ambang keruntuhan sebuah zaman.',
+			'post_status'  => 'publish',
+			'post_type'    => 'terbitan',
+		) );
+
+		if ( $terbitan_id && ! is_wp_error( $terbitan_id ) ) {
+			update_post_meta( $terbitan_id, '_ss_book_price', 'Rp 55.000' );
+			update_post_meta( $terbitan_id, '_ss_book_whatsapp', '628388966273' );
+			update_post_meta( $terbitan_id, '_ss_book_author', 'Ivan Bunin' );
+			update_post_meta( $terbitan_id, '_ss_book_translator', 'Isabel Hapgood (Inggris)' );
+			update_post_meta( $terbitan_id, '_ss_book_publisher', 'Yayasan Komunitas Sastra Suku Sastra' );
+			update_post_meta( $terbitan_id, '_ss_book_year', '2026' );
+			update_post_meta( $terbitan_id, '_ss_book_edition', 'Pertama, Februari 2026' );
+			update_post_meta( $terbitan_id, '_ss_book_pages', '240' );
+			update_post_meta( $terbitan_id, '_ss_book_isbn', '978-623-1234-56-7' );
+			update_post_meta( $terbitan_id, '_ss_book_dimensions', '13,5 x 19,5 cm' );
+			update_post_meta( $terbitan_id, '_ss_book_cover_type', 'Softcover' );
+
+			// Try to download and attach the local cover image
+			$cover_url = 'http://sukusastra.local/wp-content/uploads/2026/02/Kaver-Di-Desa-Ivan-Bunin-3-Utuh-ISBN-scaled-1.png';
+			sukusastra_attach_image_from_url( $terbitan_id, $cover_url );
+
+			// Check if cover image was set as featured image, then store it in _ss_book_image_id meta as well
+			$thumb_id = get_post_thumbnail_id( $terbitan_id );
+			if ( $thumb_id ) {
+				update_post_meta( $terbitan_id, '_ss_book_image_id', $thumb_id );
+			}
+
+			// Add secondary images for carousel
+			$gallery_urls = array(
+				'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=800',
+				'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=800'
+			);
+			$gallery_ids_list = array();
+			foreach ( $gallery_urls as $g_url ) {
+				$g_id = sukusastra_sideload_image_id_from_url( $terbitan_id, $g_url );
+				if ( $g_id ) {
+					$gallery_ids_list[] = $g_id;
+				}
+			}
+			if ( ! empty( $gallery_ids_list ) ) {
+				update_post_meta( $terbitan_id, '_ss_terbitan_gallery', implode( ',', $gallery_ids_list ) );
+			}
+		}
+	}
+
 	// Flush rewrite rules to activate CPT URLs immediately
 	flush_rewrite_rules();
 }
+
+/**
+ * Helper to download an image from a URL and return its attachment ID.
+ */
+function sukusastra_sideload_image_id_from_url( int $post_id, string $image_url ): ?int {
+	if ( ! $image_url ) {
+		return null;
+	}
+
+	require_once ABSPATH . 'wp-admin/includes/image.php';
+	require_once ABSPATH . 'wp-admin/includes/file.php';
+	require_once ABSPATH . 'wp-admin/includes/media.php';
+
+	// Download to temp file
+	$tmp = download_url( $image_url );
+	if ( is_wp_error( $tmp ) ) {
+		return null;
+	}
+
+	$file_array = array(
+		'name'     => basename( $image_url ) . '.jpg',
+		'tmp_name' => $tmp,
+	);
+
+	// Sideload to media library
+	$id = media_handle_sideload( $file_array, $post_id );
+	if ( is_wp_error( $id ) ) {
+		@unlink( $file_array['tmp_name'] );
+		return null;
+	}
+
+	return (int) $id;
+}
+
 
 /**
  * Helper to download an image from a URL and set it as the featured image (thumbnail) of a post.

@@ -29,7 +29,7 @@ $hero_query = new WP_Query(
 ?>
 
 <!-- Editorial Hero Grid & News Ticker -->
-<section class="ss-section border-t-0 bg-transparent pt-4 md:pt-6 pb-10 md:pb-14">
+<section id="hero" class="ss-section border-t-0 bg-transparent pt-0 md:pt-4 pb-10 md:pb-14">
 	<div class="ss-container">
 		<?php 
 		// Fetch ongoing/upcoming events for the News Update ticker
@@ -86,7 +86,7 @@ $hero_query = new WP_Query(
 		if ( '1' === $show_news_ticker && $news_update_events->have_posts() ) :
 		?>
 		<!-- 1. News Update Ticker Bar -->
-		<div class="mb-8 flex items-center border border-slate-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-900/80 backdrop-blur rounded-full p-1 pr-6 shadow-sm overflow-hidden">
+		<div class="mb-4 flex items-center border border-slate-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-900/80 backdrop-blur rounded-full p-1 pr-6 shadow-sm overflow-hidden">
 			<div class="flex items-center bg-amber-400 text-amber-950 px-4 py-1.5 rounded-full text-xs font-black shrink-0 shadow-sm">
 				<!-- Bell SVG Icon -->
 				<svg class="w-3.5 h-3.5 mr-1.5 fill-none stroke-current stroke-2" viewBox="0 0 24 24">
@@ -94,7 +94,7 @@ $hero_query = new WP_Query(
 				</svg>
 				<span>News Update:</span>
 			</div>
-			<div class="flex-1 overflow-hidden relative mx-4 text-xs font-semibold text-slate-700 dark:text-zinc-300">
+				<div class="min-w-0 h-6 flex-1 overflow-hidden relative ml-2 mr-4 text-xs font-semibold text-slate-700 dark:text-zinc-300">
 				<div class="animate-marquee whitespace-nowrap flex items-center">
 					<?php 
 					$ticker_items = array();
@@ -116,7 +116,8 @@ $hero_query = new WP_Query(
 		<?php endif; ?>
 		<!-- 2. Hero 2-Column Layout (Widescreen Card on Left + 3 Stacked List Items on Right) -->
 		<?php if ( $hero_query->have_posts() ) : ?>
-			<div class="grid gap-8 grid-cols-1 lg:grid-cols-3">
+			<!-- Desktop Hero Grid (Visible on desktop, hidden on mobile) -->
+			<div class="hidden lg:grid gap-8 grid-cols-1 lg:grid-cols-3">
 				<?php 
 				$hero_posts = array();
 				while ( $hero_query->have_posts() ) {
@@ -248,6 +249,96 @@ $hero_query = new WP_Query(
 					?>
 				</div>
 			</div>
+
+			<!-- Mobile Hero Slider (Visible on mobile, hidden on desktop) -->
+			<div class="block lg:hidden w-full min-w-0 overflow-hidden relative">
+				<div id="mobile-hero-carousel" class="flex max-w-full overflow-x-auto snap-x snap-mandatory no-scrollbar gap-3 -mx-4 px-4 pb-4">
+					<?php foreach ( $hero_posts as $index => $post ) : ?>
+						<div class="w-[78vw] sm:w-[64vw] shrink-0 snap-start">
+							<article class="relative w-full aspect-[4/3] rounded-3xl overflow-hidden group shadow border border-slate-200/10 bg-slate-900 flex flex-col justify-between p-5">
+								<!-- Background Image -->
+								<div class="absolute inset-0 z-0">
+									<?php if ( $post['thumbnail'] ) : ?>
+										<img src="<?php echo esc_url( $post['thumbnail'] ); ?>" alt="<?php echo esc_attr( $post['title'] ); ?>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-70">
+									<?php else : ?>
+										<div class="w-full h-full bg-gradient-to-br from-zinc-800 to-zinc-900 group-hover:scale-105 transition-transform duration-500 opacity-70"></div>
+									<?php endif; ?>
+									<!-- Dark gradient overlay for typography readability -->
+									<div class="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/85"></div>
+								</div>
+								
+								<!-- Top Row: Category Pill & Date/Author -->
+								<div class="relative z-10 flex items-center justify-between w-full">
+									<span class="bg-red-700/95 text-white text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full shadow-sm backdrop-blur-sm">
+										<?php echo esc_html( $post['category'] ); ?>
+									</span>
+									<span class="text-[10px] font-semibold text-white/90 drop-shadow flex items-center gap-1.5">
+										<span><?php echo esc_html( $post['date'] ); ?></span>
+										<span class="opacity-60">•</span>
+										<span class="font-bold text-ellipsis overflow-hidden whitespace-nowrap max-w-[80px]"><?php echo esc_html( $post['author_name'] ); ?></span>
+									</span>
+								</div>
+								
+								<!-- Bottom Row: Title, Excerpt & Baca Selengkapnya -->
+								<div class="relative z-10 flex flex-col gap-1.5 mt-auto w-full">
+									<!-- Title -->
+									<h2 class="text-base font-black text-white leading-tight tracking-tight drop-shadow-md line-clamp-2">
+										<a class="no-underline text-white hover:text-red-200 transition-colors" href="<?php echo esc_url( $post['permalink'] ); ?>">
+											<?php echo esc_html( $post['title'] ); ?>
+										</a>
+									</h2>
+									<!-- Excerpt / Description -->
+									<?php if ( ! empty( $post['excerpt'] ) ) : ?>
+										<p class="text-[11px] leading-relaxed text-zinc-300 drop-shadow line-clamp-2">
+											<?php echo esc_html( wp_trim_words( $post['excerpt'], 15, '...' ) ); ?>
+										</p>
+									<?php endif; ?>
+									<!-- Baca Selengkapnya Link -->
+									<div class="flex items-center justify-between w-full mt-0.5">
+										<a href="<?php echo esc_url( $post['permalink'] ); ?>" class="text-[10px] font-black uppercase tracking-wider text-red-400 hover:text-red-300 transition-colors no-underline flex items-center gap-1 drop-shadow">
+											<span>Baca Selengkapnya</span>
+											<svg class="w-3 h-3 stroke-current fill-none stroke-[2.5]" viewBox="0 0 24 24">
+												<path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+											</svg>
+										</a>
+									</div>
+								</div>
+							</article>
+						</div>
+					<?php endforeach; ?>
+				</div>
+
+				<!-- Carousel Dots Indicator -->
+				<div class="flex justify-center gap-1.5 mt-2">
+					<?php foreach ( $hero_posts as $index => $post ) : ?>
+						<span class="w-1.5 h-1.5 rounded-full bg-slate-300 dark:bg-zinc-700 transition-all duration-300 mobile-hero-dot <?php echo 0 === $index ? 'bg-red-700 dark:bg-red-500 w-3' : ''; ?>"></span>
+					<?php endforeach; ?>
+				</div>
+			</div>
+
+			<script>
+				document.addEventListener('DOMContentLoaded', function() {
+					const carousel = document.getElementById('mobile-hero-carousel');
+					const dots = document.querySelectorAll('.mobile-hero-dot');
+					if (carousel && dots.length > 0) {
+						carousel.addEventListener('scroll', function() {
+							const scrollLeft = carousel.scrollLeft;
+							const slideWidth = carousel.firstElementChild.offsetWidth + 12; // element width + gap
+							const activeIndex = Math.round(scrollLeft / slideWidth);
+							
+							dots.forEach((dot, index) => {
+								if (index === activeIndex) {
+									dot.classList.add('bg-red-700', 'dark:bg-red-500', 'w-3');
+									dot.classList.remove('bg-slate-300', 'dark:bg-zinc-700');
+								} else {
+									dot.classList.remove('bg-red-700', 'dark:bg-red-500', 'w-3');
+									dot.classList.add('bg-slate-300', 'dark:bg-zinc-700');
+								}
+							});
+						});
+					}
+				});
+			</script>
 		<?php else : ?>
 			<p class="text-center py-12 text-slate-500 dark:text-zinc-400"><?php esc_html_e( 'Belum ada terbitan terbaru.', 'sukusastra' ); ?></p>
 		<?php endif; ?>
@@ -262,8 +353,8 @@ if ( '1' === $show_penulis_stories ) :
 <section class="bg-transparent py-8 relative">
 	<div class="ss-container">
 		<div class="flex items-center justify-between mb-6">
-			<h2 class="ss-section-title flex items-center gap-2">
-				<span>Penulis Suku Sastra</span>
+			<h2 class="ss-section-title ss-author-section-title flex items-center gap-2">
+				<span>Penulis</span>
 			</h2>
 			<a class="text-xs font-bold uppercase tracking-wider text-red-700 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 no-underline flex items-center gap-1.5" href="<?php echo esc_url( get_post_type_archive_link( 'penulis' ) ); ?>">
 				<span>Lihat Semua</span>
@@ -528,41 +619,241 @@ if ( '1' === $show_penulis_stories ) :
 
 
 <!-- Category Feeds (Puisi, Cerpen, Esai) -->
-<?php foreach ( array( 'puisi' => 'Puisi Terbaru', 'cerpen' => 'Cerpen Terbaru', 'esai' => 'Esai Terbaru' ) as $slug => $title ) : ?>
-	<?php $query = sukusastra_home_posts( $slug, 3 ); ?>
-	<?php if ( $query->have_posts() ) : ?>
-		<section class="ss-section bg-transparent">
-			<div class="ss-container grid gap-6">
-				<div class="flex items-center justify-between border-b border-slate-100 pb-2 dark:border-zinc-800/80">
-					<h2 class="ss-section-title"><?php echo esc_html( $title ); ?></h2>
-					<a class="ss-eyebrow" href="<?php echo esc_url( get_category_link( get_category_by_slug( $slug ) ) ); ?>">
-						<?php esc_html_e( 'Lihat Semua', 'sukusastra' ); ?> &rarr;
-					</a>
-				</div>
-				<div class="grid gap-5 sm:grid-cols-2 md:grid-cols-3">
-					<?php while ( $query->have_posts() ) : $query->the_post(); ?>
+<?php
+if ( ! function_exists( 'sukusastra_home_feed_actions' ) ) {
+	function sukusastra_home_feed_actions( string $archive_url ): void {
+		$actions = array(
+			array(
+				'label' => __( 'Terbaru', 'sukusastra' ),
+				'sort'  => 'terbaru',
+				'icon'  => '<svg class="h-4 w-4 fill-none stroke-current stroke-2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2" /><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>',
+			),
+			array(
+				'label' => __( 'Terpopuler', 'sukusastra' ),
+				'sort'  => 'terpopuler',
+				'icon'  => '<svg class="h-4 w-4 fill-none stroke-current stroke-2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m3 17 6-6 4 4 7-8" /><path stroke-linecap="round" stroke-linejoin="round" d="M14 7h6v6" /></svg>',
+			),
+		);
+		?>
+		<nav class="ss-section-actions" aria-label="<?php esc_attr_e( 'Navigasi feed', 'sukusastra' ); ?>">
+			<?php foreach ( $actions as $action ) : ?>
+				<button class="ss-section-action" type="button" data-feed-action="<?php echo esc_attr( $action['sort'] ); ?>" aria-pressed="<?php echo 'terbaru' === $action['sort'] ? 'true' : 'false'; ?>" aria-label="<?php echo esc_attr( $action['label'] ); ?>" title="<?php echo esc_attr( $action['label'] ); ?>">
+					<?php echo $action['icon']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+					<span class="sr-only"><?php echo esc_html( $action['label'] ); ?></span>
+				</button>
+			<?php endforeach; ?>
+			<a class="ss-section-action" href="<?php echo esc_url( $archive_url ); ?>" aria-label="<?php esc_attr_e( 'Lihat Semua', 'sukusastra' ); ?>" title="<?php esc_attr_e( 'Lihat Semua', 'sukusastra' ); ?>">
+				<svg class="h-4 w-4 fill-none stroke-current stroke-2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h10M4 12h10M4 18h10" /><path stroke-linecap="round" stroke-linejoin="round" d="m17 8 4 4-4 4" /></svg>
+				<span class="sr-only"><?php esc_html_e( 'Lihat Semua', 'sukusastra' ); ?></span>
+			</a>
+		</nav>
+		<a class="ss-eyebrow hidden md:inline-flex md:items-center md:gap-1" href="<?php echo esc_url( $archive_url ); ?>">
+			<?php esc_html_e( 'Lihat Semua', 'sukusastra' ); ?> <span aria-hidden="true">&rarr;</span>
+		</a>
+		<?php
+	}
+}
+
+if ( ! function_exists( 'sukusastra_home_feed_panel' ) ) {
+	function sukusastra_home_feed_panel( WP_Query $query, string $sort_by, bool $is_hidden = false ): void {
+		?>
+			<div class="ss-feed-panel <?php echo $is_hidden ? 'hidden' : ''; ?>" data-feed-panel="<?php echo esc_attr( $sort_by ); ?>">
+				<div class="ss-category-swipe-row flex gap-3 overflow-x-auto snap-x snap-mandatory no-scrollbar pb-2 md:grid md:grid-cols-3" data-drag-scroll>
+				<?php $feed_index = 0; ?>
+				<?php while ( $query->have_posts() ) : $query->the_post(); ?>
+					<?php $feed_index++; ?>
+					<div class="ss-category-swipe-card w-[40vw] shrink-0 snap-start md:w-auto <?php echo $feed_index > 3 ? 'md:hidden' : ''; ?>">
 						<?php get_template_part( 'template-parts/cards/post-card' ); ?>
-					<?php endwhile; wp_reset_postdata(); ?>
-				</div>
+					</div>
+				<?php endwhile; wp_reset_postdata(); ?>
 			</div>
-		</section>
-	<?php endif; ?>
-<?php endforeach; ?>
+		</div>
+		<?php
+	}
+}
+?>
+<?php $query_puisi = sukusastra_home_posts( 'puisi', 10 ); ?>
+<?php $popular_puisi = sukusastra_home_posts( 'puisi', 10, 'terpopuler' ); ?>
+<?php if ( $query_puisi->have_posts() ) : ?>
+	<section id="puisi" class="ss-section bg-transparent" data-feed-section>
+		<div class="ss-container grid gap-6">
+			<div class="flex items-center justify-between border-b border-slate-100 pb-2 dark:border-zinc-800/80">
+				<h2 class="ss-section-title ss-feed-section-title"><?php esc_html_e( 'Puisi Terbaru', 'sukusastra' ); ?></h2>
+				<?php sukusastra_home_feed_actions( get_category_link( get_category_by_slug( 'puisi' ) ) ); ?>
+			</div>
+			<?php sukusastra_home_feed_panel( $query_puisi, 'terbaru' ); ?>
+			<?php sukusastra_home_feed_panel( $popular_puisi, 'terpopuler', true ); ?>
+		</div>
+	</section>
+<?php endif; ?>
+
+<?php $query_cerpen = sukusastra_home_posts( 'cerpen', 10 ); ?>
+<?php $popular_cerpen = sukusastra_home_posts( 'cerpen', 10, 'terpopuler' ); ?>
+<?php if ( $query_cerpen->have_posts() ) : ?>
+	<section id="cerpen" class="ss-section bg-transparent" data-feed-section>
+		<div class="ss-container grid gap-6">
+			<div class="flex items-center justify-between border-b border-slate-100 pb-2 dark:border-zinc-800/80">
+				<h2 class="ss-section-title ss-feed-section-title"><?php esc_html_e( 'Cerpen Terbaru', 'sukusastra' ); ?></h2>
+				<?php sukusastra_home_feed_actions( get_category_link( get_category_by_slug( 'cerpen' ) ) ); ?>
+			</div>
+			<?php sukusastra_home_feed_panel( $query_cerpen, 'terbaru' ); ?>
+			<?php sukusastra_home_feed_panel( $popular_cerpen, 'terpopuler', true ); ?>
+		</div>
+	</section>
+<?php endif; ?>
+
+<!-- Katalog Terbitan Section -->
+<?php $terbitan_query = sukusastra_latest_cpt( 'terbitan', 5 ); ?>
+<?php if ( $terbitan_query->have_posts() ) : ?>
+	<section id="katalog-terbitan" class="ss-section bg-transparent">
+		<div class="ss-container grid gap-6">
+			<div class="flex items-center justify-between border-b border-slate-100 pb-2 dark:border-zinc-800/80">
+				<h2 class="ss-section-title ss-feed-section-title"><?php esc_html_e( 'Katalog Terbitan', 'sukusastra' ); ?></h2>
+				<a class="ss-eyebrow" href="<?php echo esc_url( get_post_type_archive_link( 'terbitan' ) ); ?>">
+					<?php esc_html_e( 'Lihat Semua', 'sukusastra' ); ?> &rarr;
+				</a>
+			</div>
+			
+			<!-- Monetization Banner -->
+			<?php 
+			$banner_toggle = sukusastra_get_option( 'monetization_banner_toggle', '0' );
+			$banner_image = sukusastra_get_option( 'monetization_banner_image' );
+			$banner_link = sukusastra_get_option( 'monetization_banner_link' );
+			if ( '1' === $banner_toggle && $banner_image ) : 
+				?>
+				<div class="ss-terbitan-banner w-full md:w-full">
+					<?php if ( $banner_link ) : ?>
+						<a href="<?php echo esc_url( $banner_link ); ?>" target="_blank" rel="noopener" class="block w-full overflow-hidden rounded-2xl border border-slate-200/50 dark:border-zinc-800/80 shadow-sm transition hover:opacity-95 duration-200">
+					<?php else : ?>
+						<div class="w-full overflow-hidden rounded-2xl border border-slate-200/50 dark:border-zinc-800/80 shadow-sm">
+					<?php endif; ?>
+						<img src="<?php echo esc_url( $banner_image ); ?>" alt="<?php esc_attr_e( 'Monetization Banner', 'sukusastra' ); ?>" class="ss-terbitan-banner-img w-full h-auto object-cover block">
+					<?php if ( $banner_link ) : ?>
+						</a>
+					<?php else : ?>
+						</div>
+					<?php endif; ?>
+				</div>
+			<?php endif; ?>
+
+			<!-- Mobile carousel, desktop grid for Kumparan-style portrait cards -->
+			<div class="ss-terbitan-carousel -mx-4 flex gap-3 overflow-x-auto snap-x snap-mandatory no-scrollbar px-4 pb-2 sm:-mx-6 sm:px-6 md:mx-0 md:grid md:gap-5 md:grid-cols-4 md:px-0 lg:grid-cols-5 md:overflow-visible md:snap-none">
+				<?php while ( $terbitan_query->have_posts() ) : $terbitan_query->the_post(); ?>
+					<div class="ss-terbitan-carousel-item w-[calc((100vw-2rem-1.5rem)/2.5)] max-w-[9.5rem] shrink-0 snap-start md:w-auto md:max-w-none md:shrink">
+						<?php get_template_part( 'template-parts/cards/terbitan-home-card' ); ?>
+					</div>
+				<?php endwhile; wp_reset_postdata(); ?>
+			</div>
+		</div>
+	</section>
+<?php endif; ?>
+
+<?php $query_esai = sukusastra_home_posts( 'esai', 10 ); ?>
+<?php $popular_esai = sukusastra_home_posts( 'esai', 10, 'terpopuler' ); ?>
+<?php if ( $query_esai->have_posts() ) : ?>
+	<section id="esai" class="ss-section bg-transparent" data-feed-section>
+		<div class="ss-container grid gap-6">
+			<div class="flex items-center justify-between border-b border-slate-100 pb-2 dark:border-zinc-800/80">
+				<h2 class="ss-section-title ss-feed-section-title"><?php esc_html_e( 'Esai Terbaru', 'sukusastra' ); ?></h2>
+				<?php sukusastra_home_feed_actions( get_category_link( get_category_by_slug( 'esai' ) ) ); ?>
+			</div>
+			<?php sukusastra_home_feed_panel( $query_esai, 'terbaru' ); ?>
+			<?php sukusastra_home_feed_panel( $popular_esai, 'terpopuler', true ); ?>
+		</div>
+	</section>
+<?php endif; ?>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+	document.querySelectorAll('[data-feed-section]').forEach(function(section) {
+		const actions = section.querySelectorAll('[data-feed-action]');
+		const panels = section.querySelectorAll('[data-feed-panel]');
+
+		actions.forEach(function(action) {
+			action.addEventListener('click', function() {
+				const target = action.getAttribute('data-feed-action');
+
+				actions.forEach(function(item) {
+					item.setAttribute('aria-pressed', item === action ? 'true' : 'false');
+				});
+
+				panels.forEach(function(panel) {
+					const isActive = panel.getAttribute('data-feed-panel') === target;
+					panel.classList.toggle('hidden', !isActive);
+
+					const row = panel.querySelector('.ss-category-swipe-row');
+					if (row && isActive) {
+						row.scrollLeft = 0;
+					}
+				});
+			});
+		});
+	});
+
+	document.querySelectorAll('[data-drag-scroll]').forEach(function(row) {
+		let isDown = false;
+		let startX = 0;
+		let scrollLeft = 0;
+
+		row.addEventListener('pointerdown', function(event) {
+			if (window.matchMedia('(min-width: 48rem)').matches) {
+				return;
+			}
+
+			isDown = true;
+			startX = event.clientX;
+			scrollLeft = row.scrollLeft;
+			row.classList.add('is-dragging');
+			row.setPointerCapture(event.pointerId);
+		});
+
+		row.addEventListener('pointermove', function(event) {
+			if (!isDown) {
+				return;
+			}
+
+			event.preventDefault();
+			row.scrollLeft = scrollLeft - (event.clientX - startX);
+		});
+
+		function stopDrag(event) {
+			if (!isDown) {
+				return;
+			}
+
+			isDown = false;
+			row.classList.remove('is-dragging');
+			if (row.hasPointerCapture(event.pointerId)) {
+				row.releasePointerCapture(event.pointerId);
+			}
+		}
+
+		row.addEventListener('pointerup', stopDrag);
+		row.addEventListener('pointercancel', stopDrag);
+		row.addEventListener('lostpointercapture', function() {
+			isDown = false;
+			row.classList.remove('is-dragging');
+		});
+	});
+});
+</script>
 
 <!-- Book Reviews Section -->
 <?php $reviews = sukusastra_latest_cpt( 'review_buku', 4 ); ?>
 <?php if ( $reviews->have_posts() ) : ?>
-	<section class="ss-section">
+	<section id="review-buku" class="ss-section">
 		<div class="ss-container grid gap-6">
 			<div class="flex items-center justify-between border-b border-slate-100 pb-2 dark:border-zinc-800/80">
-				<h2 class="ss-section-title"><?php esc_html_e( 'Review Buku', 'sukusastra' ); ?></h2>
+				<h2 class="ss-section-title ss-feed-section-title"><?php esc_html_e( 'Review Buku', 'sukusastra' ); ?></h2>
 				<a class="ss-eyebrow" href="<?php echo esc_url( get_post_type_archive_link( 'review_buku' ) ); ?>">
 					<?php esc_html_e( 'Semua Review', 'sukusastra' ); ?> &rarr;
 				</a>
 			</div>
-			<div class="grid gap-5 md:grid-cols-2">
+			<div class="ss-review-carousel flex gap-4 overflow-x-auto snap-x snap-mandatory no-scrollbar pb-2 md:grid md:gap-5 md:grid-cols-2 lg:grid-cols-3 md:overflow-visible md:snap-none">
 				<?php while ( $reviews->have_posts() ) : $reviews->the_post(); ?>
-					<?php get_template_part( 'template-parts/cards/review-card' ); ?>
+					<div class="ss-review-carousel-item w-[68vw] shrink-0 snap-start sm:w-[46vw] md:w-auto md:shrink">
+						<?php get_template_part( 'template-parts/cards/review-card', null, array( 'layout' => 'vertical' ) ); ?>
+					</div>
 				<?php endwhile; wp_reset_postdata(); ?>
 			</div>
 		</div>
@@ -570,19 +861,21 @@ if ( '1' === $show_penulis_stories ) :
 <?php endif; ?>
 
 <!-- News Section -->
-<section class="ss-section">
+<section id="berita" class="ss-section">
 	<div class="ss-container grid gap-6">
 		<div class="flex items-center justify-between border-b border-slate-100 pb-2 dark:border-zinc-800/80">
-			<h2 class="ss-section-title"><?php esc_html_e( 'Berita Suku Sastra', 'sukusastra' ); ?></h2>
+			<h2 class="ss-section-title ss-feed-section-title"><?php esc_html_e( 'Berita Suku Sastra', 'sukusastra' ); ?></h2>
 			<a class="ss-eyebrow" href="<?php echo esc_url( get_post_type_archive_link( 'berita' ) ); ?>">
 				<?php esc_html_e( 'Semua Berita', 'sukusastra' ); ?> &rarr;
 			</a>
 		</div>
 		<?php $news = sukusastra_latest_cpt( 'berita', 3 ); ?>
 		<?php if ( $news->have_posts() ) : ?>
-			<div class="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
+			<div class="ss-news-carousel flex gap-4 overflow-x-auto snap-x snap-mandatory no-scrollbar pb-2 md:grid md:gap-6 md:grid-cols-3 md:overflow-visible md:snap-none" data-drag-scroll>
 				<?php while ( $news->have_posts() ) : $news->the_post(); ?>
-					<?php get_template_part( 'template-parts/cards/news-card' ); ?>
+					<div class="ss-news-carousel-item w-[82vw] shrink-0 snap-start md:w-auto md:shrink">
+						<?php get_template_part( 'template-parts/cards/news-card' ); ?>
+					</div>
 				<?php endwhile; wp_reset_postdata(); ?>
 			</div>
 		<?php else : ?>
@@ -592,19 +885,21 @@ if ( '1' === $show_penulis_stories ) :
 </section>
 
 <!-- Events Section -->
-<section class="ss-section bg-slate-100 dark:bg-black/40 border-b border-slate-200 dark:border-[#4d568c]/25">
+<section id="event" class="ss-section bg-slate-100 dark:bg-black/40 border-b border-slate-200 dark:border-[#4d568c]/25">
 	<div class="ss-container grid gap-6">
 		<div class="flex items-center justify-between border-b border-slate-100 pb-2 dark:border-zinc-800/80">
-			<h2 class="ss-section-title"><?php esc_html_e( 'Agenda & Event Sastra', 'sukusastra' ); ?></h2>
+			<h2 class="ss-section-title ss-feed-section-title"><?php esc_html_e( 'Agenda & Event Sastra', 'sukusastra' ); ?></h2>
 			<a class="ss-eyebrow" href="<?php echo esc_url( get_post_type_archive_link( 'event' ) ); ?>">
 				<?php esc_html_e( 'Semua Event', 'sukusastra' ); ?> &rarr;
 			</a>
 		</div>
 		<?php $events = sukusastra_upcoming_events( 4 ); ?>
 		<?php if ( $events->have_posts() ) : ?>
-			<div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+			<div class="ss-event-carousel flex gap-4 overflow-x-auto snap-x snap-mandatory no-scrollbar pb-2 md:grid md:gap-6 md:grid-cols-2 md:overflow-visible md:snap-none lg:grid-cols-4" data-drag-scroll>
 				<?php while ( $events->have_posts() ) : $events->the_post(); ?>
-					<?php get_template_part( 'template-parts/cards/event-card' ); ?>
+					<div class="ss-event-carousel-item w-[82vw] shrink-0 snap-start md:w-auto md:shrink">
+						<?php get_template_part( 'template-parts/cards/event-card' ); ?>
+					</div>
 				<?php endwhile; wp_reset_postdata(); ?>
 			</div>
 		<?php else : ?>

@@ -20,12 +20,12 @@ $current_url = preg_replace( '/\?.*/', '', $_SERVER['REQUEST_URI'] );
 		<!-- Search by Author -->
 		<div class="relative w-full sm:w-64">
 			<input type="text" name="cari_penulis" placeholder="<?php esc_attr_e( 'Cari berdasarkan penulis...', 'sukusastra' ); ?>" value="<?php echo esc_attr( $cari_penulis ); ?>" class="w-full pl-10 pr-4 py-2 text-sm rounded-lg border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-slate-900 dark:text-zinc-50 outline-none focus:border-red-700 dark:focus:border-red-500 transition-colors">
-			<!-- Search SVG icon -->
-			<div class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400">
+			<!-- Search submit button -->
+			<button type="submit" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 transition-colors hover:text-red-700 dark:hover:text-red-400" aria-label="<?php esc_attr_e( 'Cari penulis', 'sukusastra' ); ?>">
 				<svg class="w-4 h-4 stroke-current fill-none stroke-2" viewBox="0 0 24 24">
 					<path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
 				</svg>
-			</div>
+			</button>
 		</div>
 
 		<!-- Sort dropdown -->

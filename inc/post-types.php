@@ -15,6 +15,7 @@ function sukusastra_register_post_types(): void {
 	sukusastra_register_berita_type();
 	sukusastra_register_event_type();
 	sukusastra_register_penulis_type();
+	sukusastra_register_terbitan_type();
 }
 
 function sukusastra_register_review_buku_type(): void {
@@ -94,6 +95,27 @@ function sukusastra_register_penulis_type(): void {
 			'rewrite'      => array( 'slug' => 'penulis' ),
 			'show_in_rest' => true,
 			'supports'     => array( 'title', 'editor', 'excerpt', 'thumbnail', 'revisions' ),
+		)
+	);
+}
+
+function sukusastra_register_terbitan_type(): void {
+	register_post_type(
+		'terbitan',
+		array(
+			'labels'       => array(
+				'name'          => __( 'Katalog Terbitan', 'sukusastra' ),
+				'singular_name' => __( 'Terbitan', 'sukusastra' ),
+				'add_new_item'  => __( 'Tambah Terbitan', 'sukusastra' ),
+				'edit_item'     => __( 'Edit Terbitan', 'sukusastra' ),
+			),
+			'public'       => true,
+			'has_archive'  => true,
+			'menu_icon'    => 'dashicons-book-alt',
+			'rewrite'      => array( 'slug' => 'katalog-terbitan' ),
+			'show_in_rest' => true,
+			'supports'     => array( 'title', 'editor', 'excerpt', 'thumbnail', 'author', 'revisions' ),
+			'taxonomies'   => array( 'category' ),
 		)
 	);
 }

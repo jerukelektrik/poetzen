@@ -13,6 +13,9 @@ add_action( 'wp_enqueue_scripts', 'sukusastra_enqueue_assets' );
 function sukusastra_enqueue_assets(): void {
 	$font_family = sukusastra_get_option( 'font_family', 'default' );
 	$font_url = 'https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..700;1,400..700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Inter:wght@300;400;500;600;700;800;900&display=swap';
+	$feed_font_url = 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap';
+	$theme_css_path = SUKUSASTRA_DIR . '/assets/css/theme.css';
+	$theme_css_version = file_exists( $theme_css_path ) ? (string) filemtime( $theme_css_path ) : SUKUSASTRA_VERSION;
 	
 	if ( 'modern' === $font_family ) {
 		$font_url = 'https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap';
@@ -29,13 +32,20 @@ function sukusastra_enqueue_assets(): void {
 			array(),
 			null
 		);
+	} else {
+		wp_enqueue_style(
+			'sukusastra-feed-font',
+			$feed_font_url,
+			array(),
+			null
+		);
 	}
 
 	wp_enqueue_style(
 		'sukusastra-theme',
 		SUKUSASTRA_URI . '/assets/css/theme.css',
-		$font_url ? array( 'sukusastra-fonts' ) : array(),
-		SUKUSASTRA_VERSION
+		$font_url ? array( 'sukusastra-fonts' ) : array( 'sukusastra-feed-font' ),
+		$theme_css_version
 	);
 
 	wp_enqueue_script(
@@ -183,4 +193,3 @@ function sukusastra_render_dynamic_styles(): void {
 
 	echo "</style>\n";
 }
-

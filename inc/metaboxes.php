@@ -11,13 +11,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 add_action( 'add_meta_boxes', 'sukusastra_register_metaboxes' );
 function sukusastra_register_metaboxes(): void {
-	$all_public = array( 'post', 'page', 'review_buku', 'berita', 'event' );
+	$all_public = array( 'post', 'page', 'review_buku', 'berita', 'event', 'terbitan' );
 
 	add_meta_box( 'sukusastra_editorial_meta', __( 'Suku Sastra Editorial', 'sukusastra' ), 'sukusastra_render_editorial_metabox', $all_public, 'side', 'default' );
 	add_meta_box( 'sukusastra_seo_meta', __( 'SEO Ringan', 'sukusastra' ), 'sukusastra_render_seo_metabox', $all_public, 'normal', 'default' );
 	add_meta_box( 'sukusastra_review_meta', __( 'Metadata Buku', 'sukusastra' ), 'sukusastra_render_review_metabox', 'review_buku', 'normal', 'default' );
 	add_meta_box( 'sukusastra_news_meta', __( 'Metadata Berita', 'sukusastra' ), 'sukusastra_render_news_metabox', 'berita', 'normal', 'default' );
 	add_meta_box( 'sukusastra_event_meta', __( 'Metadata Event', 'sukusastra' ), 'sukusastra_render_event_metabox', 'event', 'normal', 'default' );
+	add_meta_box( 'sukusastra_terbitan_meta', __( 'Metadata Terbitan', 'sukusastra' ), 'sukusastra_render_terbitan_metabox', 'terbitan', 'normal', 'default' );
 	
 	add_meta_box( 'sukusastra_original_author_meta', __( 'Penulis Asli (Tokoh)', 'sukusastra' ), 'sukusastra_render_original_author_metabox', 'post', 'normal', 'default' );
 	add_meta_box( 'sukusastra_pesan_moral_meta', __( 'Pesan Moral', 'sukusastra' ), 'sukusastra_render_pesan_moral_metabox', 'post', 'normal', 'default' );
@@ -190,18 +191,99 @@ function sukusastra_render_news_metabox( WP_Post $post ): void {
 		)
 	);
 }
-
 function sukusastra_render_event_metabox( WP_Post $post ): void {
+	$gallery_ids = sukusastra_get_meta( $post->ID, '_ss_event_gallery', '' );
+	$gallery_array = $gallery_ids ? explode( ',', $gallery_ids ) : array();
+	?>
+	<div class="ss-event-gallery-uploader-wrapper" style="margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 20px;">
+		<label><strong><?php esc_html_e( 'Galeri Poster / Pamflet Acara (Multi-Gambar)', 'sukusastra' ); ?></strong></label>
+		<p class="description" style="margin-top: 4px;"><?php esc_html_e( 'Pilih satu atau lebih gambar jika ingin menampilkan slider/carousel poster.', 'sukusastra' ); ?></p>
+		<div style="margin-top: 10px;">
+			<div id="ss-gallery-preview" style="min-height: 60px; border: 1px dashed #ccc; padding: 10px; background: #fafafa; margin-bottom: 10px;">
+				<?php if ( ! empty( $gallery_array ) ) : ?>
+					<?php foreach ( $gallery_array as $img_id ) : ?>
+						<?php 
+						$img_url = wp_get_attachment_image_url( (int) $img_id, 'thumbnail' ); 
+						if ( $img_url ) :
+							?>
+							<div style="margin: 5px; border: 1px solid #ddd; padding: 2px; background: #fff; display: inline-block;">
+								<img src="<?php echo esc_url( $img_url ); ?>" style="width: 50px; height: 50px; object-fit: cover; display: block;" />
+							</div>
+						<?php endif; ?>
+					<?php endforeach; ?>
+				<?php else : ?>
+					<span style="color: #999; font-size: 12px;"><?php esc_html_e( 'Belum ada gambar galeri', 'sukusastra' ); ?></span>
+				<?php endif; ?>
+			</div>
+			<input type="hidden" name="_ss_event_gallery" id="ss_event_gallery" value="<?php echo esc_attr( $gallery_ids ); ?>">
+			<button type="button" class="button" id="ss-upload-gallery-btn"><?php esc_html_e( 'Pilih Gambar', 'sukusastra' ); ?></button>
+			<button type="button" class="button button-link-delete" id="ss-remove-gallery-btn" style="<?php echo $gallery_ids ? '' : 'display: none;'; ?>"><?php esc_html_e( 'Hapus', 'sukusastra' ); ?></button>
+		</div>
+	</div>
+
+	<script>
+	jQuery(document).ready(function($) {
+		var gallery_frame;
+		$('#ss-upload-gallery-btn').on('click', function(e) {
+			e.preventDefault();
+			if (gallery_frame) {
+				gallery_frame.open();
+				return;
+			}
+			gallery_frame = wp.media.frames.gallery_frame = wp.media({
+				title: '<?php echo esc_js( __( 'Pilih Gambar Galeri', 'sukusastra' ) ); ?>',
+				button: {
+					text: '<?php echo esc_js( __( 'Gunakan Gambar ini', 'sukusastra' ) ); ?>'
+				},
+				multiple: true
+			});
+			gallery_frame.on('select', function() {
+				var selection = gallery_frame.state().get('selection');
+				var ids = [];
+				var previewHtml = '';
+				selection.map(function(attachment) {
+					attachment = attachment.toJSON();
+					ids.push(attachment.id);
+					var previewUrl = attachment.sizes && attachment.sizes.thumbnail ? attachment.sizes.thumbnail.url : attachment.url;
+					previewHtml += '<div style="margin: 5px; border: 1px solid #ddd; padding: 2px; background: #fff; display: inline-block;"><img src="' + previewUrl + '" style="width: 50px; height: 50px; object-fit: cover; display: block;" /></div>';
+				});
+				$('#ss_event_gallery').val(ids.join(','));
+				$('#ss-gallery-preview').html(previewHtml);
+				$('#ss-remove-gallery-btn').show();
+			});
+			gallery_frame.open();
+		});
+
+		$('#ss-remove-gallery-btn').on('click', function(e) {
+			e.preventDefault();
+			$('#ss_event_gallery').val('');
+			$('#ss-gallery-preview').html('<span style="color: #999; font-size: 12px;"><?php echo esc_js( __( 'Belum ada gambar galeri', 'sukusastra' ) ); ?></span>');
+			$(this).hide();
+		});
+	});
+	</script>
+	<?php
+	$event_type = sukusastra_get_meta( $post->ID, '_ss_event_type', 'acara' );
+	?>
+	<p>
+		<label for="_ss_event_type"><strong><?php esc_html_e( 'Tipe Event', 'sukusastra' ); ?></strong></label><br>
+		<select class="widefat" id="_ss_event_type" name="_ss_event_type" style="margin-bottom: 10px;">
+			<option value="acara" <?php echo sukusastra_selected( $event_type, 'acara' ); ?>><?php esc_html_e( 'Acara / Agenda (Seminar, Workshop, Bookfair, dll.)', 'sukusastra' ); ?></option>
+			<option value="sayembara" <?php echo sukusastra_selected( $event_type, 'sayembara' ); ?>><?php esc_html_e( 'Sayembara Menulis (Lomba)', 'sukusastra' ); ?></option>
+		</select>
+	</p>
+	<?php
 	sukusastra_render_text_fields(
 		$post->ID,
 		array(
-			'_ss_event_start'   => __( 'Tanggal Mulai (YYYY-MM-DD)', 'sukusastra' ),
-			'_ss_event_end'     => __( 'Tanggal Selesai (YYYY-MM-DD)', 'sukusastra' ),
-			'_ss_event_location'=> __( 'Lokasi/Format', 'sukusastra' ),
-			'_ss_booking_label' => __( 'Label Booking', 'sukusastra' ),
-			'_ss_booking_url'   => __( 'URL Booking', 'sukusastra' ),
-			'_ss_contact_label' => __( 'Label Contact Sales/CP', 'sukusastra' ),
-			'_ss_contact_url'   => __( 'URL Contact Sales/CP', 'sukusastra' ),
+			'_ss_event_start'      => __( 'Tanggal Mulai (YYYY-MM-DD)', 'sukusastra' ),
+			'_ss_event_end'        => __( 'Tanggal Selesai / Deadline (YYYY-MM-DD)', 'sukusastra' ),
+			'_ss_event_location'   => __( 'Lokasi / Format (untuk Acara)', 'sukusastra' ),
+			'_ss_event_prize'      => __( 'Total Hadiah (untuk Sayembara, contoh: Rp 10.000.000)', 'sukusastra' ),
+			'_ss_event_fee'        => __( 'Biaya Pendaftaran (untuk Sayembara, contoh: Gratis / Rp 50.000)', 'sukusastra' ),
+			'_ss_booking_label'    => __( 'Label Button (Contoh: Beli Tiket / Kirim Naskah / Unduh Panduan)', 'sukusastra' ),
+			'_ss_booking_url'      => __( 'URL Booking / Link Formulir Pendaftaran', 'sukusastra' ),
+			'_ss_contact_url'      => __( 'URL Kontak CP/WhatsApp', 'sukusastra' ),
 		)
 	);
 	$status = sukusastra_get_meta( $post->ID, '_ss_event_status', 'upcoming' );
@@ -222,7 +304,6 @@ function sukusastra_render_event_metabox( WP_Post $post ): void {
 	<p><label><input type="checkbox" name="_ss_paid_ticket" value="1" <?php echo sukusastra_checked( $paid, '1' ); ?>> <?php esc_html_e( 'Tiket berbayar', 'sukusastra' ); ?></label></p>
 	<?php
 }
-
 function sukusastra_render_pesan_moral_metabox( WP_Post $post ): void {
 	$pesan_moral = sukusastra_get_meta( $post->ID, '_ss_pesan_moral', '' );
 	?>
@@ -479,7 +560,6 @@ function sukusastra_save_metaboxes( int $post_id ): void {
 			'_ss_contact_url',
 			'_ss_news_summary',
 			'_ss_location',
-			'_ss_source_url',
 			'_ss_youtube_url',
 			'_ss_event_start',
 			'_ss_event_end',
@@ -487,7 +567,28 @@ function sukusastra_save_metaboxes( int $post_id ): void {
 			'_ss_booking_label',
 			'_ss_booking_url',
 			'_ss_contact_url',
+			'_ss_event_type',
+			'_ss_event_prize',
+			'_ss_event_fee',
+			'_ss_event_rules_url',
+			'_ss_event_gallery',
+			'_ss_book_price',
+			'_ss_book_whatsapp',
+			'_ss_book_translator',
+			'_ss_book_isbn',
+			'_ss_book_dimensions',
+			'_ss_book_cover_type',
+			'_ss_terbitan_gallery',
+			'_ss_book_original_title',
+			'_ss_book_translator_en',
+			'_ss_book_city',
+			'_ss_book_paper',
+			'_ss_book_editor',
+			'_ss_book_proofreader',
+			'_ss_book_layout',
+			'_ss_book_cover_design',
 		);
+
 		foreach ( $text_fields as $field ) {
 			if ( isset( $_POST[ $field ] ) ) {
 				update_post_meta( $post_id, $field, sanitize_text_field( wp_unslash( $_POST[ $field ] ) ) );
@@ -577,4 +678,172 @@ function wp_ajax_sukusastra_search_related_posts_callback(): void {
 
 	wp_send_json_success( $data );
 }
+
+function sukusastra_render_terbitan_metabox( WP_Post $post ): void {
+	$book_image_id = sukusastra_get_meta( $post->ID, '_ss_book_image_id', '' );
+	$image_url     = '';
+	if ( $book_image_id ) {
+		$image_url = wp_get_attachment_image_url( (int) $book_image_id, 'medium' );
+	}
+	?>
+	<div class="ss-book-image-uploader-wrapper" style="margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 20px;">
+		<label><strong><?php esc_html_e( 'Foto/Sampul Buku (Portrait)', 'sukusastra' ); ?></strong></label>
+		<p class="description" style="margin-top: 4px;"><?php esc_html_e( 'Upload sampul depan buku di sini.', 'sukusastra' ); ?></p>
+		<div style="margin-top: 10px;">
+			<div id="ss-terbitan-cover-preview" style="max-width: 150px; min-height: 100px; border: 1px dashed #ccc; padding: 5px; background: #fafafa; display: flex; align-items: center; justify-content: center; margin-bottom: 10px;">
+				<?php if ( $image_url ) : ?>
+					<img src="<?php echo esc_url( $image_url ); ?>" style="max-width: 100%; height: auto; display: block;" />
+				<?php else : ?>
+					<span style="color: #999; font-size: 12px;"><?php esc_html_e( 'Belum ada gambar', 'sukusastra' ); ?></span>
+				<?php endif; ?>
+			</div>
+			<input type="hidden" name="_ss_book_image_id" id="ss_terbitan_cover_id" value="<?php echo esc_attr( $book_image_id ); ?>">
+			<button type="button" class="button" id="ss-upload-terbitan-cover-btn"><?php esc_html_e( 'Pilih Sampul', 'sukusastra' ); ?></button>
+			<button type="button" class="button button-link-delete" id="ss-remove-terbitan-cover-btn" style="<?php echo $book_image_id ? '' : 'display: none;'; ?>"><?php esc_html_e( 'Hapus', 'sukusastra' ); ?></button>
+		</div>
+	</div>
+
+	<script>
+	jQuery(document).ready(function($) {
+		var cover_frame;
+		$('#ss-upload-terbitan-cover-btn').on('click', function(e) {
+			e.preventDefault();
+			if (cover_frame) {
+				cover_frame.open();
+				return;
+			}
+			cover_frame = wp.media.frames.cover_frame = wp.media({
+				title: '<?php echo esc_js( __( 'Pilih Sampul Buku', 'sukusastra' ) ); ?>',
+				button: {
+					text: '<?php echo esc_js( __( 'Gunakan Sampul ini', 'sukusastra' ) ); ?>'
+				},
+				multiple: false
+			});
+			cover_frame.on('select', function() {
+				var attachment = cover_frame.state().get('selection').first().toJSON();
+				$('#ss_terbitan_cover_id').val(attachment.id);
+				
+				var previewUrl = attachment.sizes && attachment.sizes.medium ? attachment.sizes.medium.url : attachment.url;
+				$('#ss-terbitan-cover-preview').html('<img src="' + previewUrl + '" style="max-width: 100%; height: auto; display: block;" />');
+				$('#ss-remove-terbitan-cover-btn').show();
+			});
+			cover_frame.open();
+		});
+
+		$('#ss-remove-terbitan-cover-btn').on('click', function(e) {
+			e.preventDefault();
+			$('#ss_terbitan_cover_id').val('');
+			$('#ss-terbitan-cover-preview').html('<span style="color: #999; font-size: 12px;"><?php echo esc_js( __( 'Belum ada gambar', 'sukusastra' ) ); ?></span>');
+			$(this).hide();
+		});
+	});
+	</script>
+
+	<!-- Multi-image gallery uploader for terbitan details -->
+	<?php
+	$gallery_ids = sukusastra_get_meta( $post->ID, '_ss_terbitan_gallery', '' );
+	$gallery_array = $gallery_ids ? explode( ',', $gallery_ids ) : array();
+	?>
+	<div class="ss-terbitan-gallery-uploader-wrapper" style="margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 20px;">
+		<label><strong><?php esc_html_e( 'Galeri Buku / Foto Tambahan (Multi-Gambar)', 'sukusastra' ); ?></strong></label>
+		<p class="description" style="margin-top: 4px;"><?php esc_html_e( 'Pilih satu atau lebih gambar tambahan untuk ditampilkan di slider halaman produk.', 'sukusastra' ); ?></p>
+		<div style="margin-top: 10px;">
+			<div id="ss-terbitan-gallery-preview" style="min-height: 60px; border: 1px dashed #ccc; padding: 10px; background: #fafafa; margin-bottom: 10px;">
+				<?php if ( ! empty( $gallery_array ) ) : ?>
+					<?php foreach ( $gallery_array as $img_id ) : ?>
+						<?php 
+						$img_url = wp_get_attachment_image_url( (int) $img_id, 'thumbnail' ); 
+						if ( $img_url ) :
+							?>
+							<div style="margin: 5px; border: 1px solid #ddd; padding: 2px; background: #fff; display: inline-block;">
+								<img src="<?php echo esc_url( $img_url ); ?>" style="width: 50px; height: 50px; object-fit: cover; display: block;" />
+							</div>
+						<?php endif; ?>
+					<?php endforeach; ?>
+				<?php else : ?>
+					<span style="color: #999; font-size: 12px;"><?php esc_html_e( 'Belum ada gambar galeri', 'sukusastra' ); ?></span>
+				<?php endif; ?>
+			</div>
+			<input type="hidden" name="_ss_terbitan_gallery" id="ss_terbitan_gallery" value="<?php echo esc_attr( $gallery_ids ); ?>">
+			<button type="button" class="button" id="ss-upload-terbitan-gallery-btn"><?php esc_html_e( 'Pilih Gambar', 'sukusastra' ); ?></button>
+			<button type="button" class="button button-link-delete" id="ss-remove-terbitan-gallery-btn" style="<?php echo $gallery_ids ? '' : 'display: none;'; ?>"><?php esc_html_e( 'Hapus', 'sukusastra' ); ?></button>
+		</div>
+	</div>
+
+	<script>
+	jQuery(document).ready(function($) {
+		var terbitan_gallery_frame;
+		$('#ss-upload-terbitan-gallery-btn').on('click', function(e) {
+			e.preventDefault();
+			if (terbitan_gallery_frame) {
+				terbitan_gallery_frame.open();
+				return;
+			}
+			terbitan_gallery_frame = wp.media.frames.terbitan_gallery_frame = wp.media({
+				title: '<?php echo esc_js( __( 'Pilih Gambar Galeri Terbitan', 'sukusastra' ) ); ?>',
+				button: {
+					text: '<?php echo esc_js( __( 'Gunakan Gambar ini', 'sukusastra' ) ); ?>'
+				},
+				multiple: true
+			});
+			terbitan_gallery_frame.on('select', function() {
+				var selection = terbitan_gallery_frame.state().get('selection');
+				var ids = [];
+				var previewHtml = '';
+				selection.map(function(attachment) {
+					attachment = attachment.toJSON();
+					ids.push(attachment.id);
+					var previewUrl = attachment.sizes && attachment.sizes.thumbnail ? attachment.sizes.thumbnail.url : attachment.url;
+					previewHtml += '<div style="margin: 5px; border: 1px solid #ddd; padding: 2px; background: #fff; display: inline-block;"><img src="' + previewUrl + '" style="width: 50px; height: 50px; object-fit: cover; display: block;" /></div>';
+				});
+				$('#ss_terbitan_gallery').val(ids.join(','));
+				$('#ss-terbitan-gallery-preview').html(previewHtml);
+				$('#ss-remove-terbitan-gallery-btn').show();
+			});
+			terbitan_gallery_frame.open();
+		});
+
+		$('#ss-remove-terbitan-gallery-btn').on('click', function(e) {
+			e.preventDefault();
+			$('#ss_terbitan_gallery').val('');
+			$('#ss-terbitan-gallery-preview').html('<span style="color: #999; font-size: 12px;"><?php echo esc_js( __( 'Belum ada gambar galeri', 'sukusastra' ) ); ?></span>');
+			$(this).hide();
+		});
+	});
+	</script>
+
+	<?php
+	// Text fields mapping
+	sukusastra_render_text_fields(
+		$post->ID,
+		array(
+			'_ss_book_price'       => __( 'Harga Buku (contoh: Rp 55.000)', 'sukusastra' ),
+			'_ss_book_whatsapp'    => array(
+				'label'       => __( 'WhatsApp Order (Nomor HP/Link)', 'sukusastra' ),
+				'placeholder' => __( '628388966273 atau link wa.me', 'sukusastra' ),
+			),
+			'_ss_book_author'      => __( 'Penulis Buku', 'sukusastra' ),
+			'_ss_book_original_title' => __( 'Judul Asli (Original Title)', 'sukusastra' ),
+			'_ss_book_translator'  => __( 'Penerjemah', 'sukusastra' ),
+			'_ss_book_translator_en' => __( 'Penerjemah Edisi Inggris (jika ada)', 'sukusastra' ),
+			'_ss_book_publisher'   => array(
+				'label'       => __( 'Penerbit', 'sukusastra' ),
+				'placeholder' => 'Yayasan Komunitas Sastra Suku Sastra',
+			),
+			'_ss_book_city'        => __( 'Kota Terbit (contoh: Yogyakarta, Indonesia)', 'sukusastra' ),
+			'_ss_book_year'        => __( 'Tahun Terbit', 'sukusastra' ),
+			'_ss_book_edition'     => __( 'Cetakan (contoh: Pertama, Februari 2026)', 'sukusastra' ),
+			'_ss_book_pages'       => __( 'Jumlah Halaman', 'sukusastra' ),
+			'_ss_book_isbn'        => __( 'ISBN / Nomor Terbit', 'sukusastra' ),
+			'_ss_book_dimensions'  => __( 'Dimensi (contoh: 13,5 x 19,5 cm)', 'sukusastra' ),
+			'_ss_book_cover_type'  => __( 'Jenis Jilid (contoh: Softcover / Hardcover)', 'sukusastra' ),
+			'_ss_book_paper'       => __( 'Kertas (contoh: Bookpaper 72 gsm)', 'sukusastra' ),
+			'_ss_book_editor'      => __( 'Penyunting', 'sukusastra' ),
+			'_ss_book_proofreader' => __( 'Proofreader', 'sukusastra' ),
+			'_ss_book_layout'      => __( 'Penata Letak', 'sukusastra' ),
+			'_ss_book_cover_design'=> __( 'Desain Sampul', 'sukusastra' ),
+		)
+	);
+}
+
 

@@ -88,6 +88,8 @@ function sukusastra_get_post_type_label( int $post_id ): string {
 		return esc_html__( 'Berita', 'sukusastra' );
 	} elseif ( 'event' === $post_type ) {
 		return esc_html__( 'Event', 'sukusastra' );
+	} elseif ( 'terbitan' === $post_type ) {
+		return esc_html__( 'Katalog Terbitan', 'sukusastra' );
 	}
 	$obj = get_post_type_object( $post_type );
 	return $obj ? esc_html( $obj->labels->singular_name ) : esc_html__( 'Artikel', 'sukusastra' );
@@ -131,6 +133,9 @@ function sukusastra_breadcrumbs(): void {
 			} elseif ( 'penulis' === $post_type ) {
 				$cpt_label    = __( 'Penulis', 'sukusastra' );
 				$archive_link = home_url( '/penulis/' );
+			} elseif ( 'terbitan' === $post_type ) {
+				$cpt_label    = __( 'Katalog Terbitan', 'sukusastra' );
+				$archive_link = home_url( '/katalog-terbitan/' );
 			}
 
 			echo $separator;

@@ -145,10 +145,10 @@
 						'default' => 'https://twitter.com/sukusastra',
 						'svg'     => '<svg class="w-4 h-4 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>'
 					),
-					'threads' => array(
-						'label'   => 'Threads',
-						'default' => 'https://threads.net/@sukusastra',
-						'svg'     => '<svg class="w-4 h-4 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12.63 2c-5.523 0-10 4.477-10 10s4.477 10 10 10c1.88 0 3.644-.52 5.158-1.428l-1.077-1.503c-1.192.684-2.585 1.08-4.08 1.08-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8c0 1.488-.352 2.825-1.018 3.79-.628.908-1.545 1.41-2.582 1.41-1.198 0-2-.882-2-2v-4.5c0-.827-.673-1.5-1.5-1.5s-1.5.673-1.5 1.5v4.5c0 .827.673 1.5 1.5 1.5.424 0 .798-.18 1.075-.465.344.978 1.258 1.665 2.425 1.665 1.83 0 3.328-1.026 4.22-2.316.892-1.29 1.355-3.056 1.355-5.074 0-5.523-4.477-10-10-10zm0 7.5c-.827 0-1.5.673-1.5 1.5s.673 1.5 1.5 1.5 1.5-.673 1.5-1.5-.673-1.5-1.5-1.5z"/></svg>'
+					'whatsapp' => array(
+						'label'   => 'WhatsApp',
+						'default' => 'https://wa.me/6281234567890',
+						'svg'     => '<svg class="w-4 h-4 fill-current" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M16.01 3.2c-7.04 0-12.77 5.72-12.77 12.76 0 2.25.59 4.44 1.72 6.37L3.12 29l6.83-1.79a12.7 12.7 0 0 0 6.06 1.54c7.04 0 12.77-5.72 12.77-12.76S23.05 3.2 16.01 3.2Zm0 23.39c-1.91 0-3.79-.51-5.43-1.49l-.39-.23-4.05 1.06 1.08-3.95-.25-.41a10.56 10.56 0 0 1-1.62-5.61c0-5.86 4.78-10.63 10.65-10.63 5.86 0 10.64 4.77 10.64 10.63 0 5.86-4.78 10.63-10.64 10.63Zm5.83-7.96c-.32-.16-1.89-.93-2.18-1.04-.29-.11-.5-.16-.71.16-.21.32-.82 1.04-1.01 1.25-.19.21-.37.24-.69.08-.32-.16-1.35-.5-2.58-1.59-.95-.85-1.6-1.9-1.79-2.22-.19-.32-.02-.49.14-.65.15-.15.32-.37.48-.56.16-.19.21-.32.32-.53.11-.21.05-.4-.03-.56-.08-.16-.71-1.71-.98-2.34-.26-.62-.52-.53-.71-.54h-.61c-.21 0-.56.08-.85.4-.29.32-1.12 1.09-1.12 2.66s1.15 3.09 1.31 3.3c.16.21 2.27 3.46 5.5 4.85.77.33 1.37.53 1.84.68.77.24 1.48.21 2.04.13.62-.09 1.89-.77 2.16-1.52.27-.75.27-1.39.19-1.52-.08-.13-.29-.21-.61-.37Z"/></svg>'
 					),
 					'facebook' => array(
 						'label'   => 'Facebook',
@@ -174,15 +174,28 @@
 	</div>
 </footer>
 
-<!-- Floating Sticky Kirim Karya Button -->
-<div class="fixed bottom-6 right-6 z-50">
-	<a class="block hover:scale-105 active:scale-95 transition-all duration-300" style="width: 200px; height: 200px;" href="<?php echo esc_url( home_url( '/ketentuan-pengiriman-karya/' ) ); ?>" aria-label="<?php esc_attr_e( 'Kirim Karya', 'sukusastra' ); ?>">
-		<!-- Light Mode badge -->
-		<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/kirim.png' ); ?>" alt="<?php esc_attr_e( 'Kirim Karya', 'sukusastra' ); ?>" class="w-full h-full object-contain kirim-light">
-		<!-- Dark Mode badge -->
-		<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/kirim-white.png' ); ?>" alt="<?php esc_attr_e( 'Kirim Karya', 'sukusastra' ); ?>" class="w-full h-full object-contain kirim-dark">
-	</a>
-</div>
+	<!-- Floating Sticky Kirim Karya Button -->
+	<div class="hidden md:block fixed bottom-6 right-6 z-50">
+		<a class="block hover:scale-105 active:scale-95 transition-all duration-300" style="width: 200px; height: 200px;" href="<?php echo esc_url( home_url( '/ketentuan-pengiriman-karya/' ) ); ?>" aria-label="<?php esc_attr_e( 'Kirim Karya', 'sukusastra' ); ?>">
+			<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/kirim.png' ); ?>" alt="<?php esc_attr_e( 'Kirim Karya', 'sukusastra' ); ?>" class="w-full h-full object-contain">
+		</a>
+	</div>
+
+	<div class="h-24 md:hidden" aria-hidden="true"></div>
+
+	<!-- Mobile Sticky Kirim Karya Bar -->
+	<div class="ss-mobile-submit-bar fixed inset-x-0 bottom-0 z-50 md:hidden">
+		<a class="ss-mobile-submit-link relative flex min-h-[72px] items-center gap-3 overflow-hidden rounded-t-2xl px-5 py-3 text-white shadow-[0_-10px_30px_rgba(15,23,42,0.18)] no-underline" href="<?php echo esc_url( home_url( '/ketentuan-pengiriman-karya/' ) ); ?>" aria-label="<?php esc_attr_e( 'Kirim Karya', 'sukusastra' ); ?>">
+			<span class="flex-1 text-sm font-black leading-tight">
+				<?php esc_html_e( 'Mau kirim karya? Yuk baca ketentuan redaksi.', 'sukusastra' ); ?>
+			</span>
+			<span class="ss-mobile-submit-icon grid h-11 w-11 shrink-0 place-items-center rounded-full bg-white shadow-sm dark:bg-zinc-950">
+				<svg class="h-5 w-5 fill-none stroke-current stroke-[2.5]" viewBox="0 0 24 24" aria-hidden="true">
+					<path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+				</svg>
+			</span>
+		</a>
+	</div>
 
 <?php wp_footer(); ?>
 
