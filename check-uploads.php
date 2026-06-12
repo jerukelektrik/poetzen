@@ -60,16 +60,32 @@ if ( ! file_exists( $test_file_path ) ) {
 	} else {
 		echo "wp_insert_attachment succeeded! ID: $attach_id\n";
 		
-		// Let's test generating metadata
+		// Let's test generating metadata safely
 		require_once ABSPATH . 'wp-admin/includes/image.php';
-		echo "image.php loaded. Generating metadata...\n";
-		
-		$attach_data = wp_generate_attachment_metadata( $attach_id, $test_file_path );
-		if ( empty( $attach_data ) ) {
-			echo "Warning: wp_generate_attachment_metadata returned empty data.\n";
+		echo "image.php loaded. Checking if image libraries exist...\n";
+		if ( ! function_exists('gd_info') ) {
+			echo "GD library is NOT enabled!\n";
 		} else {
-			echo "wp_generate_attachment_metadata succeeded!\n";
-			print_r( $attach_data );
+			echo "GD library is enabled.\n";
+		}
+		if ( ! class_exists('Imagick') ) {
+			echo "Imagick extension is NOT enabled!\n";
+		} else {
+			echo "Imagick extension is enabled.\n";
+		}
+
+		try {
+			echo "Attempting to generate metadata...\n";
+			$attach_data = wp_generate_attachment_metadata( $attach_id, $test_file_path );
+			if ( empty( $attach_data ) ) {
+				echo "Warning: wp_generate_attachment_metadata returned empty data.\n";
+			} else {
+				echo "wp_generate_attachment_metadata succeeded!\n";
+				print_r( $attach_data );
+			}
+		} catch (Throwable $e) {
+			echo "Fatal Error caught during metadata generation: " . $e->getMessage() . "\n";
+			$attach_data = array();
 		}
 		
 		wp_update_attachment_metadata( $attach_id, $attach_data );
