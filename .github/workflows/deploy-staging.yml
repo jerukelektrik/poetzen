@@ -1,0 +1,36 @@
+name: Deploy Theme to Domainesia Staging
+
+on:
+  push:
+    branches:
+      - main  # Ganti dengan branch utama Anda jika namanya bukan 'main' (misalnya 'master')
+
+jobs:
+  web-deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+    - name: Get latest code
+      uses: actions/checkout@v4
+      
+    - name: Install dependencies & Build CSS
+      run: |
+        npm install
+        npm run build:css
+
+    - name: Sync files to Domainesia
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      with:
+        server: ${{ secrets.FTP_SERVER }}
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        # Path di bawah sesuaikan dengan lokasi folder tema website staging Anda di cPanel
+        # Contoh jika staging Anda ada di public_html/staging:
+        server-dir: /public_html/staging/wp-content/themes/poetzen/
+        exclude: |
+          **/.git*
+          **/.git*/**
+          **/node_modules/**
+          .github/**
+          tests/**
+          README.md
