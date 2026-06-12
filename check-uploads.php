@@ -26,7 +26,7 @@ $total_attachments = $wpdb->get_var( "SELECT COUNT(*) FROM $wpdb->posts WHERE po
 echo "Total Attachments in Database: " . $total_attachments . "\n";
 
 // Require migration file to get access to registration function
-require_once __DIR__ . '/migration.php';
+require_once __DIR__ . '/inc/migration.php';
 
 // Test image registration manually on diva-pantura-1.jpg
 echo "\n=== Testing Image Registration Directly ===\n";
