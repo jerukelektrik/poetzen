@@ -186,6 +186,53 @@ function sukusastra_handle_json_export(): void {
 }
 
 /**
+ * Handle the Import Upload Trigger (handles sorting and redirection to batching).
+ */
+add_action( 'admin_init', 'sukusastra_handle_json_import' );
+function sukusastra_handle_json_import(): void {
+	if ( ! is_admin() || ! isset( $_GET['page'] ) || 'sukusastra_migration' !== $_GET['page'] ) {
+		return;
+	}
+
+	if ( ! current_user_can( 'manage_options' ) ) {
+		return;
+	}
+
+	if ( isset( $_POST['sukusastra_import_json_nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['sukusastra_import_json_nonce'] ) ), 'sukusastra_do_json_import' ) ) {
+		if ( ! empty( $_FILES['migration_json']['tmp_name'] ) ) {
+			$file = sanitize_text_field( wp_unslash( $_FILES['migration_json']['tmp_name'] ) );
+			$json_raw = file_get_contents( $file ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+			$data = json_decode( $json_raw, true );
+
+			if ( is_array( $data ) ) {
+				// Sort: process CPT 'penulis' first so author mapping works correctly
+				usort( $data, function( $a, $b ) {
+					if ( 'penulis' === $a['post_type'] && 'penulis' !== $b['post_type'] ) {
+						return -1;
+					}
+					if ( 'penulis' !== $a['post_type'] && 'penulis' === $b['post_type'] ) {
+						return 1;
+					}
+					return 0;
+				} );
+
+				update_option( 'sukusastra_migration_data', $data );
+
+				$redirect_url = admin_url( 'tools.php?page=sukusastra_migration&step=import&offset=0&imported=0&skipped=0' );
+				wp_safe_redirect( $redirect_url );
+				exit;
+			} else {
+				wp_safe_redirect( admin_url( 'tools.php?page=sukusastra_migration&import_error=invalid_json' ) );
+				exit;
+			}
+		} else {
+			wp_safe_redirect( admin_url( 'tools.php?page=sukusastra_migration&import_error=no_file' ) );
+			exit;
+		}
+	}
+}
+
+/**
  * Render the Migration Page.
  */
 function sukusastra_render_migration_page(): void {
@@ -193,151 +240,178 @@ function sukusastra_render_migration_page(): void {
 		return;
 	}
 
-	$import_success = false;
-	$imported_count = 0;
-	$skipped_count  = 0;
+	// Handle GET Batch Processing
+	if ( isset( $_GET['step'] ) && 'import' === $_GET['step'] ) {
+		$data = get_option( 'sukusastra_migration_data' );
+		if ( ! is_array( $data ) ) {
+			wp_safe_redirect( admin_url( 'tools.php?page=sukusastra_migration&import_error=data_lost' ) );
+			exit;
+		}
+
+		$offset = isset( $_GET['offset'] ) ? (int) $_GET['offset'] : 0;
+		$imported_count = isset( $_GET['imported'] ) ? (int) $_GET['imported'] : 0;
+		$skipped_count = isset( $_GET['skipped'] ) ? (int) $_GET['skipped'] : 0;
+		$batch_size = 20; // Process 20 items per batch to prevent server resource limits
+
+		$total_items = count( $data );
+		$batch_items = array_slice( $data, $offset, $batch_size );
+
+		// Process this batch
+		foreach ( $batch_items as $item ) {
+			@set_time_limit( 30 );
+			$slug = sanitize_title( $item['slug'] );
+			
+			// Skip duplicate slug
+			$existing = new WP_Query( array(
+				'post_type'      => $item['post_type'],
+				'name'           => $slug,
+				'posts_per_page' => 1,
+				'post_status'    => 'any',
+			) );
+
+			$post_id = 0;
+
+			if ( $existing->have_posts() ) {
+				$post_id = $existing->posts[0]->ID;
+				$skipped_count++;
+			} else {
+				// Insert post
+				$post_id = wp_insert_post( array(
+					'post_title'   => $item['title'],
+					'post_name'    => $slug,
+					'post_content' => $item['content'],
+					'post_excerpt' => $item['excerpt'],
+					'post_date'    => $item['date'],
+					'post_type'    => $item['post_type'],
+					'post_status'  => 'publish',
+				) );
+
+				if ( ! is_wp_error( $post_id ) && $post_id > 0 ) {
+					$imported_count++;
+				}
+			}
+
+			if ( ! is_wp_error( $post_id ) && $post_id > 0 ) {
+				// 1. Categories
+				if ( ! empty( $item['categories'] ) ) {
+					$cat_ids = array();
+					foreach ( $item['categories'] as $cat_name ) {
+						$term = get_term_by( 'name', $cat_name, 'category' );
+						if ( $term ) {
+							$cat_ids[] = (int) $term->term_id;
+						} else {
+							$new_cat = wp_insert_term( $cat_name, 'category' );
+							if ( ! is_wp_error( $new_cat ) ) {
+								$cat_ids[] = (int) $new_cat['term_id'];
+							}
+						}
+					}
+					wp_set_post_categories( $post_id, $cat_ids );
+				}
+
+				// 2. Featured Image (Register if physical file exists)
+				if ( ! empty( $item['featured_image_path'] ) ) {
+					$attach_id = sukusastra_register_image_attachment( $item['featured_image_path'], $post_id );
+					if ( $attach_id > 0 ) {
+						set_post_thumbnail( $post_id, $attach_id );
+					}
+				}
+
+				// 3. Metadata
+				if ( ! empty( $item['metas'] ) ) {
+					foreach ( $item['metas'] as $key => $val ) {
+						// Reconstruct specific attachment paths to new IDs
+						if ( '_ss_book_image_path' === $key ) {
+							$attach_id = sukusastra_register_image_attachment( $val, $post_id );
+							if ( $attach_id > 0 ) {
+								update_post_meta( $post_id, '_ss_book_image_id', $attach_id );
+							}
+						} elseif ( '_ss_event_gallery_paths' === $key || '_ss_terbitan_gallery_paths' === $key ) {
+							$meta_target_key = str_replace( '_paths', '', $key );
+							$paths = explode( ',', $val );
+							$new_ids = array();
+							foreach ( $paths as $path ) {
+								$new_ids[] = sukusastra_register_image_attachment( $path, $post_id );
+							}
+							$filtered_ids = array_filter( $new_ids );
+							if ( ! empty( $filtered_ids ) ) {
+								update_post_meta( $post_id, $meta_target_key, implode( ',', $filtered_ids ) );
+							}
+						} elseif ( '_ss_original_author_slug' === $key ) {
+							// Search CPT penulis by slug
+							$author_query = new WP_Query( array(
+								'post_type'      => 'penulis',
+								'name'           => $val,
+								'posts_per_page' => 1,
+								'post_status'    => 'any',
+							) );
+							if ( $author_query->have_posts() ) {
+								$author_id = $author_query->posts[0]->ID;
+								update_post_meta( $post_id, '_ss_original_author_id', $author_id );
+							}
+						} else {
+							update_post_meta( $post_id, $key, $val );
+						}
+					}
+				}
+			}
+		}
+
+		$new_offset = $offset + $batch_size;
+		$percent = min( 100, round( ( $new_offset / $total_items ) * 100 ) );
+
+		if ( $new_offset >= $total_items ) {
+			delete_option( 'sukusastra_migration_data' );
+			?>
+			<script>
+				window.location.href = '<?php echo esc_url_raw( admin_url( 'tools.php?page=sukusastra_migration&import_success=1&imported=' . $imported_count . '&skipped=' . $skipped_count ) ); ?>';
+			</script>
+			<?php
+			return;
+		}
+
+		// Show progress
+		?>
+		<div class="wrap">
+			<h1><?php esc_html_e( 'Sedang Mengimpor Data...', 'sukusastra' ); ?></h1>
+			<p class="description"><?php esc_html_e( 'Proses ini membagi beban impor menjadi beberapa tahap kecil agar server tidak overload.', 'sukusastra' ); ?></p>
+			
+			<div style="background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-top: 20px; max-width: 600px; border-top: 4px solid #b42318;">
+				<div style="font-size: 16px; margin-bottom: 15px;">
+					<strong>Progres: <?php echo esc_html( $new_offset ); ?> / <?php echo esc_html( $total_items ); ?> item</strong> (<?php echo esc_html( $percent ); ?>%)
+				</div>
+				<div style="background: #eee; border-radius: 10px; height: 16px; width: 100%; overflow: hidden; margin-bottom: 20px;">
+					<div style="background: #b42318; width: <?php echo esc_attr( $percent ); ?>%; height: 100%; transition: width 0.2s ease;"></div>
+				</div>
+				<ul style="margin: 0; padding: 0 0 0 20px; list-style-type: disc; line-height: 1.6;">
+					<li>Berhasil diimpor/sync baru: <strong><?php echo esc_html( $imported_count ); ?></strong></li>
+					<li>Dilewati/update (sudah ada): <strong><?php echo esc_html( $skipped_count ); ?></strong></li>
+				</ul>
+				<p style="color: #666; font-style: italic; margin-top: 25px; font-size: 13px;">Mohon jangan tutup atau refresh tab browser ini sampai selesai...</p>
+			</div>
+		</div>
+		<script>
+			setTimeout(function() {
+				window.location.href = '<?php echo esc_url_raw( admin_url( 'tools.php?page=sukusastra_migration&step=import&offset=' . $new_offset . '&imported=' . $imported_count . '&skipped=' . $skipped_count ) ); ?>';
+			}, 300);
+		</script>
+		<?php
+		return;
+	}
+
+	$import_success = isset( $_GET['import_success'] ) && '1' === $_GET['import_success'];
+	$imported_count = isset( $_GET['imported'] ) ? (int) $_GET['imported'] : 0;
+	$skipped_count  = isset( $_GET['skipped'] ) ? (int) $_GET['skipped'] : 0;
 	$error_msg      = '';
 
-	if ( isset( $_POST['sukusastra_import_json_nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['sukusastra_import_json_nonce'] ) ), 'sukusastra_do_json_import' ) ) {
-		@set_time_limit( 900 );
-		@ini_set( 'memory_limit', '1024M' );
-
-		if ( ! empty( $_FILES['migration_json']['tmp_name'] ) ) {
-			$file = sanitize_text_field( wp_unslash( $_FILES['migration_json']['tmp_name'] ) );
-			$json_raw = file_get_contents( $file ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
-			$data = json_decode( $json_raw, true );
-
-			if ( is_array( $data ) ) {
-				// We need to import 'penulis' CPT first so we can map other posts to them later
-				// Split into penulis items and other items
-				$penulis_items = array();
-				$other_items   = array();
-
-				foreach ( $data as $item ) {
-					if ( 'penulis' === $item['post_type'] ) {
-						$penulis_items[] = $item;
-					} else {
-						$other_items[] = $item;
-					}
-				}
-
-				// Import function
-				$process_item = function( $item ) use ( &$imported_count, &$skipped_count ) {
-					@set_time_limit( 60 );
-					$slug = sanitize_title( $item['slug'] );
-					
-					// Skip duplicate slug
-					$existing = new WP_Query( array(
-						'post_type'      => $item['post_type'],
-						'name'           => $slug,
-						'posts_per_page' => 1,
-						'post_status'    => 'any',
-					) );
-
-					$post_id = 0;
-
-					if ( $existing->have_posts() ) {
-						$post_id = $existing->posts[0]->ID;
-						$skipped_count++;
-					} else {
-						// Insert post
-						$post_id = wp_insert_post( array(
-							'post_title'   => $item['title'],
-							'post_name'    => $slug,
-							'post_content' => $item['content'],
-							'post_excerpt' => $item['excerpt'],
-							'post_date'    => $item['date'],
-							'post_type'    => $item['post_type'],
-							'post_status'  => 'publish',
-						) );
-
-						if ( ! is_wp_error( $post_id ) && $post_id > 0 ) {
-							$imported_count++;
-						}
-					}
-
-					if ( ! is_wp_error( $post_id ) && $post_id > 0 ) {
-						// 1. Categories
-						if ( ! empty( $item['categories'] ) ) {
-							$cat_ids = array();
-							foreach ( $item['categories'] as $cat_name ) {
-								$term = get_term_by( 'name', $cat_name, 'category' );
-								if ( $term ) {
-									$cat_ids[] = (int) $term->term_id;
-								} else {
-									$new_cat = wp_insert_term( $cat_name, 'category' );
-									if ( ! is_wp_error( $new_cat ) ) {
-										$cat_ids[] = (int) $new_cat['term_id'];
-									}
-								}
-							}
-							wp_set_post_categories( $post_id, $cat_ids );
-						}
-
-						// 2. Featured Image (Register if physical file exists)
-						if ( ! empty( $item['featured_image_path'] ) ) {
-							$attach_id = sukusastra_register_image_attachment( $item['featured_image_path'], $post_id );
-							if ( $attach_id > 0 ) {
-								set_post_thumbnail( $post_id, $attach_id );
-							}
-						}
-
-						// 3. Metadata
-						if ( ! empty( $item['metas'] ) ) {
-							foreach ( $item['metas'] as $key => $val ) {
-								// Reconstruct specific attachment paths to new IDs
-								if ( '_ss_book_image_path' === $key ) {
-									$attach_id = sukusastra_register_image_attachment( $val, $post_id );
-									if ( $attach_id > 0 ) {
-										update_post_meta( $post_id, '_ss_book_image_id', $attach_id );
-									}
-								} elseif ( '_ss_event_gallery_paths' === $key || '_ss_terbitan_gallery_paths' === $key ) {
-									$meta_target_key = str_replace( '_paths', '', $key );
-									$paths = explode( ',', $val );
-									$new_ids = array();
-									foreach ( $paths as $path ) {
-										$new_ids[] = sukusastra_register_image_attachment( $path, $post_id );
-									}
-									$filtered_ids = array_filter( $new_ids );
-									if ( ! empty( $filtered_ids ) ) {
-										update_post_meta( $post_id, $meta_target_key, implode( ',', $filtered_ids ) );
-									}
-								} elseif ( '_ss_original_author_slug' === $key ) {
-									// Search CPT penulis by slug
-									$author_query = new WP_Query( array(
-										'post_type'      => 'penulis',
-										'name'           => $val,
-										'posts_per_page' => 1,
-										'post_status'    => 'any',
-									) );
-									if ( $author_query->have_posts() ) {
-										$author_id = $author_query->posts[0]->ID;
-										update_post_meta( $post_id, '_ss_original_author_id', $author_id );
-									}
-								} else {
-									update_post_meta( $post_id, $key, $val );
-								}
-							}
-						}
-					}
-				};
-
-				// Process penulis CPT first
-				foreach ( $penulis_items as $item ) {
-					$process_item( $item );
-				}
-
-				// Process all other items
-				foreach ( $other_items as $item ) {
-					$process_item( $item );
-				}
-
-				$import_success = true;
-			} else {
-				$error_msg = __( 'Gagal membaca format JSON. Pastikan file valid.', 'sukusastra' );
-			}
-		} else {
+	if ( isset( $_GET['import_error'] ) ) {
+		$err = sanitize_text_field( wp_unslash( $_GET['import_error'] ) );
+		if ( 'invalid_json' === $err ) {
+			$error_msg = __( 'Gagal membaca format JSON. Pastikan file valid.', 'sukusastra' );
+		} elseif ( 'no_file' === $err ) {
 			$error_msg = __( 'Silakan unggah file JSON hasil ekspor terlebih dahulu.', 'sukusastra' );
+		} elseif ( 'data_lost' === $err ) {
+			$error_msg = __( 'Data migrasi hilang atau kedaluwarsa. Silakan upload ulang.', 'sukusastra' );
 		}
 	}
 
