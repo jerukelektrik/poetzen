@@ -199,6 +199,9 @@ function sukusastra_render_migration_page(): void {
 	$error_msg      = '';
 
 	if ( isset( $_POST['sukusastra_import_json_nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['sukusastra_import_json_nonce'] ) ), 'sukusastra_do_json_import' ) ) {
+		@set_time_limit( 900 );
+		@ini_set( 'memory_limit', '1024M' );
+
 		if ( ! empty( $_FILES['migration_json']['tmp_name'] ) ) {
 			$file = sanitize_text_field( wp_unslash( $_FILES['migration_json']['tmp_name'] ) );
 			$json_raw = file_get_contents( $file ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
@@ -220,6 +223,7 @@ function sukusastra_render_migration_page(): void {
 
 				// Import function
 				$process_item = function( $item ) use ( &$imported_count, &$skipped_count ) {
+					@set_time_limit( 60 );
 					$slug = sanitize_title( $item['slug'] );
 					
 					// Skip duplicate slug
