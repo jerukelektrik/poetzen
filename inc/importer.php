@@ -95,18 +95,40 @@ function sukusastra_render_import_penulis_page(): void {
 						continue;
 					}
 
-					// Insert post
+					// Fetch extra fields from CSV
+					$biografi = '';
+					if ( isset( $header_map['Biografi'] ) && isset( $data[ $header_map['Biografi'] ] ) ) {
+						$biografi = wp_kses_post( trim( $data[ $header_map['Biografi'] ] ) );
+					}
+
+					// Insert post of CPT penulis
 					$post_id = wp_insert_post( array(
-						'post_title'  => $name,
-						'post_name'   => $slug,
-						'post_type'   => 'penulis',
-						'post_status' => 'publish',
+						'post_title'   => $name,
+						'post_name'    => $slug,
+						'post_type'    => 'penulis',
+						'post_status'  => 'publish',
+						'post_content' => $biografi,
 					) );
 
 					if ( ! is_wp_error( $post_id ) && $post_id > 0 ) {
-						// Store additional metadata if available
+						// Store additional metadata
 						if ( isset( $header_map['Email'] ) && isset( $data[ $header_map['Email'] ] ) ) {
 							update_post_meta( $post_id, '_ss_penulis_email', sanitize_email( $data[ $header_map['Email'] ] ) );
+						}
+						
+						// Tempat Lahir
+						if ( isset( $header_map['Tempat Lahir'] ) && isset( $data[ $header_map['Tempat Lahir'] ] ) ) {
+							update_post_meta( $post_id, '_ss_penulis_tempat_lahir', sanitize_text_field( $data[ $header_map['Tempat Lahir'] ] ) );
+						}
+
+						// Tanggal Lahir
+						if ( isset( $header_map['Tanggal Lahir'] ) && isset( $data[ $header_map['Tanggal Lahir'] ] ) ) {
+							update_post_meta( $post_id, '_ss_penulis_tanggal_lahir', sanitize_text_field( $data[ $header_map['Tanggal Lahir'] ] ) );
+						}
+
+						// Bio Summary (Deskripsi Singkat)
+						if ( isset( $header_map['Bio Summary'] ) && isset( $data[ $header_map['Bio Summary'] ] ) ) {
+							update_post_meta( $post_id, '_ss_penulis_bio_summary', sanitize_text_field( $data[ $header_map['Bio Summary'] ] ) );
 						}
 						
 						$imported_count++;
@@ -126,7 +148,7 @@ function sukusastra_render_import_penulis_page(): void {
 	<div class="wrap">
 		<h1><?php esc_html_e( 'Import Penulis via CSV', 'sukusastra' ); ?></h1>
 		<p class="description">
-			<?php esc_html_e( 'Gunakan halaman ini untuk mendaftarkan akun Penulis secara masal langsung ke dalam Custom Post Type Penulis melalui file spreadsheet (.csv).', 'sukusastra' ); ?>
+			<?php esc_html_e( 'Gunakan halaman ini untuk mendaftarkan data Penulis secara masal langsung ke dalam Custom Post Type Penulis melalui file spreadsheet (.csv).', 'sukusastra' ); ?>
 		</p>
 
 		<?php if ( $import_success ) : ?>
@@ -153,7 +175,7 @@ function sukusastra_render_import_penulis_page(): void {
 						<td>
 							<input type="file" name="penulis_csv" id="penulis_csv" accept=".csv" required>
 							<p class="description">
-								<?php esc_html_e( 'File harus berupa format .csv dengan header kolom minimal "Display Name/Nama Penulis" dan "Username/Slug".', 'sukusastra' ); ?>
+								<?php esc_html_e( 'File harus berupa format .csv dengan header kolom minimal "Display Name/Nama Penulis", "Username/Slug", "Biografi", "Tempat Lahir", "Tanggal Lahir", dan "Bio Summary".', 'sukusastra' ); ?>
 							</p>
 						</td>
 					</tr>
