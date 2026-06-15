@@ -524,7 +524,16 @@ function sukusastra_render_migration_page(): void {
 							<?php 
 							$dir_2025 = wp_upload_dir()['basedir'] . '/2025';
 							if ( is_dir( $dir_2025 ) ) {
-								echo '<span style="color: green; font-weight: bold;">✔ Terdeteksi (Folder Ada)</span>';
+								echo '<span style="color: green; font-weight: bold;">✔ Terdeteksi (Folder Ada)</span><br>';
+								$subdirs = array_filter( glob( $dir_2025 . '/*' ), 'is_dir' );
+								if ( ! empty( $subdirs ) ) {
+									echo 'Subfolder bulan: ' . esc_html( implode( ', ', array_map( 'basename', $subdirs ) ) ) . '<br>';
+									$first_sub = $subdirs[0];
+									$files = array_diff( scandir( $first_sub ), array( '.', '..' ) );
+									echo 'Bulan ' . esc_html( basename( $first_sub ) ) . ' berisi ' . count( $files ) . ' file (Sample: ' . esc_html( implode( ', ', array_slice( $files, 0, 3 ) ) ) . ')';
+								} else {
+									echo '<span style="color: orange;">Folder 2025 kosong / tidak berisi subfolder bulan!</span>';
+								}
 							} else {
 								echo '<span style="color: red; font-weight: bold;">❌ Tidak Terdeteksi (Folder Belum Ada / Salah Letak)</span>';
 							}
@@ -537,7 +546,16 @@ function sukusastra_render_migration_page(): void {
 							<?php 
 							$dir_2026 = wp_upload_dir()['basedir'] . '/2026';
 							if ( is_dir( $dir_2026 ) ) {
-								echo '<span style="color: green; font-weight: bold;">✔ Terdeteksi (Folder Ada)</span>';
+								echo '<span style="color: green; font-weight: bold;">✔ Terdeteksi (Folder Ada)</span><br>';
+								$subdirs = array_filter( glob( $dir_2026 . '/*' ), 'is_dir' );
+								if ( ! empty( $subdirs ) ) {
+									echo 'Subfolder bulan: ' . esc_html( implode( ', ', array_map( 'basename', $subdirs ) ) ) . '<br>';
+									$first_sub = $subdirs[0];
+									$files = array_diff( scandir( $first_sub ), array( '.', '..' ) );
+									echo 'Bulan ' . esc_html( basename( $first_sub ) ) . ' berisi ' . count( $files ) . ' file (Sample: ' . esc_html( implode( ', ', array_slice( $files, 0, 3 ) ) ) . ')';
+								} else {
+									echo '<span style="color: orange;">Folder 2026 kosong / tidak berisi subfolder bulan!</span>';
+								}
 							} else {
 								echo '<span style="color: red; font-weight: bold;">❌ Tidak Terdeteksi (Folder Belum Ada / Salah Letak)</span>';
 							}
