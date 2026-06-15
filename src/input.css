@@ -292,25 +292,25 @@
   }
 
   .ss-mobile-submit-link {
-    background-color: #e60012;
+    background-color: #cf2e2e;
     color: #ffffff;
   }
 
   .ss-mobile-submit-link:active {
-    background-color: #c90010;
+    background-color: #b42323;
   }
 
   .dark .ss-mobile-submit-link {
-    background-color: #e60012;
-    color: #0f172a;
+    background-color: #cf2e2e;
+    color: #ffffff;
   }
 
   .ss-mobile-submit-icon {
-    color: #e60012;
+    color: #cf2e2e;
   }
 
   .dark .ss-mobile-submit-icon {
-    color: #e60012;
+    color: #cf2e2e;
   }
 
   /* ─── News Update Marquee Animation ─── */
@@ -646,6 +646,98 @@
   }
 
   @media (max-width: 47.999rem) {
+    .ss-review-archive-page {
+      padding-top: 1rem !important;
+    }
+
+    .ss-review-archive-page .ss-container > .grid {
+      gap: 1.25rem !important;
+    }
+
+    .ss-review-archive-page header {
+      padding-bottom: 0.75rem !important;
+    }
+
+    .ss-review-archive-page .ss-page-title {
+      font-size: clamp(2.25rem, 11vw, 3.35rem) !important;
+      line-height: 0.98 !important;
+    }
+
+    .ss-review-archive-page .ss-body {
+      font-size: 0.9rem !important;
+      line-height: 1.55 !important;
+    }
+
+    .ss-review-archive-filter {
+      border-radius: 1.5rem !important;
+      gap: 1rem !important;
+      padding: 1.25rem !important;
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08) !important;
+    }
+
+    .ss-review-archive-filter > div:first-child {
+      align-items: flex-start !important;
+      flex-direction: column !important;
+      gap: 0.8rem !important;
+      width: 100% !important;
+    }
+
+    .ss-review-archive-filter input,
+    .ss-review-archive-filter select {
+      border-radius: 0.85rem !important;
+      font-size: 0.9rem !important;
+      min-height: 3rem;
+    }
+
+    .ss-review-archive-filter .ss-button {
+      border-radius: 0.65rem !important;
+      min-height: 3rem;
+      padding-inline: 1.65rem !important;
+    }
+
+    .ss-review-archive-grid {
+      gap: 1rem 0.85rem !important;
+      margin-top: 0 !important;
+    }
+
+    .ss-review-archive-grid .ss-review-card {
+      border-radius: 1rem !important;
+      gap: 0.6rem !important;
+      height: 100%;
+      padding: 0.65rem !important;
+    }
+
+    .ss-review-archive-grid .ss-review-card-media {
+      border-radius: 0.75rem !important;
+    }
+
+    .ss-review-archive-grid .ss-review-card-media img,
+    .ss-review-archive-grid .ss-review-card-media > div {
+      aspect-ratio: 3 / 4 !important;
+      border-radius: inherit !important;
+      max-height: 12.25rem;
+      object-fit: cover;
+    }
+
+    .ss-review-archive-grid .ss-review-card-content {
+      gap: 0.35rem !important;
+    }
+
+    .ss-review-archive-grid .ss-eyebrow {
+      font-size: 0.58rem !important;
+      line-height: 1.1 !important;
+    }
+
+    .ss-review-archive-grid .ss-review-card-title {
+      font-size: 0.88rem !important;
+      line-height: 1.18 !important;
+    }
+
+    .ss-review-archive-grid .ss-review-card-author {
+      font-size: 0.6rem !important;
+      line-height: 1.2 !important;
+    }
+
     .ss-category-page {
       padding-top: 1rem !important;
     }

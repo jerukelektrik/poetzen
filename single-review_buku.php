@@ -125,7 +125,9 @@ get_header(); ?>
 						<?php endif; ?>
 					</div>
 				</div>
-				<?php get_template_part( 'template-parts/sidebar-single' ); ?>
+				<div class="hidden lg:block">
+					<?php get_template_part( 'template-parts/sidebar-single' ); ?>
+				</div>
 			</aside>
 			
 			<!-- Review Details Content -->
@@ -165,6 +167,10 @@ get_header(); ?>
 						<?php endforeach; ?>
 					</div>
 				<?php endif; ?>
+
+				<div class="mt-10 lg:hidden">
+					<?php get_template_part( 'template-parts/sidebar-single' ); ?>
+				</div>
 			</div>
 			</div>
 		</div>

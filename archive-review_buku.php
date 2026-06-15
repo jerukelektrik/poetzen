@@ -6,7 +6,7 @@
  */
 
 get_header(); ?>
-<section class="ss-section">
+<section class="ss-section ss-review-archive-page">
 	<div class="ss-container">
 		<?php sukusastra_breadcrumbs(); ?>
 		<div class="grid gap-6">
@@ -23,7 +23,7 @@ get_header(); ?>
 		?>
 
 		<!-- Filters and Search Bar Form -->
-		<form method="get" action="<?php echo esc_url( get_post_type_archive_link( 'review_buku' ) ); ?>" class="bg-white dark:bg-[#262B4E] border border-slate-200/60 dark:border-zinc-800/80 rounded-3xl p-5 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+		<form method="get" action="<?php echo esc_url( get_post_type_archive_link( 'review_buku' ) ); ?>" class="ss-review-archive-filter bg-white dark:bg-[#262B4E] border border-slate-200/60 dark:border-zinc-800/80 rounded-3xl p-5 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
 			<div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
 				<!-- Search input -->
 				<div class="relative w-full sm:w-64">
@@ -65,7 +65,7 @@ get_header(); ?>
 		</form>
 
 		<!-- Book Reviews Loop Grid -->
-		<div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mt-2">
+		<div class="ss-review-archive-grid grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4 mt-2">
 			<?php if ( have_posts() ) : while ( have_posts() ) : the_post(); ?>
 				<?php get_template_part( 'template-parts/cards/review-card', null, array( 'layout' => 'vertical' ) ); ?>
 			<?php endwhile; else : ?>
