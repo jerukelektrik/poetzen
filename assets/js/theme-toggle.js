@@ -13,7 +13,7 @@
   }
 
   function currentPreference() {
-    return localStorage.getItem(storageKey) || "system";
+    return localStorage.getItem(storageKey) || "light";
   }
 
   applyTheme(currentPreference());
@@ -21,7 +21,7 @@
   document.addEventListener("click", function (event) {
     var toggleBtn = event.target.closest("[data-theme-toggle]");
     if (toggleBtn) {
-      var current = localStorage.getItem(storageKey) || "system";
+      var current = localStorage.getItem(storageKey) || "light";
       var resolved = current === "system" ? (prefersDark() ? "dark" : "light") : current;
       var nextTheme = resolved === "dark" ? "light" : "dark";
       localStorage.setItem(storageKey, nextTheme);

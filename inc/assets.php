@@ -16,6 +16,8 @@ function sukusastra_enqueue_assets(): void {
 	$feed_font_url = 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap';
 	$theme_css_path = SUKUSASTRA_DIR . '/assets/css/theme.css';
 	$theme_css_version = file_exists( $theme_css_path ) ? (string) filemtime( $theme_css_path ) : SUKUSASTRA_VERSION;
+	$theme_toggle_js_path = SUKUSASTRA_DIR . '/assets/js/theme-toggle.js';
+	$theme_toggle_js_version = file_exists( $theme_toggle_js_path ) ? (string) filemtime( $theme_toggle_js_path ) : SUKUSASTRA_VERSION;
 	
 	if ( 'modern' === $font_family ) {
 		$font_url = 'https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap';
@@ -52,7 +54,7 @@ function sukusastra_enqueue_assets(): void {
 		'sukusastra-theme-toggle',
 		SUKUSASTRA_URI . '/assets/js/theme-toggle.js',
 		array(),
-		SUKUSASTRA_VERSION,
+		$theme_toggle_js_version,
 		array( 'strategy' => 'defer', 'in_footer' => false )
 	);
 

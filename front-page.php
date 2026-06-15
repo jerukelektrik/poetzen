@@ -181,13 +181,26 @@ $hero_query = new WP_Query(
 								</span>
 							</div>
 							
-							<!-- Bottom Row: Title & Circular Arrow -->
+							<!-- Bottom Row: Title, Description, Link & Circular Arrow -->
 							<div class="relative z-10 flex items-end justify-between w-full gap-4 mt-auto">
-								<h2 class="text-2xl sm:text-4xl font-sans font-black text-white leading-tight tracking-tight drop-shadow-md line-clamp-3 max-w-[85%]">
-									<a class="no-underline text-white hover:text-red-200 transition-colors" href="<?php echo esc_url( $main_post['permalink'] ); ?>">
-										<?php echo esc_html( $main_post['title'] ); ?>
+								<div class="grid max-w-[82%] gap-3">
+									<h2 class="text-2xl sm:text-4xl font-sans font-black text-white leading-tight tracking-tight drop-shadow-md line-clamp-2">
+										<a class="no-underline text-white hover:text-[#cf2e2e] transition-colors" href="<?php echo esc_url( $main_post['permalink'] ); ?>">
+											<?php echo esc_html( $main_post['title'] ); ?>
+										</a>
+									</h2>
+									<?php if ( ! empty( $main_post['excerpt'] ) ) : ?>
+										<p class="max-w-2xl text-sm font-medium leading-relaxed text-white/82 drop-shadow line-clamp-2">
+											<?php echo esc_html( wp_trim_words( $main_post['excerpt'], 24, '...' ) ); ?>
+										</p>
+									<?php endif; ?>
+									<a href="<?php echo esc_url( $main_post['permalink'] ); ?>" class="inline-flex w-fit items-center gap-2 text-xs font-black uppercase tracking-wider text-red-300 transition-colors no-underline drop-shadow hover:text-red-100">
+										<span><?php esc_html_e( 'Baca Selengkapnya', 'sukusastra' ); ?></span>
+										<svg class="w-4 h-4 stroke-current fill-none stroke-[2.5]" viewBox="0 0 24 24" aria-hidden="true">
+											<path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+										</svg>
 									</a>
-								</h2>
+								</div>
 								<a href="<?php echo esc_url( $main_post['permalink'] ); ?>" class="w-12 h-12 rounded-full border border-white/80 hover:border-white hover:bg-white/10 flex items-center justify-center text-white shrink-0 shadow transition-all hover:scale-105" aria-hidden="true">
 									<svg class="w-5 h-5 stroke-current fill-none stroke-2" viewBox="0 0 24 24">
 										<path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
@@ -374,8 +387,11 @@ if ( '1' === $show_penulis_stories ) :
 			</button>
 			
 			<!-- Horizontally scrollable stories container -->
-			<div id="stories-scroll-container" class="flex items-start gap-6 overflow-x-auto pb-2 no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0 scroll-smooth snap-x">
+			<div id="stories-scroll-container" class="flex items-start gap-4 overflow-x-auto pb-2 no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0 lg:gap-5 scroll-smooth snap-x">
 				<?php
+				$penulis_mobile_story_limit = 8;
+				$penulis_desktop_story_limit = 12;
+
 				// Get latest posts to find the most recent authors
 				$latest_posts = get_posts( array(
 					'post_type'      => array( 'post', 'review_buku', 'berita', 'terbitan' ),
@@ -392,16 +408,16 @@ if ( '1' === $show_penulis_stories ) :
 							$author_ids[] = $auth_id;
 						}
 					}
-					if ( count( $author_ids ) >= 15 ) {
+					if ( count( $author_ids ) >= $penulis_desktop_story_limit ) {
 						break;
 					}
 				}
 
-				// Fallback: If less than 15 authors, fill the rest with alphabetical list
-				if ( count( $author_ids ) < 15 ) {
+				// Fallback: If less than the desktop story limit, fill the rest with alphabetical list.
+				if ( count( $author_ids ) < $penulis_desktop_story_limit ) {
 					$fallback_penulis = get_posts( array(
 						'post_type'      => 'penulis',
-						'posts_per_page' => 15 - count( $author_ids ),
+						'posts_per_page' => $penulis_desktop_story_limit - count( $author_ids ),
 						'post_status'    => 'publish',
 						'post__not_in'   => ! empty( $author_ids ) ? $author_ids : array(),
 						'fields'         => 'ids',
@@ -415,12 +431,15 @@ if ( '1' === $show_penulis_stories ) :
 					'post_type'      => 'penulis',
 					'post__in'       => ! empty( $author_ids ) ? $author_ids : array( 0 ),
 					'orderby'        => 'post__in',
-					'posts_per_page' => 15,
+					'posts_per_page' => $penulis_desktop_story_limit,
 				) );
+
+				$rendered_penulis_count = 0;
 
 				if ( $penulis_query->have_posts() ) :
 					while ( $penulis_query->have_posts() ) :
 						$penulis_query->the_post();
+						$rendered_penulis_count++;
 						$author_name = get_the_title();
 						
 						// Smart handle generator: lowercase, dots, strip single letters
@@ -478,20 +497,21 @@ if ( '1' === $show_penulis_stories ) :
 						$ring_class = $is_active 
 							? 'bg-gradient-to-tr from-red-700 via-amber-500 to-yellow-500' 
 							: 'bg-slate-200 dark:bg-zinc-800/80';
+						$mobile_visibility_class = $rendered_penulis_count > $penulis_mobile_story_limit ? 'hidden md:flex' : 'flex';
 						?>
-						<div class="flex flex-col items-center shrink-0 w-20 sm:w-24 snap-start group">
-							<a href="<?php the_permalink(); ?>" 
-							   class="author-story-trigger relative p-[3px] rounded-full <?php echo esc_attr( $ring_class ); ?> transition-transform duration-300 group-hover:scale-105 shadow-sm"
+							<div class="<?php echo esc_attr( $mobile_visibility_class ); ?> flex-col items-center shrink-0 w-24 snap-start group">
+								<a href="<?php the_permalink(); ?>" 
+								   class="author-story-trigger relative block aspect-square overflow-hidden rounded-full p-[4px] <?php echo esc_attr( $ring_class ); ?> transition-transform duration-300 group-hover:scale-105 shadow-sm"
 							   data-name="<?php echo esc_attr( $author_name ); ?>"
 							   data-handle="<?php echo esc_attr( $handle ); ?>"
 							   data-bio="<?php echo esc_attr( $bio_summary ); ?>"
 							   data-birth="<?php echo esc_attr( $birth_info ); ?>"
 							   data-avatar="<?php echo esc_url( $avatar_url ); ?>"
 							   data-link="<?php the_permalink(); ?>">
-								<div class="bg-slate-50 dark:bg-[#343B6A] p-[2px] rounded-full">
-									<img src="<?php echo esc_url( $avatar_url ); ?>" alt="<?php echo esc_attr( $author_name ); ?>" class="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover">
-								</div>
-							</a>
+										<div class="aspect-square w-20 overflow-hidden rounded-full bg-slate-50 p-[2px] dark:bg-[#343B6A] md:w-24">
+											<img src="<?php echo esc_url( $avatar_url ); ?>" alt="<?php echo esc_attr( $author_name ); ?>" class="aspect-square w-full rounded-full object-cover">
+										</div>
+									</a>
 							<a href="<?php the_permalink(); ?>" class="mt-2 text-[11px] font-semibold text-slate-700 dark:text-zinc-300 hover:text-red-700 dark:hover:text-red-300 no-underline text-center block w-full whitespace-normal break-words">
 								<?php echo esc_html( $author_name ); ?>
 							</a>
@@ -499,6 +519,41 @@ if ( '1' === $show_penulis_stories ) :
 						<?php
 					endwhile;
 					wp_reset_postdata();
+					while ( $rendered_penulis_count < $penulis_mobile_story_limit ) :
+						$rendered_penulis_count++;
+						?>
+							<div class="flex md:hidden flex-col items-center shrink-0 w-24 snap-start group">
+								<a href="<?php echo esc_url( get_post_type_archive_link( 'penulis' ) ); ?>" 
+								   class="relative block aspect-square overflow-hidden rounded-full bg-slate-200 p-[4px] shadow-sm transition-transform duration-300 group-hover:scale-105 dark:bg-zinc-800/80"
+								   aria-label="<?php esc_attr_e( 'Lihat semua penulis', 'sukusastra' ); ?>">
+									<div class="grid aspect-square w-20 place-items-center rounded-full bg-white text-red-700 dark:bg-[#343B6A] dark:text-red-400 md:w-24">
+									<svg class="h-7 w-7 fill-none stroke-current stroke-2" viewBox="0 0 24 24" aria-hidden="true">
+										<path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+										<path stroke-linecap="round" stroke-linejoin="round" d="M4.5 20.25a8.25 8.25 0 0 1 15 0" />
+									</svg>
+								</div>
+							</a>
+							<a href="<?php echo esc_url( get_post_type_archive_link( 'penulis' ) ); ?>" class="mt-2 text-[11px] font-semibold text-slate-500 dark:text-zinc-400 hover:text-red-700 dark:hover:text-red-300 no-underline text-center block w-full whitespace-normal break-words">
+								<?php esc_html_e( 'Penulis Baru', 'sukusastra' ); ?>
+							</a>
+						</div>
+						<?php
+					endwhile;
+					?>
+					<div class="shrink-0 w-64 snap-start group">
+						<a href="<?php echo esc_url( get_post_type_archive_link( 'penulis' ) ); ?>" 
+						   class="relative flex h-32 flex-col justify-center overflow-hidden rounded-2xl bg-[#090d16] px-5 py-4 text-white no-underline shadow-sm ring-1 ring-slate-900/5 transition-transform duration-300 hover:scale-[1.02] hover:text-white"
+						   aria-label="<?php esc_attr_e( 'Lihat semua penulis', 'sukusastra' ); ?>">
+							<span class="relative z-10 max-w-[10rem] text-sm font-semibold leading-relaxed text-slate-300"><?php esc_html_e( 'Jelajahi semua tokoh dan penulis Suku Sastra.', 'sukusastra' ); ?></span>
+							<span class="absolute right-4 top-1/2 z-10 grid h-12 w-12 -translate-y-1/2 place-items-center rounded-2xl bg-[#e60012] text-white shadow-lg shadow-red-950/20 transition-transform duration-300 group-hover:translate-x-1">
+								<svg class="h-6 w-6 stroke-current fill-none stroke-[3]" viewBox="0 0 24 24" aria-hidden="true">
+									<path stroke-linecap="round" stroke-linejoin="round" d="m9 5 7 7-7 7" />
+								</svg>
+							</span>
+							<span class="absolute -bottom-14 -right-8 h-36 w-36 rounded-full bg-[#2a1828]"></span>
+						</a>
+					</div>
+					<?php
 				else :
 					?>
 					<p class="text-xs text-slate-500 dark:text-zinc-400 py-4"><?php esc_html_e( 'Belum ada penulis terdaftar.', 'sukusastra' ); ?></p>
@@ -884,7 +939,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			</div>
 			<div class="ss-review-carousel flex gap-4 overflow-x-auto snap-x snap-mandatory no-scrollbar pb-2 md:grid md:gap-5 md:grid-cols-2 lg:grid-cols-3 md:overflow-visible md:snap-none">
 				<?php while ( $reviews->have_posts() ) : $reviews->the_post(); ?>
-					<div class="ss-review-carousel-item w-[68vw] shrink-0 snap-start sm:w-[46vw] md:w-auto md:shrink">
+					<div class="ss-review-carousel-item w-[72vw] max-w-[18rem] shrink-0 snap-start sm:w-[44vw] md:w-auto md:max-w-none md:shrink">
 						<?php get_template_part( 'template-parts/cards/review-card', null, array( 'layout' => 'vertical' ) ); ?>
 					</div>
 				<?php endwhile; wp_reset_postdata(); ?>

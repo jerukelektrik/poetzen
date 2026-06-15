@@ -38,7 +38,7 @@ if ( $tokopedia_url ) {
 ?>
 <?php
 $layout = isset( $args['layout'] ) ? $args['layout'] : 'horizontal';
-$article_classes = 'ss-card ';
+$article_classes = 'ss-card ss-review-card ';
 if ( 'vertical' === $layout ) {
 	$article_classes .= 'flex flex-col gap-3 group';
 } else {
@@ -46,7 +46,7 @@ if ( 'vertical' === $layout ) {
 }
 ?>
 <article <?php post_class( $article_classes ); ?>>
-	<a class="block no-underline overflow-hidden rounded-xl" href="<?php the_permalink(); ?>">
+	<a class="ss-review-card-media block no-underline overflow-hidden rounded-xl" href="<?php the_permalink(); ?>">
 		<?php 
 		$book_image_id = sukusastra_get_meta( $post_id, '_ss_book_image_id' );
 		$img_class = 'aspect-[2/3] w-full object-cover rounded-xl shadow-sm transition-transform duration-500';
@@ -64,7 +64,7 @@ if ( 'vertical' === $layout ) {
 			</div>
 		<?php endif; ?>
 	</a>
-	<div class="grid content-start gap-2">
+	<div class="ss-review-card-content grid content-start gap-2">
 		<p class="ss-eyebrow">
 			<?php 
 			$book_type_val = sukusastra_get_meta( $post_id, '_ss_book_type', 'novel' );
@@ -94,13 +94,13 @@ if ( 'vertical' === $layout ) {
 			}
 			?>
 		</p>
-		<h3 class="ss-card-title">
+		<h3 class="ss-card-title ss-review-card-title">
 			<a class="ss-card-title-link line-clamp-2" href="<?php the_permalink(); ?>">
 				<?php the_title(); ?>
 			</a>
 		</h3>
 		<?php if ( 'vertical' === $layout ) : ?>
-			<p class="text-[11px] text-slate-500 dark:text-zinc-400 font-bold uppercase tracking-wide">
+			<p class="ss-review-card-author text-[11px] text-slate-500 dark:text-zinc-400 font-bold uppercase tracking-wide">
 				<?php 
 				$orig_author = sukusastra_get_original_author( $post_id );
 				if ( $orig_author ) {
@@ -118,4 +118,3 @@ if ( 'vertical' === $layout ) {
 		<?php endif; ?>
 	</div>
 </article>
-

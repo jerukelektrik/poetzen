@@ -412,27 +412,73 @@
       user-select: none;
     }
 
-    .ss-review-carousel-item .ss-card {
+    .ss-review-carousel-item .ss-review-card {
+      aspect-ratio: 3 / 4;
+      background: #090d16;
+      border-radius: 1.25rem;
+      display: block;
+      height: auto;
+      overflow: hidden;
+      padding: 0 !important;
+      position: relative;
+    }
+
+    .ss-review-carousel-item .ss-review-card::after {
+      background: linear-gradient(180deg, rgba(9, 13, 22, 0.04) 18%, rgba(9, 13, 22, 0.44) 54%, rgba(9, 13, 22, 0.92) 100%);
+      content: "";
+      inset: 0;
+      pointer-events: none;
+      position: absolute;
+      z-index: 1;
+    }
+
+    .ss-review-carousel-item .ss-review-card-media {
+      border-radius: inherit;
+      inset: 0;
+      position: absolute;
+    }
+
+    .ss-review-carousel-item .ss-review-card-media img,
+    .ss-review-carousel-item .ss-review-card-media > div {
+      aspect-ratio: auto !important;
+      border-radius: inherit !important;
       height: 100%;
-      gap: 0.625rem !important;
-      padding: 0.875rem !important;
-    }
-
-    .ss-review-carousel-item img,
-    .ss-review-carousel-item .ss-card > a > div {
-      aspect-ratio: 3 / 4 !important;
-      max-height: 13.5rem;
+      max-height: none;
       object-fit: cover;
+      width: 100%;
     }
 
-    .ss-review-carousel-item .ss-card-title {
-      font-size: 0.9375rem !important;
-      line-height: 1.2 !important;
+    .ss-review-carousel-item .ss-review-card-content {
+      bottom: 0;
+      gap: 0.45rem;
+      left: 0;
+      padding: 1.05rem;
+      position: absolute;
+      right: 0;
+      z-index: 2;
     }
 
-    .ss-review-carousel-item .ss-eyebrow {
-      font-size: 0.625rem !important;
-      line-height: 1.2 !important;
+    .ss-review-carousel-item .ss-review-card-content .ss-eyebrow {
+      color: #ff7382 !important;
+      font-size: 0.65rem !important;
+      line-height: 1.1 !important;
+    }
+
+    .ss-review-carousel-item .ss-review-card-title {
+      color: #ffffff !important;
+      font-size: 1.05rem !important;
+      line-height: 1.14 !important;
+      text-shadow: 0 1px 18px rgba(0, 0, 0, 0.42);
+    }
+
+    .ss-review-carousel-item .ss-review-card-title a {
+      color: inherit !important;
+    }
+
+    .ss-review-carousel-item .ss-review-card-author {
+      color: rgba(255, 255, 255, 0.78) !important;
+      font-size: 0.68rem !important;
+      line-height: 1.25 !important;
     }
 
     .ss-review-carousel-item .ss-body {
@@ -443,7 +489,7 @@
 
   .ss-terbitan-banner a,
   .ss-terbitan-banner > div {
-    aspect-ratio: 16 / 7;
+    aspect-ratio: 16 / 5;
   }
 
   @media (max-width: 47.999rem) {

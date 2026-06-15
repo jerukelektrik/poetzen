@@ -5,7 +5,7 @@
  * @package SukuSastra
  */
 ?><!doctype html>
-<html <?php language_attributes(); ?> data-theme="system">
+<html <?php language_attributes(); ?> data-theme="light">
 <head>
 	<meta charset="<?php bloginfo( 'charset' ); ?>">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
