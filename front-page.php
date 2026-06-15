@@ -183,7 +183,7 @@ $hero_query = new WP_Query(
 							
 							<!-- Bottom Row: Title & Circular Arrow -->
 							<div class="relative z-10 flex items-end justify-between w-full gap-4 mt-auto">
-								<h2 class="text-2xl sm:text-4xl font-black text-white leading-tight tracking-tight drop-shadow-md line-clamp-3 max-w-[85%]">
+								<h2 class="text-2xl sm:text-4xl font-sans font-black text-white leading-tight tracking-tight drop-shadow-md line-clamp-3 max-w-[85%]">
 									<a class="no-underline text-white hover:text-red-200 transition-colors" href="<?php echo esc_url( $main_post['permalink'] ); ?>">
 										<?php echo esc_html( $main_post['title'] ); ?>
 									</a>
@@ -218,7 +218,7 @@ $hero_query = new WP_Query(
 								<!-- Middle: Text Column -->
 								<div class="flex flex-col gap-2 flex-1 min-w-0">
 									<!-- Title -->
-									<h3 class="text-sm font-black text-slate-900 dark:text-zinc-100 leading-snug line-clamp-2">
+									<h3 class="text-sm font-sans font-black text-slate-900 dark:text-zinc-100 leading-snug line-clamp-2">
 										<a class="no-underline hover:text-red-700 dark:hover:text-red-300" href="<?php echo esc_url( $p['permalink'] ); ?>">
 											<?php echo esc_html( $p['title'] ); ?>
 										</a>
@@ -282,7 +282,7 @@ $hero_query = new WP_Query(
 								<!-- Bottom Row: Title, Excerpt & Baca Selengkapnya -->
 								<div class="relative z-10 flex flex-col gap-1.5 mt-auto w-full">
 									<!-- Title -->
-									<h2 class="text-base font-black text-white leading-tight tracking-tight drop-shadow-md line-clamp-2">
+									<h2 class="text-base font-sans font-black text-white leading-tight tracking-tight drop-shadow-md line-clamp-2">
 										<a class="no-underline text-white hover:text-red-200 transition-colors" href="<?php echo esc_url( $post['permalink'] ); ?>">
 											<?php echo esc_html( $post['title'] ); ?>
 										</a>
