@@ -45,7 +45,7 @@
 		</div>
 
 	<!-- Title & Diagonal Arrow Icon -->
-	<div class="flex items-start justify-between gap-2 mt-2">
+	<div class="ss-post-card-heading flex items-start justify-between gap-2 mt-2">
 		<h3 class="ss-post-card-title text-lg font-black leading-snug text-slate-900 dark:text-zinc-50 group-hover:text-red-700 dark:group-hover:text-red-400 transition-colors">
 			<a class="no-underline hover:text-red-700 dark:hover:text-red-400 transition-colors" href="<?php the_permalink(); ?>">
 				<?php the_title(); ?>

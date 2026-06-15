@@ -15,7 +15,7 @@ if ( ! in_array( $sort_by, array( 'terbaru', 'terpopuler', 'abjad_a_z', 'abjad_z
 // Current URL path
 $current_url = preg_replace( '/\?.*/', '', $_SERVER['REQUEST_URI'] );
 ?>
-<form class="bg-white dark:bg-[#262B4E] border border-slate-200/60 dark:border-zinc-800/80 rounded-3xl p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4" method="get" action="<?php echo esc_url( $current_url ); ?>">
+<form class="ss-archive-filter bg-white dark:bg-[#262B4E] border border-slate-200/60 dark:border-zinc-800/80 rounded-3xl p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4" method="get" action="<?php echo esc_url( $current_url ); ?>">
 	<div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
 		<!-- Search by Author -->
 		<div class="relative w-full sm:w-64">
