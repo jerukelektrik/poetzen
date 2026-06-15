@@ -376,14 +376,47 @@ if ( '1' === $show_penulis_stories ) :
 			<!-- Horizontally scrollable stories container -->
 			<div id="stories-scroll-container" class="flex items-start gap-6 overflow-x-auto pb-2 no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0 scroll-smooth snap-x">
 				<?php
-				$penulis_query = new WP_Query(
-					array(
+				// Get latest posts to find the most recent authors
+				$latest_posts = get_posts( array(
+					'post_type'      => array( 'post', 'review_buku', 'berita', 'terbitan' ),
+					'posts_per_page' => 200,
+					'post_status'    => 'publish',
+					'fields'         => 'ids',
+				) );
+
+				$author_ids = array();
+				foreach ( $latest_posts as $p_id ) {
+					$auth_id = (int) get_post_meta( $p_id, '_ss_original_author_id', true );
+					if ( $auth_id > 0 && ! in_array( $auth_id, $author_ids, true ) ) {
+						if ( 'publish' === get_post_status( $auth_id ) && 'penulis' === get_post_type( $auth_id ) ) {
+							$author_ids[] = $auth_id;
+						}
+					}
+					if ( count( $author_ids ) >= 15 ) {
+						break;
+					}
+				}
+
+				// Fallback: If less than 15 authors, fill the rest with alphabetical list
+				if ( count( $author_ids ) < 15 ) {
+					$fallback_penulis = get_posts( array(
 						'post_type'      => 'penulis',
-						'posts_per_page' => 15,
+						'posts_per_page' => 15 - count( $author_ids ),
+						'post_status'    => 'publish',
+						'post__not_in'   => ! empty( $author_ids ) ? $author_ids : array(),
+						'fields'         => 'ids',
 						'orderby'        => 'title',
 						'order'          => 'ASC',
-					)
-				);
+					) );
+					$author_ids = array_merge( $author_ids, $fallback_penulis );
+				}
+
+				$penulis_query = new WP_Query( array(
+					'post_type'      => 'penulis',
+					'post__in'       => ! empty( $author_ids ) ? $author_ids : array( 0 ),
+					'orderby'        => 'post__in',
+					'posts_per_page' => 15,
+				) );
 
 				if ( $penulis_query->have_posts() ) :
 					while ( $penulis_query->have_posts() ) :
