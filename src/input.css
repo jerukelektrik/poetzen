@@ -226,6 +226,7 @@
   .ss-single-review .ss-sidebar-title,
   .ss-single-review .ss-widget-title,
   .ss-single-review .ss-sidebar-tab-btn,
+  .ss-single-review .ss-event-tab-btn,
   .ss-single-review aside,
   .ss-single-review aside a,
   .ss-single-review aside h4,
@@ -243,6 +244,12 @@
     font-weight: 800;
   }
 
+  .ss-single-review .ss-event-tab-btn {
+    font-size: 0.875rem;
+    font-weight: 800;
+    line-height: 1.25rem;
+  }
+
   .ss-single-review .ss-sidebar-title,
   .ss-single-review aside h4 {
     font-weight: 800;
@@ -250,6 +257,16 @@
 
   .ss-single-review .ss-widget-title {
     font-weight: 800;
+  }
+
+  .ss-single-review aside section:nth-of-type(2) .ss-sidebar-title {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+
+  .ss-single-review aside section:nth-of-type(2) .ss-meta {
+    font-size: 0.6875rem;
+    line-height: 1rem;
   }
 
 

@@ -12,11 +12,35 @@ get_header(); ?>
 	$cta_url = sukusastra_get_meta( $post_id, '_ss_marketplace_url', sukusastra_get_meta( $post_id, '_ss_contact_url' ) );
 	$book_image_id = sukusastra_get_meta( $post_id, '_ss_book_image_id' );
 	$orig_author = sukusastra_get_original_author( $post_id );
+	$book_type_val = sukusastra_get_meta( $post_id, '_ss_book_type', 'novel' );
+	$book_types = array(
+		'puisi'    => __( 'Kumpulan Puisi', 'sukusastra' ),
+		'cerpen'   => __( 'Kumpulan Cerpen', 'sukusastra' ),
+		'novel'    => __( 'Novel', 'sukusastra' ),
+		'nonfiksi' => __( 'Nonfiksi', 'sukusastra' ),
+	);
+	$book_type_label = isset( $book_types[ $book_type_val ] ) ? $book_types[ $book_type_val ] : $book_types['novel'];
 	?>
 	<article class="ss-section ss-single-review">
 		<div class="ss-container">
 			<?php sukusastra_breadcrumbs(); ?>
 			<div class="grid gap-y-16 gap-x-10 lg:grid-cols-[280px_minmax(0,760px)]">
+			<div class="grid gap-2 lg:hidden">
+				<p class="ss-eyebrow">
+					<?php 
+					printf( '%s (%s)', esc_html__( 'Review Buku', 'sukusastra' ), esc_html( $book_type_label ) );
+					if ( $orig_author ) {
+						printf(
+							' · <a class="underline hover:text-red-700 dark:hover:text-red-300" href="%1$s">%2$s</a>',
+							esc_url( get_permalink( $orig_author->ID ) ),
+							esc_html( $orig_author->post_title )
+						);
+					}
+					?>
+				</p>
+				<h1 class="ss-page-title"><?php the_title(); ?></h1>
+			</div>
+
 			<!-- Book Meta Sidebar -->
 			<aside class="grid content-start gap-4 lg:sticky lg:top-24 self-start">
 				<?php if ( $book_image_id ) : ?>
@@ -31,16 +55,6 @@ get_header(); ?>
 				<?php endif; ?>
 				
 				<div class="ss-card grid gap-2 text-sm rounded">
-					<?php 
-					$book_type_val = sukusastra_get_meta( $post_id, '_ss_book_type', 'novel' );
-					$book_types = array(
-						'puisi'    => __( 'Kumpulan Puisi', 'sukusastra' ),
-						'cerpen'   => __( 'Kumpulan Cerpen', 'sukusastra' ),
-						'novel'    => __( 'Novel', 'sukusastra' ),
-						'nonfiksi' => __( 'Nonfiksi', 'sukusastra' ),
-					);
-					$book_type_label = isset( $book_types[ $book_type_val ] ) ? $book_types[ $book_type_val ] : $book_types['novel'];
-					?>
 					<p class="flex items-center flex-wrap">
 						<strong><?php esc_html_e( 'Jenis Buku:', 'sukusastra' ); ?></strong>
 						<span class="inline-block px-2.5 py-0.5 text-[11px] font-bold rounded-full bg-red-50 text-red-700 border border-red-200/60 dark:bg-red-950/20 dark:text-red-300 dark:border-red-900/50 ml-1.5"><?php echo esc_html( $book_type_label ); ?></span>
@@ -152,7 +166,7 @@ get_header(); ?>
 			
 			<!-- Review Details Content -->
 			<div>
-				<p class="ss-eyebrow mb-2">
+				<p class="ss-eyebrow mb-2 hidden lg:block">
 					<?php 
 					printf( '%s (%s)', esc_html__( 'Review Buku', 'sukusastra' ), esc_html( $book_type_label ) );
 					if ( $orig_author ) {
@@ -164,7 +178,7 @@ get_header(); ?>
 					}
 					?>
 				</p>
-				<h1 class="ss-page-title"><?php the_title(); ?></h1>
+				<h1 class="ss-page-title hidden lg:block"><?php the_title(); ?></h1>
 				
 				<?php if ( $book_image_id && has_post_thumbnail() ) : ?>
 					<div class="mt-8 rounded overflow-hidden shadow-sm">
