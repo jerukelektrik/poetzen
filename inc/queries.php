@@ -689,8 +689,26 @@ function sukusastra_review_buku_archive_filter( WP_Query $query ): void {
 				) );
 			}
 
+			// Find post IDs matching linked book author (CPT penulis) name
+			$post_ids_linked_book_author = array();
+			if ( ! empty( $matching_authors ) && ! is_wp_error( $matching_authors ) ) {
+				$post_ids_linked_book_author = get_posts( array(
+					'post_type'      => 'review_buku',
+					'posts_per_page' => -1,
+					'fields'         => 'ids',
+					'post_status'    => 'publish',
+					'meta_query'     => array(
+						array(
+							'key'     => '_ss_book_author',
+							'value'   => $matching_authors,
+							'compare' => 'IN',
+						),
+					),
+				) );
+			}
+
 			// Combine all matched IDs
-			$combined_ids = array_unique( array_merge( $post_ids_standard, $post_ids_meta, $post_ids_linked_author, $post_ids_linked_reviewer ) );
+			$combined_ids = array_unique( array_merge( $post_ids_standard, $post_ids_meta, $post_ids_linked_author, $post_ids_linked_reviewer, $post_ids_linked_book_author ) );
 
 			if ( ! empty( $combined_ids ) ) {
 				$query->set( 'post__in', $combined_ids );

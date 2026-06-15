@@ -257,4 +257,32 @@ function sukusastra_get_reviewer_info( int $post_id ): array {
 	);
 }
 
+/**
+ * Get book author information (name and link/permalink).
+ * Supports both CPT penulis post IDs and legacy text values.
+ */
+function sukusastra_get_book_author_info( int $post_id ): array {
+	$book_author = get_post_meta( $post_id, '_ss_book_author', true );
+	if ( empty( $book_author ) ) {
+		return array( 'name' => '', 'url' => '' );
+	}
+
+	if ( is_numeric( $book_author ) ) {
+		$author_post = get_post( (int) $book_author );
+		if ( $author_post && 'penulis' === $author_post->post_type ) {
+			return array(
+				'name' => $author_post->post_title,
+				'url'  => get_permalink( $author_post->ID ),
+			);
+		}
+	}
+
+	// Fallback to raw string value
+	return array(
+		'name' => $book_author,
+		'url'  => '',
+	);
+}
+
+
 

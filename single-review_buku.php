@@ -46,8 +46,18 @@ get_header(); ?>
 						<span class="inline-block px-2.5 py-0.5 text-[11px] font-bold rounded-full bg-red-50 text-red-700 border border-red-200/60 dark:bg-red-950/20 dark:text-red-300 dark:border-red-900/50 ml-1.5"><?php echo esc_html( $book_type_label ); ?></span>
 					</p>
 					<p><strong><?php esc_html_e( 'Judul Buku:', 'sukusastra' ); ?></strong> <?php echo esc_html( sukusastra_get_meta( $post_id, '_ss_book_title', get_the_title() ) ); ?></p>
-					<?php if ( sukusastra_get_meta( $post_id, '_ss_book_author' ) ) : ?>
-						<p><strong><?php esc_html_e( 'Penulis:', 'sukusastra' ); ?></strong> <?php echo esc_html( sukusastra_get_meta( $post_id, '_ss_book_author' ) ); ?></p>
+					<?php
+					$book_author_info = sukusastra_get_book_author_info( $post_id );
+					if ( ! empty( $book_author_info['name'] ) ) :
+						?>
+						<p>
+							<strong><?php esc_html_e( 'Penulis:', 'sukusastra' ); ?></strong> 
+							<?php if ( ! empty( $book_author_info['url'] ) ) : ?>
+								<a class="underline hover:text-red-700 dark:hover:text-red-300" href="<?php echo esc_url( $book_author_info['url'] ); ?>"><?php echo esc_html( $book_author_info['name'] ); ?></a>
+							<?php else : ?>
+								<?php echo esc_html( $book_author_info['name'] ); ?>
+							<?php endif; ?>
+						</p>
 					<?php endif; ?>
 					<?php if ( sukusastra_get_meta( $post_id, '_ss_book_publisher' ) ) : ?>
 						<p><strong><?php esc_html_e( 'Penerbit:', 'sukusastra' ); ?></strong> <?php echo esc_html( sukusastra_get_meta( $post_id, '_ss_book_publisher' ) ); ?></p>

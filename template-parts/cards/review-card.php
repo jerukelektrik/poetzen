@@ -115,13 +115,20 @@ if ( 'vertical' === $layout ) {
 					echo esc_html( $reviewer_info['name'] );
 				} elseif ( $orig_author ) {
 					echo esc_html( $orig_author->post_title );
-				} elseif ( $book_author ) {
-					echo esc_html( $book_author );
+				} else {
+					$book_author_info = sukusastra_get_book_author_info( $post_id );
+					if ( ! empty( $book_author_info['name'] ) ) {
+						echo esc_html( $book_author_info['name'] );
+					}
 				}
 				?>
 			</p>
 		<?php else : ?>
-			<p class="ss-body"><?php echo esc_html( $book_title ); ?><?php echo $book_author ? ' · ' . esc_html( $book_author ) : ''; ?></p>
+			<?php
+			$book_author_info = sukusastra_get_book_author_info( $post_id );
+			$author_text = ! empty( $book_author_info['name'] ) ? ' · ' . $book_author_info['name'] : '';
+			?>
+			<p class="ss-body"><?php echo esc_html( $book_title ); ?><?php echo esc_html( $author_text ); ?></p>
 			<p class="ss-body line-clamp-2"><?php echo esc_html( wp_strip_all_tags( get_the_excerpt() ) ); ?></p>
 		<?php endif; ?>
 	</div>

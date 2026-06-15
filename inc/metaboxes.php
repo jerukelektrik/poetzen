@@ -154,6 +154,7 @@ function sukusastra_render_review_metabox( WP_Post $post ): void {
 	</p>
 	<?php
 	$current_reviewer = sukusastra_get_meta( $post->ID, '_ss_reviewer', '' );
+	$current_book_author = sukusastra_get_meta( $post->ID, '_ss_book_author', '' );
 	$penulis_posts = get_posts( array(
 		'post_type'      => 'penulis',
 		'posts_per_page' => -1,
@@ -161,34 +162,89 @@ function sukusastra_render_review_metabox( WP_Post $post ): void {
 		'orderby'        => 'title',
 		'order'          => 'ASC',
 	) );
+
+	$is_numeric_reviewer = is_numeric( $current_reviewer );
+	$is_numeric_author = is_numeric( $current_book_author );
 	?>
+	<!-- Reviewer Dual-Mode Dropdown -->
 	<p>
-		<label for="_ss_reviewer"><strong><?php esc_html_e( 'Reviewer (Resensator)', 'sukusastra' ); ?></strong></label><br>
-		<select class="widefat" id="_ss_reviewer" name="_ss_reviewer">
-			<option value="Redaksi Suku Sastra" <?php echo sukusastra_selected( $current_reviewer, 'Redaksi Suku Sastra' ); ?>><?php esc_html_e( 'Redaksi Suku Sastra', 'sukusastra' ); ?></option>
+		<label for="_ss_reviewer_select"><strong><?php esc_html_e( 'Reviewer (Resensator)', 'sukusastra' ); ?></strong></label><br>
+		<select class="widefat" id="_ss_reviewer_select" name="_ss_reviewer_select" onchange="toggleReviewerInput(this.value)">
+			<option value="Redaksi Suku Sastra" <?php selected( $current_reviewer, 'Redaksi Suku Sastra' ); ?>><?php esc_html_e( 'Redaksi Suku Sastra (Default)', 'sukusastra' ); ?></option>
+			<option value="" <?php selected( ! empty( $current_reviewer ) && ! $is_numeric_reviewer && 'Redaksi Suku Sastra' !== $current_reviewer ); ?>><?php esc_html_e( '— Tulis Manual di Bawah —', 'sukusastra' ); ?></option>
 			<optgroup label="<?php esc_attr_e( 'Pilih dari Penulis CPT', 'sukusastra' ); ?>">
 				<?php foreach ( $penulis_posts as $penulis ) : ?>
-					<option value="<?php echo esc_attr( $penulis->ID ); ?>" <?php echo sukusastra_selected( $current_reviewer, (string) $penulis->ID ); ?>>
+					<option value="<?php echo esc_attr( $penulis->ID ); ?>" <?php selected( $current_reviewer, (string) $penulis->ID ); ?>>
 						<?php echo esc_html( $penulis->post_title ); ?>
 					</option>
 				<?php endforeach; ?>
 			</optgroup>
-			<?php if ( ! empty( $current_reviewer ) && ! is_numeric( $current_reviewer ) && 'Redaksi Suku Sastra' !== $current_reviewer ) : ?>
-				<optgroup label="<?php esc_attr_e( 'Nilai Kustom Saat Ini', 'sukusastra' ); ?>">
-					<option value="<?php echo esc_attr( $current_reviewer ); ?>" selected>
-						<?php echo esc_html( $current_reviewer ); ?>
-					</option>
-				</optgroup>
-			<?php endif; ?>
 		</select>
-		<span class="description"><?php esc_html_e( 'Pilih reviewer dari daftar penulis terdaftar atau gunakan default Redaksi Suku Sastra.', 'sukusastra' ); ?></span>
 	</p>
+	<p id="ss-reviewer-text-wrapper" style="<?php echo ( $current_reviewer === 'Redaksi Suku Sastra' || $is_numeric_reviewer ) ? 'display:none;' : ''; ?>">
+		<label for="_ss_reviewer"><strong><?php esc_html_e( 'Nama Reviewer (Manual)', 'sukusastra' ); ?></strong></label><br>
+		<input type="text" class="widefat" id="_ss_reviewer" name="_ss_reviewer" value="<?php echo esc_attr( ( $current_reviewer === 'Redaksi Suku Sastra' || $is_numeric_reviewer ) ? '' : $current_reviewer ); ?>" />
+	</p>
+
+	<!-- Penulis Buku Dual-Mode Dropdown -->
+	<p>
+		<label for="_ss_book_author_select"><strong><?php esc_html_e( 'Penulis Buku', 'sukusastra' ); ?></strong></label><br>
+		<select class="widefat" id="_ss_book_author_select" name="_ss_book_author_select" onchange="toggleBookAuthorInput(this.value)">
+			<option value="" <?php selected( ! $is_numeric_author ); ?>><?php esc_html_e( '— Tulis Manual di Bawah —', 'sukusastra' ); ?></option>
+			<optgroup label="<?php esc_attr_e( 'Pilih dari Penulis CPT', 'sukusastra' ); ?>">
+				<?php foreach ( $penulis_posts as $penulis ) : ?>
+					<option value="<?php echo esc_attr( $penulis->ID ); ?>" <?php selected( $current_book_author, (string) $penulis->ID ); ?>>
+						<?php echo esc_html( $penulis->post_title ); ?>
+					</option>
+				<?php endforeach; ?>
+			</optgroup>
+		</select>
+	</p>
+	<p id="ss-book-author-text-wrapper" style="<?php echo $is_numeric_author ? 'display:none;' : ''; ?>">
+		<label for="_ss_book_author"><strong><?php esc_html_e( 'Nama Penulis Buku (Manual)', 'sukusastra' ); ?></strong></label><br>
+		<input type="text" class="widefat" id="_ss_book_author" name="_ss_book_author" value="<?php echo esc_attr( $is_numeric_author ? '' : $current_book_author ); ?>" />
+	</p>
+
+	<script>
+	function toggleReviewerInput(val) {
+		var wrapper = document.getElementById('ss-reviewer-text-wrapper');
+		var textInput = document.getElementById('_ss_reviewer');
+		if (val === '') {
+			wrapper.style.display = 'block';
+		} else {
+			wrapper.style.display = 'none';
+			textInput.value = val;
+		}
+	}
+	function toggleBookAuthorInput(val) {
+		var wrapper = document.getElementById('ss-book-author-text-wrapper');
+		var textInput = document.getElementById('_ss_book_author');
+		if (val === '') {
+			wrapper.style.display = 'block';
+		} else {
+			wrapper.style.display = 'none';
+			textInput.value = val;
+		}
+	}
+	jQuery(document).ready(function($) {
+		$('#post').on('submit', function() {
+			var reviewerSelect = $('#_ss_reviewer_select').val();
+			if (reviewerSelect !== '') {
+				$('#_ss_reviewer').val(reviewerSelect);
+			}
+			var authorSelect = $('#_ss_book_author_select').val();
+			if (authorSelect !== '') {
+				$('#_ss_book_author').val(authorSelect);
+			}
+		});
+	});
+	</script>
+
 	<?php
 	sukusastra_render_text_fields(
 		$post->ID,
 		array(
 			'_ss_book_title'        => __( 'Judul Buku', 'sukusastra' ),
-			'_ss_book_author'       => __( 'Penulis Buku', 'sukusastra' ),
 			'_ss_book_publisher'    => __( 'Penerbit', 'sukusastra' ),
 			'_ss_book_year'         => __( 'Tahun Terbit', 'sukusastra' ),
 			'_ss_book_edition'      => __( 'Cetakan (misal: Cetakan I, Agustus 2017)', 'sukusastra' ),
