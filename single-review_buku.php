@@ -13,7 +13,7 @@ get_header(); ?>
 	$book_image_id = sukusastra_get_meta( $post_id, '_ss_book_image_id' );
 	$orig_author = sukusastra_get_original_author( $post_id );
 	?>
-	<article class="ss-section">
+	<article class="ss-section ss-single-review">
 		<div class="ss-container">
 			<?php sukusastra_breadcrumbs(); ?>
 			<div class="grid gap-y-16 gap-x-10 lg:grid-cols-[280px_minmax(0,760px)]">

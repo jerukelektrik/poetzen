@@ -70,6 +70,30 @@ function sukusastra_get_original_author( int $post_id ): ?WP_Post {
 	return null;
 }
 
+function sukusastra_find_penulis_by_name( string $name ): ?WP_Post {
+	$name = trim( wp_strip_all_tags( $name ) );
+	if ( '' === $name ) {
+		return null;
+	}
+
+	$matches = get_posts(
+		array(
+			'post_type'      => 'penulis',
+			'post_status'    => 'publish',
+			'posts_per_page' => 5,
+			's'              => $name,
+		)
+	);
+
+	foreach ( $matches as $match ) {
+		if ( 0 === strcasecmp( trim( $match->post_title ), $name ) ) {
+			return $match;
+		}
+	}
+
+	return null;
+}
+
 function sukusastra_is_author_category( int $cat_id ): bool {
 	return false;
 }
@@ -250,6 +274,14 @@ function sukusastra_get_reviewer_info( int $post_id ): array {
 		}
 	}
 
+	$reviewer_post = sukusastra_find_penulis_by_name( (string) $reviewer );
+	if ( $reviewer_post ) {
+		return array(
+			'name' => $reviewer_post->post_title,
+			'url'  => get_permalink( $reviewer_post->ID ),
+		);
+	}
+
 	// Fallback to raw string value
 	return array(
 		'name' => $reviewer,
@@ -277,12 +309,19 @@ function sukusastra_get_book_author_info( int $post_id ): array {
 		}
 	}
 
+	$author_post = sukusastra_find_penulis_by_name( (string) $book_author );
+	if ( $author_post ) {
+		return array(
+			'name' => $author_post->post_title,
+			'url'  => get_permalink( $author_post->ID ),
+		);
+	}
+
 	// Fallback to raw string value
 	return array(
 		'name' => $book_author,
 		'url'  => '',
 	);
 }
-
 
 
