@@ -538,6 +538,10 @@ function sukusastra_archive_custom_filters( WP_Query $query ): void {
 	}
 
 	if ( is_category() || is_tag() || is_tax() ) {
+		if ( $query->is_category( array( 'puisi', 'cerpen', 'esai' ) ) ) {
+			$query->set( 'posts_per_page', 15 );
+		}
+
 		// 1. Filter by author search
 		$author_search = isset( $_GET['cari_penulis'] ) ? sanitize_text_field( wp_unslash( $_GET['cari_penulis'] ) ) : '';
 		$sort_by = isset( $_GET['sort_by'] ) ? sanitize_key( wp_unslash( $_GET['sort_by'] ) ) : 'terbaru';

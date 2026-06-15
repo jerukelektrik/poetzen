@@ -55,33 +55,32 @@ $category_feature_posts = ( $is_two_column_mobile && isset( $GLOBALS['wp_query']
 			<div class="ss-category-mobile-hero md:hidden">
 				<?php foreach ( $category_feature_posts as $feature_post ) : ?>
 					<?php
-					setup_postdata( $feature_post );
-					$orig_author = sukusastra_get_original_author( get_the_ID() );
-					$author_name = $orig_author ? $orig_author->post_title : get_the_author();
+					$feature_post_id = $feature_post->ID;
+					$orig_author = sukusastra_get_original_author( $feature_post_id );
+					$author_name = $orig_author ? $orig_author->post_title : get_the_author_meta( 'display_name', (int) get_post_field( 'post_author', $feature_post_id ) );
 					?>
-					<article <?php post_class( 'ss-category-mobile-hero-card group' ); ?>>
-						<a class="ss-category-mobile-hero-media" href="<?php the_permalink(); ?>">
-							<?php if ( has_post_thumbnail() ) : ?>
-								<?php the_post_thumbnail( 'sukusastra-card', array( 'class' => 'h-full w-full object-cover transition-transform duration-500 group-hover:scale-105' ) ); ?>
+					<article <?php post_class( 'ss-category-mobile-hero-card group', $feature_post_id ); ?>>
+						<a class="ss-category-mobile-hero-media" href="<?php echo esc_url( get_permalink( $feature_post_id ) ); ?>">
+							<?php if ( has_post_thumbnail( $feature_post_id ) ) : ?>
+								<?php echo get_the_post_thumbnail( $feature_post_id, 'sukusastra-card', array( 'class' => 'h-full w-full object-cover transition-transform duration-500 group-hover:scale-105' ) ); ?>
 							<?php else : ?>
 								<div class="ss-category-mobile-hero-placeholder">
-									<?php the_title(); ?>
+									<?php echo esc_html( get_the_title( $feature_post_id ) ); ?>
 								</div>
 							<?php endif; ?>
 						</a>
 						<div class="ss-category-mobile-hero-body">
 							<h2 class="ss-category-mobile-hero-title">
-								<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+								<a href="<?php echo esc_url( get_permalink( $feature_post_id ) ); ?>"><?php echo esc_html( get_the_title( $feature_post_id ) ); ?></a>
 							</h2>
 							<div class="ss-category-mobile-hero-meta">
 								<span><?php echo esc_html( $author_name ); ?></span>
 								<span aria-hidden="true">•</span>
-								<span><?php echo esc_html( get_the_date() ); ?></span>
+								<span><?php echo esc_html( get_the_date( '', $feature_post_id ) ); ?></span>
 							</div>
 						</div>
 					</article>
 				<?php endforeach; ?>
-				<?php wp_reset_postdata(); ?>
 			</div>
 		<?php endif; ?>
 
