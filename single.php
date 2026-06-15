@@ -11,24 +11,20 @@ get_header(); ?>
 			<?php sukusastra_breadcrumbs(); ?>
 			<div class="grid gap-y-16 gap-x-10 lg:grid-cols-[minmax(0,760px)_320px]">
 				<div>
-				<p class="ss-eyebrow mb-2">
-					<?php 
-					$orig_author = sukusastra_get_original_author( get_the_ID() );
+				<?php $orig_author = sukusastra_get_original_author( get_the_ID() ); ?>
+				<h1 class="ss-page-title"><?php the_title(); ?></h1>
+				<p class="mt-3 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400">
+					<?php
+					echo esc_html( get_the_date() );
 					if ( $orig_author ) {
 						printf(
-							esc_html__( 'Karya: %s', 'sukusastra' ) . ' · ',
-							sprintf(
-								'<a class="underline hover:text-red-700 dark:hover:text-red-300" href="%1$s">%2$s</a>',
-								esc_url( get_permalink( $orig_author->ID ) ),
-								esc_html( $orig_author->post_title )
-							)
+							' · <a class="underline hover:text-red-700 dark:hover:text-red-300" href="%1$s">%2$s</a>',
+							esc_url( get_permalink( $orig_author->ID ) ),
+							esc_html( $orig_author->post_title )
 						);
 					}
-					echo esc_html( get_the_date() );
-					printf( ' · ' . esc_html__( 'Pengunggah: %s', 'sukusastra' ), get_the_author() );
 					?>
 				</p>
-				<h1 class="ss-page-title"><?php the_title(); ?></h1>
 				<?php if ( has_post_thumbnail() ) : ?>
 					<div class="mt-8 rounded overflow-hidden shadow-sm">
 						<?php the_post_thumbnail( 'sukusastra-hero', array( 'class' => 'w-full object-cover' ) ); ?>
