@@ -17,7 +17,7 @@ if ( 'event' === $post_type ) {
 	);
 }
 
-$aside_classes = 'grid content-start gap-6';
+$aside_classes = 'ss-single-sidebar grid content-start gap-6';
 if ( 'review_buku' !== $post_type ) {
 	$aside_classes .= ' lg:sticky lg:top-24 self-start';
 }
@@ -25,18 +25,18 @@ if ( 'review_buku' !== $post_type ) {
 <aside class="<?php echo esc_attr( $aside_classes ); ?>">
 
 	<!-- Tabs Widget -->
-	<section class="rounded-md border border-slate-200 bg-white p-5 dark:border-zinc-800 dark:bg-[#262B4E]/40 shadow-sm">
+	<section class="ss-sidebar-tabs-widget rounded-md border border-slate-200 bg-white p-5 dark:border-zinc-800 dark:bg-[#262B4E]/40 shadow-sm">
 		<div class="flex border-b border-slate-200 dark:border-zinc-800 mb-5 text-sm font-bold">
-			<button class="ss-sidebar-tab-btn flex-1 pb-3 text-center border-b-[3px] text-red-700 border-red-700 dark:text-red-400 dark:border-red-500 focus:outline-none transition-colors duration-200 cursor-pointer" data-tab="ss-tab-latest">
+			<button class="ss-sidebar-tab-btn flex-1 pb-3 text-center border-b-[3px] text-red-700 border-red-700 dark:text-red-400 dark:border-red-500 focus:outline-none transition-colors duration-200 cursor-pointer" type="button" data-tab="latest">
 				<?php esc_html_e( 'Recent News', 'sukusastra' ); ?>
 			</button>
-			<button class="ss-sidebar-tab-btn flex-1 pb-3 text-center border-b-[3px] text-slate-400 border-transparent dark:text-zinc-500 hover:text-slate-850 dark:hover:text-zinc-200 focus:outline-none transition-colors duration-200 cursor-pointer" data-tab="ss-tab-popular">
+			<button class="ss-sidebar-tab-btn flex-1 pb-3 text-center border-b-[3px] text-slate-400 border-transparent dark:text-zinc-500 hover:text-slate-850 dark:hover:text-zinc-200 focus:outline-none transition-colors duration-200 cursor-pointer" type="button" data-tab="popular">
 				<?php esc_html_e( 'Top Story', 'sukusastra' ); ?>
 			</button>
 		</div>
 
 		<!-- Latest Posts Tab -->
-		<div id="ss-tab-latest" class="ss-sidebar-tab-content flex flex-col gap-2">
+		<div class="ss-sidebar-tab-content flex flex-col gap-2" data-tab-panel="latest">
 			<?php 
 			$latest_posts = sukusastra_sidebar_latest_posts( get_the_ID(), 5 );
 			if ( $latest_posts->have_posts() ) :
@@ -69,7 +69,7 @@ if ( 'review_buku' !== $post_type ) {
 		</div>
 
 		<!-- Popular Posts Tab -->
-		<div id="ss-tab-popular" class="ss-sidebar-tab-content hidden flex flex-col gap-2">
+		<div class="ss-sidebar-tab-content hidden flex flex-col gap-2" data-tab-panel="popular">
 			<?php 
 			$popular_posts = sukusastra_sidebar_popular_posts( get_the_ID(), 5 );
 			if ( $popular_posts->have_posts() ) :
@@ -223,26 +223,28 @@ if ( 'review_buku' !== $post_type ) {
 <script>
 (function() {
 	function initSidebarTabs() {
-		const tabButtons = document.querySelectorAll('.ss-sidebar-tab-btn');
-		const tabContents = document.querySelectorAll('.ss-sidebar-tab-content');
+		document.querySelectorAll('.ss-sidebar-tabs-widget').forEach(widget => {
+			const tabButtons = widget.querySelectorAll('.ss-sidebar-tab-btn');
+			const tabContents = widget.querySelectorAll('.ss-sidebar-tab-content');
 
-		tabButtons.forEach(btn => {
-			btn.addEventListener('click', function() {
-				const target = this.getAttribute('data-tab');
+			tabButtons.forEach(btn => {
+				btn.addEventListener('click', function() {
+					const target = this.getAttribute('data-tab');
 
-				tabButtons.forEach(b => {
-					b.classList.remove('text-red-700', 'border-red-700', 'dark:text-red-400', 'dark:border-red-500');
-					b.classList.add('text-slate-500', 'border-transparent', 'dark:text-zinc-400');
-				});
-				this.classList.add('text-red-700', 'border-red-700', 'dark:text-red-400', 'dark:border-red-500');
-				this.classList.remove('text-slate-500', 'border-transparent', 'dark:text-zinc-400');
+					tabButtons.forEach(b => {
+						b.classList.remove('text-red-700', 'border-red-700', 'dark:text-red-400', 'dark:border-red-500');
+						b.classList.add('text-slate-500', 'border-transparent', 'dark:text-zinc-400');
+					});
+					this.classList.add('text-red-700', 'border-red-700', 'dark:text-red-400', 'dark:border-red-500');
+					this.classList.remove('text-slate-500', 'border-transparent', 'dark:text-zinc-400');
 
-				tabContents.forEach(c => {
-					if (c.id === target) {
-						c.classList.remove('hidden');
-					} else {
-						c.classList.add('hidden');
-					}
+					tabContents.forEach(c => {
+						if (c.getAttribute('data-tab-panel') === target) {
+							c.classList.remove('hidden');
+						} else {
+							c.classList.add('hidden');
+						}
+					});
 				});
 			});
 		});

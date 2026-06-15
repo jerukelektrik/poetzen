@@ -259,6 +259,48 @@
     font-weight: 800;
   }
 
+  .ss-single-sidebar,
+  .ss-single-sidebar a,
+  .ss-single-sidebar h2,
+  .ss-single-sidebar h4,
+  .ss-single-sidebar .ss-sidebar-tab-btn,
+  .ss-single-sidebar .ss-event-tab-btn,
+  .ss-single-sidebar .ss-sidebar-title,
+  .ss-single-sidebar .ss-widget-title {
+    font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+    letter-spacing: 0;
+  }
+
+  .ss-single-sidebar .ss-sidebar-tab-btn {
+    font-size: 1rem;
+    font-weight: 800;
+  }
+
+  .ss-single-sidebar .ss-event-tab-btn {
+    font-size: 0.875rem;
+    font-weight: 800;
+    line-height: 1.25rem;
+  }
+
+  .ss-single-sidebar .ss-sidebar-title,
+  .ss-single-sidebar h4 {
+    font-weight: 800;
+  }
+
+  .ss-single-sidebar .ss-widget-title {
+    font-weight: 800;
+  }
+
+  .ss-single-sidebar section:nth-of-type(2) .ss-sidebar-title {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+
+  .ss-single-sidebar section:nth-of-type(2) .ss-meta {
+    font-size: 0.6875rem;
+    line-height: 1rem;
+  }
+
   .ss-single-review aside section:nth-of-type(2) .ss-sidebar-title {
     font-size: 0.875rem;
     line-height: 1.25rem;
