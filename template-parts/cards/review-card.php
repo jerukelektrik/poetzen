@@ -81,15 +81,23 @@ if ( 'vertical' === $layout ) {
 			} else {
 				printf( '%s (%s)', esc_html__( 'Review Buku', 'sukusastra' ), esc_html( $book_type_label ) );
 
-				$orig_author = sukusastra_get_original_author( $post_id );
-				if ( $orig_author ) {
+				$reviewer_info = sukusastra_get_reviewer_info( $post_id );
+				if ( ! empty( $reviewer_info['name'] ) ) {
+					if ( ! empty( $reviewer_info['url'] ) ) {
+						printf(
+							' · <a class="hover:text-red-700 dark:hover:text-red-300" href="%1$s">%2$s</a>',
+							esc_url( $reviewer_info['url'] ),
+							esc_html( $reviewer_info['name'] )
+						);
+					} else {
+						printf( ' · %s', esc_html( $reviewer_info['name'] ) );
+					}
+				} elseif ( $orig_author ) {
 					printf(
 						' · <a class="hover:text-red-700 dark:hover:text-red-300" href="%1$s">%2$s</a>',
 						esc_url( get_permalink( $orig_author->ID ) ),
 						esc_html( $orig_author->post_title )
 					);
-				} elseif ( sukusastra_get_meta( $post_id, '_ss_reviewer' ) ) {
-					printf( ' · %s', esc_html( sukusastra_get_meta( $post_id, '_ss_reviewer' ) ) );
 				}
 			}
 			?>
@@ -102,13 +110,13 @@ if ( 'vertical' === $layout ) {
 		<?php if ( 'vertical' === $layout ) : ?>
 			<p class="ss-review-card-author text-[11px] text-slate-500 dark:text-zinc-400 font-bold uppercase tracking-wide">
 				<?php 
-				$orig_author = sukusastra_get_original_author( $post_id );
-				if ( $orig_author ) {
+				$reviewer_info = sukusastra_get_reviewer_info( $post_id );
+				if ( ! empty( $reviewer_info['name'] ) ) {
+					echo esc_html( $reviewer_info['name'] );
+				} elseif ( $orig_author ) {
 					echo esc_html( $orig_author->post_title );
 				} elseif ( $book_author ) {
 					echo esc_html( $book_author );
-				} elseif ( sukusastra_get_meta( $post_id, '_ss_reviewer' ) ) {
-					echo esc_html( sukusastra_get_meta( $post_id, '_ss_reviewer' ) );
 				}
 				?>
 			</p>

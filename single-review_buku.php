@@ -61,10 +61,20 @@ get_header(); ?>
 					<?php if ( sukusastra_get_meta( $post_id, '_ss_book_pages' ) ) : ?>
 						<p><strong><?php esc_html_e( 'Halaman:', 'sukusastra' ); ?></strong> <?php echo esc_html( sukusastra_get_meta( $post_id, '_ss_book_pages' ) ); ?></p>
 					<?php endif; ?>
-					<?php if ( $orig_author ) : ?>
+					<?php
+					$reviewer_info = sukusastra_get_reviewer_info( $post_id );
+					if ( ! empty( $reviewer_info['name'] ) ) :
+						?>
+						<p>
+							<strong><?php esc_html_e( 'Resensator:', 'sukusastra' ); ?></strong> 
+							<?php if ( ! empty( $reviewer_info['url'] ) ) : ?>
+								<a class="underline hover:text-red-700 dark:hover:text-red-300" href="<?php echo esc_url( $reviewer_info['url'] ); ?>"><?php echo esc_html( $reviewer_info['name'] ); ?></a>
+							<?php else : ?>
+								<?php echo esc_html( $reviewer_info['name'] ); ?>
+							<?php endif; ?>
+						</p>
+					<?php elseif ( $orig_author ) : ?>
 						<p><strong><?php esc_html_e( 'Resensator:', 'sukusastra' ); ?></strong> <a class="underline hover:text-red-700 dark:hover:text-red-300" href="<?php echo esc_url( get_permalink( $orig_author->ID ) ); ?>"><?php echo esc_html( $orig_author->post_title ); ?></a></p>
-					<?php elseif ( sukusastra_get_meta( $post_id, '_ss_reviewer' ) ) : ?>
-						<p><strong><?php esc_html_e( 'Resensator:', 'sukusastra' ); ?></strong> <?php echo esc_html( sukusastra_get_meta( $post_id, '_ss_reviewer' ) ); ?></p>
 					<?php endif; ?>
 
 					<?php

@@ -230,3 +230,31 @@ function sukusastra_pagination(): void {
 	) );
 }
 
+/**
+ * Get reviewer information (name and link/permalink).
+ * Supports both CPT penulis post IDs and legacy text values.
+ */
+function sukusastra_get_reviewer_info( int $post_id ): array {
+	$reviewer = get_post_meta( $post_id, '_ss_reviewer', true );
+	if ( empty( $reviewer ) ) {
+		return array( 'name' => '', 'url' => '' );
+	}
+
+	if ( is_numeric( $reviewer ) ) {
+		$reviewer_post = get_post( (int) $reviewer );
+		if ( $reviewer_post && 'penulis' === $reviewer_post->post_type ) {
+			return array(
+				'name' => $reviewer_post->post_title,
+				'url'  => get_permalink( $reviewer_post->ID ),
+			);
+		}
+	}
+
+	// Fallback to raw string value
+	return array(
+		'name' => $reviewer,
+		'url'  => '',
+	);
+}
+
+

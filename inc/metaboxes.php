@@ -153,6 +153,37 @@ function sukusastra_render_review_metabox( WP_Post $post ): void {
 		</select>
 	</p>
 	<?php
+	$current_reviewer = sukusastra_get_meta( $post->ID, '_ss_reviewer', '' );
+	$penulis_posts = get_posts( array(
+		'post_type'      => 'penulis',
+		'posts_per_page' => -1,
+		'post_status'    => 'publish',
+		'orderby'        => 'title',
+		'order'          => 'ASC',
+	) );
+	?>
+	<p>
+		<label for="_ss_reviewer"><strong><?php esc_html_e( 'Reviewer (Resensator)', 'sukusastra' ); ?></strong></label><br>
+		<select class="widefat" id="_ss_reviewer" name="_ss_reviewer">
+			<option value="Redaksi Suku Sastra" <?php echo sukusastra_selected( $current_reviewer, 'Redaksi Suku Sastra' ); ?>><?php esc_html_e( 'Redaksi Suku Sastra', 'sukusastra' ); ?></option>
+			<optgroup label="<?php esc_attr_e( 'Pilih dari Penulis CPT', 'sukusastra' ); ?>">
+				<?php foreach ( $penulis_posts as $penulis ) : ?>
+					<option value="<?php echo esc_attr( $penulis->ID ); ?>" <?php echo sukusastra_selected( $current_reviewer, (string) $penulis->ID ); ?>>
+						<?php echo esc_html( $penulis->post_title ); ?>
+					</option>
+				<?php endforeach; ?>
+			</optgroup>
+			<?php if ( ! empty( $current_reviewer ) && ! is_numeric( $current_reviewer ) && 'Redaksi Suku Sastra' !== $current_reviewer ) : ?>
+				<optgroup label="<?php esc_attr_e( 'Nilai Kustom Saat Ini', 'sukusastra' ); ?>">
+					<option value="<?php echo esc_attr( $current_reviewer ); ?>" selected>
+						<?php echo esc_html( $current_reviewer ); ?>
+					</option>
+				</optgroup>
+			<?php endif; ?>
+		</select>
+		<span class="description"><?php esc_html_e( 'Pilih reviewer dari daftar penulis terdaftar atau gunakan default Redaksi Suku Sastra.', 'sukusastra' ); ?></span>
+	</p>
+	<?php
 	sukusastra_render_text_fields(
 		$post->ID,
 		array(
@@ -162,7 +193,6 @@ function sukusastra_render_review_metabox( WP_Post $post ): void {
 			'_ss_book_year'         => __( 'Tahun Terbit', 'sukusastra' ),
 			'_ss_book_edition'      => __( 'Cetakan (misal: Cetakan I, Agustus 2017)', 'sukusastra' ),
 			'_ss_book_pages'        => __( 'Halaman (Jumlah Halaman)', 'sukusastra' ),
-			'_ss_reviewer'          => __( 'Reviewer', 'sukusastra' ),
 			'_ss_review_summary'    => __( 'Ringkasan Pendek', 'sukusastra' ),
 			'_ss_shopee_url'        => array(
 				'label'       => __( 'Shopee URL', 'sukusastra' ),
