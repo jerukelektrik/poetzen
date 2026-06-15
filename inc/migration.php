@@ -500,6 +500,53 @@ function sukusastra_render_migration_page(): void {
 			</div>
 
 		</div>
+
+		<!-- Diagnostics Box -->
+		<div style="background: #fff; padding: 20px; border-radius: 8px; margin-top: 25px; border-top: 4px solid #00a0d2; box-shadow: 0 1px 3px rgba(0,0,0,0.1); max-width: 100%;">
+			<h2>Diagnostics / Status Folder Server</h2>
+			<p>Gunakan status di bawah ini untuk memastikan file gambar Anda diletakkan di folder hosting yang tepat. Jika folder dilaporkan tidak terdeteksi, pendaftaran gambar ke Media Library akan otomatis dilewati.</p>
+			
+			<table class="widefat striped" style="margin-top: 15px; border: 1px solid #ccc; border-collapse: collapse; width: 100%;">
+				<thead>
+					<tr style="background: #f9f9f9;">
+						<th style="padding: 10px; border: 1px solid #ccc; font-weight: bold; text-align: left;">Parameter Pemeriksaan</th>
+						<th style="padding: 10px; border: 1px solid #ccc; font-weight: bold; text-align: left;">Hasil Deteksi Staging</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td style="padding: 10px; border: 1px solid #ccc; width: 40%;"><strong>Uploads Base Directory (Jalur PHP Server)</strong></td>
+						<td style="padding: 10px; border: 1px solid #ccc;"><code><?php echo esc_html( wp_upload_dir()['basedir'] ); ?></code></td>
+					</tr>
+					<tr>
+						<td style="padding: 10px; border: 1px solid #ccc;"><strong>Folder 2025 di Hosting</strong></td>
+						<td style="padding: 10px; border: 1px solid #ccc;">
+							<?php 
+							$dir_2025 = wp_upload_dir()['basedir'] . '/2025';
+							if ( is_dir( $dir_2025 ) ) {
+								echo '<span style="color: green; font-weight: bold;">✔ Terdeteksi (Folder Ada)</span>';
+							} else {
+								echo '<span style="color: red; font-weight: bold;">❌ Tidak Terdeteksi (Folder Belum Ada / Salah Letak)</span>';
+							}
+							?>
+						</td>
+					</tr>
+					<tr>
+						<td style="padding: 10px; border: 1px solid #ccc;"><strong>Folder 2026 di Hosting</strong></td>
+						<td style="padding: 10px; border: 1px solid #ccc;">
+							<?php 
+							$dir_2026 = wp_upload_dir()['basedir'] . '/2026';
+							if ( is_dir( $dir_2026 ) ) {
+								echo '<span style="color: green; font-weight: bold;">✔ Terdeteksi (Folder Ada)</span>';
+							} else {
+								echo '<span style="color: red; font-weight: bold;">❌ Tidak Terdeteksi (Folder Belum Ada / Salah Letak)</span>';
+							}
+							?>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 	</div>
 	<?php
 }
