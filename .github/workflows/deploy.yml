@@ -1,9 +1,7 @@
 name: Deploy Theme to Live Site
 
 on:
-  push:
-    branches:
-      - main # Memicu deploy otomatis setiap ada push ke branch main
+  workflow_dispatch: # Memicu deploy secara manual dari tab Actions ketika situs sudah siap live
 
 jobs:
   deploy:
