@@ -74,8 +74,8 @@ if ( 'sayembara' === $event_type ) {
 		<?php if ( has_post_thumbnail() ) : ?>
 			<?php the_post_thumbnail( 'sukusastra-card', array( 'class' => 'w-full h-full object-cover group-hover:scale-105 transition-transform duration-500' ) ); ?>
 		<?php else : ?>
-			<div class="flex w-full h-full items-center justify-center bg-white dark:bg-zinc-900 border-b border-slate-200/50 dark:border-zinc-800/80 p-6 group-hover:scale-105 transition-transform duration-500">
-				<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo.svg' ); ?>" alt="<?php the_title_attribute(); ?>" class="max-h-20 max-w-full opacity-60 dark:opacity-30 object-contain" />
+			<div class="flex w-full h-full items-center justify-center bg-slate-50 dark:bg-zinc-900/40 p-6 group-hover:scale-105 transition-transform duration-500">
+				<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo.svg' ); ?>" alt="<?php the_title_attribute(); ?>" class="max-h-12 max-w-full opacity-50 dark:opacity-20 object-contain" />
 			</div>
 		<?php endif; ?>
 	</a>

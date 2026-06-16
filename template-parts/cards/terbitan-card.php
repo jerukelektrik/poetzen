@@ -20,7 +20,7 @@ $img_class = 'absolute inset-0 w-full h-full object-cover transition-transform d
 			<?php the_post_thumbnail( 'large', array( 'class' => $img_class ) ); ?>
 		<?php else : ?>
 			<div class="absolute inset-0 flex items-center justify-center p-4 text-center">
-				<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo.svg' ); ?>" alt="<?php echo esc_attr( $book_title ); ?>" class="max-h-24 max-w-full opacity-60 dark:opacity-30 object-contain" />
+				<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo.svg' ); ?>" alt="<?php echo esc_attr( $book_title ); ?>" class="max-h-14 max-w-full opacity-50 dark:opacity-20 object-contain" />
 			</div>
 		<?php endif; ?>
 		<!-- Overlay overlay hover -->

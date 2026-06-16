@@ -59,8 +59,8 @@ if ( 'vertical' === $layout ) {
 		<?php elseif ( has_post_thumbnail() ) : ?>
 			<?php the_post_thumbnail( 'sukusastra-cover', array( 'class' => $img_class ) ); ?>
 		<?php else : ?>
-			<div class="flex aspect-[2/3] items-center justify-center bg-white dark:bg-zinc-900 border border-slate-200/50 dark:border-zinc-800/80 p-4 rounded dark:text-zinc-400">
-				<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo.svg' ); ?>" alt="<?php echo esc_attr( $book_title ); ?>" class="max-h-24 max-w-full opacity-60 dark:opacity-30 object-contain" />
+			<div class="flex aspect-[2/3] w-full items-center justify-center bg-slate-50 dark:bg-zinc-900/40 p-4 dark:text-zinc-400">
+				<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo.svg' ); ?>" alt="<?php echo esc_attr( $book_title ); ?>" class="max-h-14 max-w-full opacity-50 dark:opacity-20 object-contain" />
 			</div>
 		<?php endif; ?>
 	</a>
