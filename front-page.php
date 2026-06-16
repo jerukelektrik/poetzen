@@ -163,7 +163,9 @@ $hero_query = new WP_Query(
 								<?php if ( $main_post['thumbnail'] ) : ?>
 									<img src="<?php echo esc_url( $main_post['thumbnail'] ); ?>" alt="<?php echo esc_attr( $main_post['title'] ); ?>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-70">
 								<?php else : ?>
-									<div class="w-full h-full bg-gradient-to-br from-zinc-800 to-zinc-900 group-hover:scale-105 transition-transform duration-500 opacity-70"></div>
+									<div class="w-full h-full bg-zinc-900 group-hover:scale-105 transition-transform duration-500 opacity-70 flex items-center justify-center p-8">
+										<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo.svg' ); ?>" alt="<?php echo esc_attr( $main_post['title'] ); ?>" class="max-h-36 max-w-full opacity-30 object-contain" />
+									</div>
 								<?php endif; ?>
 								<!-- Dark gradient overlay for typography readability -->
 								<div class="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/80"></div>
@@ -225,7 +227,9 @@ $hero_query = new WP_Query(
 										<img src="<?php echo esc_url( $p['thumbnail'] ); ?>" alt="<?php echo esc_attr( $p['title'] ); ?>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
 									</a>
 								<?php else : ?>
-									<a href="<?php echo esc_url( $p['permalink'] ); ?>" class="w-20 h-20 shrink-0 rounded-2xl bg-gradient-to-br from-zinc-800 to-zinc-900 group-hover:scale-105 transition-transform duration-500 border border-slate-200/50 dark:border-zinc-800/50"></a>
+									<a href="<?php echo esc_url( $p['permalink'] ); ?>" class="w-20 h-20 shrink-0 rounded-2xl bg-white dark:bg-zinc-900 group-hover:scale-105 transition-transform duration-500 border border-slate-200/50 dark:border-zinc-800/50 flex items-center justify-center p-2">
+										<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo.svg' ); ?>" alt="<?php echo esc_attr( $p['title'] ); ?>" class="max-h-full max-w-full opacity-60 dark:opacity-30 object-contain" />
+									</a>
 								<?php endif; ?>
 
 								<!-- Middle: Text Column -->
@@ -274,7 +278,9 @@ $hero_query = new WP_Query(
 									<?php if ( $post['thumbnail'] ) : ?>
 										<img src="<?php echo esc_url( $post['thumbnail'] ); ?>" alt="<?php echo esc_attr( $post['title'] ); ?>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-70">
 									<?php else : ?>
-										<div class="w-full h-full bg-gradient-to-br from-zinc-800 to-zinc-900 group-hover:scale-105 transition-transform duration-500 opacity-70"></div>
+										<div class="w-full h-full bg-zinc-900 group-hover:scale-105 transition-transform duration-500 opacity-70 flex items-center justify-center p-6">
+											<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo.svg' ); ?>" alt="<?php echo esc_attr( $post['title'] ); ?>" class="max-h-24 max-w-full opacity-30 object-contain" />
+										</div>
 									<?php endif; ?>
 									<!-- Dark gradient overlay for typography readability -->
 									<div class="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/85"></div>

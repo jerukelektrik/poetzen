@@ -64,8 +64,8 @@ $category_feature_posts = ( $is_two_column_mobile && isset( $GLOBALS['wp_query']
 							<?php if ( has_post_thumbnail( $feature_post_id ) ) : ?>
 								<?php echo get_the_post_thumbnail( $feature_post_id, 'sukusastra-card', array( 'class' => 'h-full w-full object-cover transition-transform duration-500 group-hover:scale-105' ) ); ?>
 							<?php else : ?>
-								<div class="ss-category-mobile-hero-placeholder">
-									<?php echo esc_html( get_the_title( $feature_post_id ) ); ?>
+								<div class="ss-category-mobile-hero-placeholder flex items-center justify-center bg-white dark:bg-zinc-900 border border-slate-200/50 dark:border-zinc-800/80 p-6 h-full w-full group-hover:scale-105 transition-transform duration-500">
+									<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo.svg' ); ?>" alt="<?php echo esc_attr( get_the_title( $feature_post_id ) ); ?>" class="max-h-20 max-w-full opacity-60 dark:opacity-30 object-contain" />
 								</div>
 							<?php endif; ?>
 						</a>
