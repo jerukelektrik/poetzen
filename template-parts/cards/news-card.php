@@ -19,23 +19,24 @@ $youtube = sukusastra_get_meta( get_the_ID(), '_ss_youtube_url' );
 	</a>
 	
 	<!-- Metadata: Rubric · Author · Date -->
-	<div class="mt-4 flex flex-wrap items-center gap-1.5 text-xs font-semibold tracking-wide uppercase">
-		<span class="text-red-700 dark:text-red-400 font-black">
-			<?php esc_html_e( 'Berita', 'sukusastra' ); ?><?php echo $youtube ? ' · Video' : ''; ?>
-		</span>
-		<span class="text-slate-350 dark:text-zinc-650 font-normal">·</span>
-		<span class="text-slate-800 dark:text-zinc-200 font-bold">
-			<?php
-			$orig_author = sukusastra_get_original_author( get_the_ID() );
-			if ( $orig_author ) {
-				echo esc_html( $orig_author->post_title );
-			} else {
-				echo esc_html( get_the_author() );
-			}
-			?>
-		</span>
-		<span class="text-slate-355 dark:text-zinc-655 font-normal">·</span>
-		<span class="text-slate-500 dark:text-zinc-400 font-semibold normal-case"><?php echo esc_html( get_the_date() ); ?></span>
+	<div class="mt-4 flex flex-col gap-1 text-xs font-semibold tracking-wide uppercase">
+		<div class="flex flex-wrap items-center gap-1.5">
+			<span class="text-red-700 dark:text-red-400 font-black">
+				<?php esc_html_e( 'Berita', 'sukusastra' ); ?><?php echo $youtube ? ' · Video' : ''; ?>
+			</span>
+			<span class="text-slate-350 dark:text-zinc-655 font-normal">·</span>
+			<span class="text-slate-800 dark:text-zinc-200 font-bold">
+				<?php
+				$orig_author = sukusastra_get_original_author( get_the_ID() );
+				if ( $orig_author ) {
+					echo esc_html( $orig_author->post_title );
+				} else {
+					echo esc_html( get_the_author() );
+				}
+				?>
+			</span>
+		</div>
+		<span class="text-slate-500 dark:text-zinc-400 font-semibold normal-case block"><?php echo esc_html( get_the_date() ); ?></span>
 	</div>
 
 	<!-- Title & Diagonal Arrow Icon -->

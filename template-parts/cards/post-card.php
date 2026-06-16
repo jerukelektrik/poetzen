@@ -18,30 +18,31 @@
 	</a>
 	
 		<!-- Metadata: Rubric / Author / Date -->
-		<div class="ss-post-card-meta mt-4 flex flex-col items-start gap-1 text-xs font-semibold tracking-wide uppercase md:flex-row md:flex-wrap md:items-center md:gap-1.5">
-			<span class="ss-post-card-category block text-red-700 dark:text-red-400 font-black md:inline">
-				<?php
-				$categories = get_the_category();
-				if ( ! empty( $categories ) ) {
-				echo esc_html( $categories[0]->name );
-			} else {
-				echo esc_html__( 'Karya', 'sukusastra' );
-				}
-				?>
-			</span>
-			<span class="hidden text-slate-350 dark:text-zinc-650 font-normal md:inline">·</span>
-			<span class="ss-post-card-author block text-slate-800 dark:text-zinc-200 font-bold md:inline">
-				<?php
-				$orig_author = sukusastra_get_original_author( get_the_ID() );
-				if ( $orig_author ) {
-				echo esc_html( $orig_author->post_title );
-			} else {
-				echo esc_html( get_the_author() );
-				}
-				?>
-			</span>
-			<span class="hidden text-slate-355 dark:text-zinc-655 font-normal md:inline">·</span>
-			<span class="ss-post-card-date block text-slate-500 dark:text-zinc-400 font-semibold normal-case md:inline"><?php echo esc_html( get_the_date() ); ?></span>
+		<div class="ss-post-card-meta mt-4 flex flex-col gap-1 text-xs font-semibold tracking-wide uppercase">
+			<div class="flex flex-wrap items-center gap-1.5">
+				<span class="ss-post-card-category block text-red-700 dark:text-red-400 font-black">
+					<?php
+					$categories = get_the_category();
+					if ( ! empty( $categories ) ) {
+						echo esc_html( $categories[0]->name );
+					} else {
+						echo esc_html__( 'Karya', 'sukusastra' );
+					}
+					?>
+				</span>
+				<span class="text-slate-350 dark:text-zinc-655 font-normal">·</span>
+				<span class="ss-post-card-author block text-slate-800 dark:text-zinc-200 font-bold">
+					<?php
+					$orig_author = sukusastra_get_original_author( get_the_ID() );
+					if ( $orig_author ) {
+						echo esc_html( $orig_author->post_title );
+					} else {
+						echo esc_html( get_the_author() );
+					}
+					?>
+				</span>
+			</div>
+			<span class="ss-post-card-date block text-slate-500 dark:text-zinc-400 font-semibold normal-case"><?php echo esc_html( get_the_date() ); ?></span>
 		</div>
 
 	<!-- Title & Diagonal Arrow Icon -->
