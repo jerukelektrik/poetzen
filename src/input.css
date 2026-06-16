@@ -759,7 +759,9 @@
 
   @media (max-width: 47.999rem) {
     .ss-post-card-category,
-    .ss-post-card-author,
+    .ss-post-card-author {
+      display: inline !important;
+    }
     .ss-post-card-date {
       display: block !important;
     }
@@ -1170,15 +1172,18 @@
 
     .ss-category-swipe-card .ss-post-card-meta {
       margin-top: 1rem !important;
-      align-items: center !important;
-      flex-direction: row !important;
-      gap: 0.375rem !important;
+      align-items: flex-start !important;
+      flex-direction: column !important;
+      gap: 0.25rem !important;
     }
 
     .ss-post-card-category,
-    .ss-post-card-author,
-    .ss-post-card-date {
+    .ss-post-card-author {
       display: inline !important;
+    }
+
+    .ss-post-card-date {
+      display: block !important;
     }
 
     .ss-category-swipe-card .ss-post-card-excerpt {
