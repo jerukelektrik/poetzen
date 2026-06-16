@@ -76,6 +76,16 @@
     @apply border border-slate-200 bg-white p-5 shadow-sm transition hover:border-slate-300 dark:border-zinc-800/80 dark:bg-[#262B4E] dark:hover:border-blue-800;
   }
 
+  .ss-post-card-placeholder {
+    aspect-ratio: 3 / 2;
+    width: 100%;
+  }
+
+  .ss-review-card-placeholder {
+    aspect-ratio: 2 / 3;
+    width: 100%;
+  }
+
   .ss-button {
     @apply inline-flex items-center justify-center gap-2 rounded-md bg-red-700 px-4 py-2 text-sm font-bold text-white hover:bg-red-800 dark:bg-red-500 dark:text-zinc-950 dark:hover:bg-red-400;
   }
