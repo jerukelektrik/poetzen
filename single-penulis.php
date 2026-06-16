@@ -65,11 +65,18 @@ get_header(); ?>
 				$selected_filter = isset( $_GET['filter_karya'] ) ? sanitize_key( wp_unslash( $_GET['filter_karya'] ) ) : 'semua';
 
 				$query_args = array(
-					'posts_per_page' => 6,
-					'paged'          => $paged,
-					'meta_query'     => array(
+					'posts_per_page'      => 6,
+					'paged'               => $paged,
+					'ignore_sticky_posts' => true,
+					'meta_query'          => array(
+						'relation' => 'OR',
 						array(
 							'key'     => '_ss_original_author_id',
+							'value'   => $author_id,
+							'compare' => '=',
+						),
+						array(
+							'key'     => '_ss_book_author',
 							'value'   => $author_id,
 							'compare' => '=',
 						),
