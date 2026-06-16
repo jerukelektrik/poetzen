@@ -49,6 +49,10 @@ get_header(); ?>
 						<span class="ss-event-label text-center block mb-4"><?php esc_html_e( 'Pamflet / Poster', 'sukusastra' ); ?></span>
 						<?php get_template_part( 'template-parts/event-gallery' ); ?>
 					</div>
+				<?php else : ?>
+					<div class="mt-6 max-w-3xl rounded-2xl overflow-hidden shadow-md border border-slate-200/60 dark:border-zinc-800 bg-white dark:bg-[#262B4E]/40 p-8 flex items-center justify-center h-64 md:h-[320px]">
+						<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo.svg' ); ?>" alt="<?php the_title_attribute(); ?>" class="h-32 md:h-40 w-auto opacity-60 dark:opacity-30 object-contain" />
+					</div>
 				<?php endif; ?>
 
 				<div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4 rounded-2xl border border-slate-200 p-6 text-sm dark:border-zinc-800 bg-white dark:bg-[#262B4E]/40 shadow-sm items-center">

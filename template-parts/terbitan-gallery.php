@@ -22,6 +22,13 @@ if ( $primary_cover_id ) {
 }
 
 if ( empty( $gallery_array ) ) {
+	?>
+	<div class="w-full shrink-0 flex justify-center items-center">
+		<div class="w-full aspect-[2/3] relative rounded-2xl overflow-hidden bg-slate-100 dark:bg-zinc-900 border border-slate-200/50 dark:border-zinc-850 shadow-inner flex items-center justify-center p-6">
+			<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo.svg' ); ?>" alt="<?php the_title_attribute(); ?>" class="max-h-36 max-w-full opacity-60 dark:opacity-30 object-contain" />
+		</div>
+	</div>
+	<?php
 	return;
 }
 

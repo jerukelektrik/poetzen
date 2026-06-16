@@ -52,6 +52,10 @@ get_header(); ?>
 					<div class="rounded overflow-hidden shadow-md">
 						<?php the_post_thumbnail( 'sukusastra-cover', array( 'class' => 'w-full object-cover' ) ); ?>
 					</div>
+				<?php else : ?>
+					<div class="rounded overflow-hidden shadow-md border border-slate-200/60 dark:border-zinc-800 bg-white dark:bg-[#262B4E]/40 p-6 flex items-center justify-center aspect-[2/3] w-full">
+						<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo.svg' ); ?>" alt="<?php the_title_attribute(); ?>" class="max-h-36 max-w-full opacity-60 dark:opacity-30 object-contain" />
+					</div>
 				<?php endif; ?>
 				
 				<div class="ss-card grid gap-2 text-sm rounded">
