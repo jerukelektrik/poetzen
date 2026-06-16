@@ -65,7 +65,7 @@ get_header(); ?>
 			<div class="grid gap-y-12 gap-x-10 lg:grid-cols-[380px_1fr] items-start">
 				
 				<!-- Left Column: Portrait Carousel Gallery -->
-				<div class="w-full max-w-[380px] mx-auto lg:mx-0 sticky top-24">
+				<div class="w-full max-w-[380px] mx-auto lg:mx-0 lg:sticky lg:top-24">
 					<div class="bg-white dark:bg-[#262B4E]/40 border border-slate-200/60 dark:border-zinc-800 rounded-3xl p-5 shadow-sm">
 						<?php get_template_part( 'template-parts/terbitan-gallery' ); ?>
 					</div>
