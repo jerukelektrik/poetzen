@@ -324,4 +324,52 @@ function sukusastra_get_book_author_info( int $post_id ): array {
 	);
 }
 
+/**
+ * Render related articles block for single templates.
+ */
+function sukusastra_display_related_posts(): void {
+	$related_posts = sukusastra_get_related_articles( get_the_ID() );
+	if ( empty( $related_posts ) ) {
+		return;
+	}
+
+	$label = esc_html__( 'Baca Juga', 'sukusastra' );
+	?>
+	<div class="mt-10 not-prose ss-related-block">
+		<h3 class="text-lg font-black uppercase tracking-wider text-slate-900 dark:text-zinc-50 mb-5 border-b border-slate-100 pb-2 dark:border-zinc-800/80"><?php echo esc_html( $label ); ?></h3>
+		<div class="grid gap-4 sm:grid-cols-2">
+			<?php foreach ( $related_posts as $related_post ) : ?>
+				<?php 
+				$url = get_permalink( $related_post->ID );
+				$title = $related_post->post_title;
+				$date = get_the_date( '', $related_post );
+				$orig_author = sukusastra_get_original_author( $related_post->ID );
+				$author_name = $orig_author ? $orig_author->post_title : get_the_author_meta( 'display_name', $related_post->post_author );
+				?>
+				<div class="flex gap-3 items-center p-3 rounded-2xl border border-slate-200/60 bg-white dark:border-zinc-800/80 dark:bg-[#262B4E]/20 shadow-sm min-w-0">
+					<?php if ( has_post_thumbnail( $related_post->ID ) ) : ?>
+						<a href="<?php echo esc_url( $url ); ?>" class="block w-16 h-16 shrink-0 overflow-hidden rounded-xl border border-slate-200/50 dark:border-zinc-800/60 shadow-sm">
+							<?php echo get_the_post_thumbnail( $related_post->ID, 'thumbnail', array( 'class' => 'w-full h-full object-cover hover:scale-105 transition-transform duration-500' ) ); ?>
+						</a>
+					<?php endif; ?>
+					<div class="flex-1 min-w-0">
+						<div class="text-[9px] font-bold uppercase tracking-wider text-slate-400 dark:text-zinc-500">
+							<span class="text-slate-700 dark:text-zinc-300"><?php echo esc_html( $author_name ); ?></span>
+							<span class="text-slate-355 dark:text-zinc-655">·</span>
+							<span class="font-semibold normal-case text-slate-400 dark:text-zinc-500"><?php echo esc_html( $date ); ?></span>
+						</div>
+						<h5 class="text-sm font-black leading-snug text-slate-900 dark:text-zinc-50 mt-1 mb-0 line-clamp-2">
+							<a href="<?php echo esc_url( $url ); ?>" class="no-underline hover:text-red-700 dark:hover:text-red-400 transition-colors">
+								<?php echo esc_html( $title ); ?>
+							</a>
+						</h5>
+					</div>
+				</div>
+			<?php endforeach; ?>
+		</div>
+	</div>
+	<?php
+}
+
+
 

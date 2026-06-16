@@ -47,8 +47,9 @@ get_header(); ?>
 						<a class="ss-button-secondary" href="<?php echo esc_url( sukusastra_get_meta( get_the_ID(), '_ss_source_url' ) ); ?>" target="_blank" rel="noopener">
 							<?php esc_html_e( 'Sumber / Rujukan', 'sukusastra' ); ?> &rarr;
 						</a>
-					</div>
 				<?php endif; ?>
+
+				<?php sukusastra_display_related_posts(); ?>
 			</div>
 			<?php get_template_part( 'template-parts/sidebar-single' ); ?>
 			</div>

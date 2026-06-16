@@ -1059,7 +1059,7 @@ function sukusastra_baca_juga_shortcode( array $atts = array() ): string {
 	return sukusastra_render_related_posts_block( $selected_posts );
 }
 
-add_filter( 'the_content', 'sukusastra_inject_related_article' );
+// add_filter( 'the_content', 'sukusastra_inject_related_article' );
 function sukusastra_inject_related_article( string $content ): string {
 	if ( ! is_single() || ! in_the_loop() || ! is_main_query() ) {
 		return $content;

@@ -199,8 +199,9 @@ get_header(); ?>
 								#<?php echo esc_html( $tag->name ); ?>
 							</a>
 						<?php endforeach; ?>
-					</div>
 				<?php endif; ?>
+
+				<?php sukusastra_display_related_posts(); ?>
 
 				<div class="mt-10 lg:hidden">
 					<?php get_template_part( 'template-parts/sidebar-single' ); ?>

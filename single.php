@@ -106,6 +106,8 @@ get_header(); ?>
 						</div>
 					</div>
 				<?php endif; ?>
+				
+				<?php sukusastra_display_related_posts(); ?>
 			</div>
 			<?php get_template_part( 'template-parts/sidebar-single' ); ?>
 			</div>

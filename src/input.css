@@ -377,8 +377,27 @@
   }
 
   @media (max-width: 47.999rem) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    header.sticky {
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      background-color: rgba(255, 255, 255, 0.98) !important;
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08) !important;
+    }
+
+    .dark header.sticky {
+      background-color: rgba(38, 43, 78, 0.98) !important;
+    }
+
     .ss-mobile-submit-bar {
       padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    .ss-mobile-submit-link {
+      box-shadow: 0 -6px 18px rgba(15, 23, 42, 0.12) !important;
     }
   }
 
@@ -402,6 +421,22 @@
 
   .dark .ss-mobile-submit-icon {
     color: #cf2e2e;
+  }
+
+  @media (hover: none) and (pointer: coarse) {
+    .group:hover img,
+    .group:hover .ss-post-card-placeholder,
+    .group-hover\:scale-105,
+    .hover\:scale-105:hover {
+      transform: none !important;
+    }
+
+    a,
+    button,
+    img,
+    svg {
+      transition-duration: 120ms !important;
+    }
   }
 
   /* ─── News Update Marquee Animation ─── */
