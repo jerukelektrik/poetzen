@@ -90,7 +90,7 @@ function sukusastra_render_review_metabox( WP_Post $post ): void {
 	?>
 	<div class="ss-book-image-uploader-wrapper" style="margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 20px;">
 		<label><strong><?php esc_html_e( 'Foto/Sampul Buku (Sampul Sahaja)', 'sukusastra' ); ?></strong></label>
-		<p class="description" style="margin-top: 4px;"><?php esc_html_e( 'Upload sampul buku di sini. Ini berbeda dengan Featured Image (Gambar Utama) yang digunakan sebagai banner artikel.', 'sukusastra' ); ?></p>
+		<p class="description" style="margin-top: 4px;"><?php esc_html_e( 'Upload sampul buku di sini. Ini berbeda dengan Featured Image (Gambar Utama) yang digunakan sebagai banner artikel. Best Practice: Portrait, rasio 3:4 (Rekomendasi: 600x800 px atau 900x1200 px) dengan ukuran maks. 1MB.', 'sukusastra' ); ?></p>
 		<div style="margin-top: 10px;">
 			<div id="ss-book-image-preview" style="max-width: 150px; min-height: 100px; border: 1px dashed #ccc; padding: 5px; background: #fafafa; display: flex; align-items: center; justify-content: center; margin-bottom: 10px;">
 				<?php if ( $image_url ) : ?>
@@ -283,7 +283,7 @@ function sukusastra_render_event_metabox( WP_Post $post ): void {
 	?>
 	<div class="ss-event-gallery-uploader-wrapper" style="margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 20px;">
 		<label><strong><?php esc_html_e( 'Galeri Poster / Pamflet Acara (Multi-Gambar)', 'sukusastra' ); ?></strong></label>
-		<p class="description" style="margin-top: 4px;"><?php esc_html_e( 'Pilih satu atau lebih gambar jika ingin menampilkan slider/carousel poster.', 'sukusastra' ); ?></p>
+		<p class="description" style="margin-top: 4px;"><?php esc_html_e( 'Pilih satu atau lebih gambar jika ingin menampilkan slider/carousel poster. Best Practice: Rasio 4:5 atau 1:1 (Rekomendasi: 800x1000 px atau 800x800 px) dengan ukuran maks. 1MB per berkas.', 'sukusastra' ); ?></p>
 		<div style="margin-top: 10px;">
 			<div id="ss-gallery-preview" style="min-height: 60px; border: 1px dashed #ccc; padding: 10px; background: #fafafa; margin-bottom: 10px;">
 				<?php if ( ! empty( $gallery_array ) ) : ?>
@@ -774,7 +774,7 @@ function sukusastra_render_terbitan_metabox( WP_Post $post ): void {
 	?>
 	<div class="ss-book-image-uploader-wrapper" style="margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 20px;">
 		<label><strong><?php esc_html_e( 'Foto/Sampul Buku (Portrait)', 'sukusastra' ); ?></strong></label>
-		<p class="description" style="margin-top: 4px;"><?php esc_html_e( 'Upload sampul depan buku di sini.', 'sukusastra' ); ?></p>
+		<p class="description" style="margin-top: 4px;"><?php esc_html_e( 'Upload sampul depan buku di sini. Best Practice: Portrait, rasio 3:4 (Rekomendasi: 600x800 px atau 900x1200 px) dengan ukuran maks. 1MB.', 'sukusastra' ); ?></p>
 		<div style="margin-top: 10px;">
 			<div id="ss-terbitan-cover-preview" style="max-width: 150px; min-height: 100px; border: 1px dashed #ccc; padding: 5px; background: #fafafa; display: flex; align-items: center; justify-content: center; margin-bottom: 10px;">
 				<?php if ( $image_url ) : ?>
@@ -832,7 +832,7 @@ function sukusastra_render_terbitan_metabox( WP_Post $post ): void {
 	?>
 	<div class="ss-terbitan-gallery-uploader-wrapper" style="margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 20px;">
 		<label><strong><?php esc_html_e( 'Galeri Buku / Foto Tambahan (Multi-Gambar)', 'sukusastra' ); ?></strong></label>
-		<p class="description" style="margin-top: 4px;"><?php esc_html_e( 'Pilih satu atau lebih gambar tambahan untuk ditampilkan di slider halaman produk.', 'sukusastra' ); ?></p>
+		<p class="description" style="margin-top: 4px;"><?php esc_html_e( 'Pilih satu atau lebih gambar tambahan untuk ditampilkan di slider halaman produk. Best Practice: Rasio 3:4 atau 1:1 (Rekomendasi: 600x800 px atau 800x800 px) dengan ukuran maks. 1MB per berkas.', 'sukusastra' ); ?></p>
 		<div style="margin-top: 10px;">
 			<div id="ss-terbitan-gallery-preview" style="min-height: 60px; border: 1px dashed #ccc; padding: 10px; background: #fafafa; margin-bottom: 10px;">
 				<?php if ( ! empty( $gallery_array ) ) : ?>
