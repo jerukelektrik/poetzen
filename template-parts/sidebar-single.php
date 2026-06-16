@@ -28,10 +28,10 @@ if ( 'review_buku' !== $post_type ) {
 	<section class="ss-sidebar-tabs-widget rounded-md border border-slate-200 bg-white p-5 dark:border-zinc-800 dark:bg-[#262B4E]/40 shadow-sm">
 		<div class="flex border-b border-slate-200 dark:border-zinc-800 mb-5 text-sm font-bold">
 			<button class="ss-sidebar-tab-btn flex-1 pb-3 text-center border-b-[3px] text-red-700 border-red-700 dark:text-red-400 dark:border-red-500 focus:outline-none transition-colors duration-200 cursor-pointer" type="button" data-tab="latest">
-				<?php esc_html_e( 'Recent News', 'sukusastra' ); ?>
+				<?php esc_html_e( 'Terbaru', 'sukusastra' ); ?>
 			</button>
 			<button class="ss-sidebar-tab-btn flex-1 pb-3 text-center border-b-[3px] text-slate-400 border-transparent dark:text-zinc-500 hover:text-slate-850 dark:hover:text-zinc-200 focus:outline-none transition-colors duration-200 cursor-pointer" type="button" data-tab="popular">
-				<?php esc_html_e( 'Top Story', 'sukusastra' ); ?>
+				<?php esc_html_e( 'Terpopuler', 'sukusastra' ); ?>
 			</button>
 		</div>
 
@@ -196,7 +196,7 @@ if ( 'review_buku' !== $post_type ) {
 		else :
 			?>
 			<p class="text-xs text-slate-400 dark:text-zinc-500 text-center py-2">
-				<?php echo esc_html( $is_past ? __( 'Belum ada event yang sudah berlangsung', 'sukusastra' ) : __( 'Belum ada event coming soon', 'sukusastra' ) ); ?>
+				<?php echo esc_html( $is_past ? __( 'Belum ada event yang sudah berlangsung', 'sukusastra' ) : __( 'Belum ada event akan datang', 'sukusastra' ) ); ?>
 			</p>
 			<?php
 		endif;
@@ -205,7 +205,7 @@ if ( 'review_buku' !== $post_type ) {
 	<section class="ss-event-tabs-widget rounded-md border border-slate-200 p-5 dark:border-zinc-800 bg-white dark:bg-[#262B4E]/40 shadow-sm" data-event-tabs="<?php echo esc_attr( $event_tabs_id ); ?>">
 		<div class="flex border-b border-slate-200 dark:border-zinc-800 mb-5 text-sm font-bold">
 			<button class="ss-event-tab-btn flex-1 pb-3 text-center border-b-[3px] text-red-700 border-red-700 dark:text-red-400 dark:border-red-500 focus:outline-none transition-colors duration-200 cursor-pointer" type="button" data-event-tab="coming">
-				<?php esc_html_e( 'Coming Soon', 'sukusastra' ); ?>
+				<?php esc_html_e( 'Akan Datang', 'sukusastra' ); ?>
 			</button>
 			<button class="ss-event-tab-btn flex-1 pb-3 text-center border-b-[3px] text-slate-400 border-transparent dark:text-zinc-500 hover:text-slate-850 dark:hover:text-zinc-200 focus:outline-none transition-colors duration-200 cursor-pointer" type="button" data-event-tab="past">
 				<?php esc_html_e( 'Sudah Berlangsung', 'sukusastra' ); ?>
