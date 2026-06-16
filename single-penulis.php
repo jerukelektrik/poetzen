@@ -106,7 +106,7 @@ get_header(); ?>
 								<option value="puisi" <?php selected( $selected_filter, 'puisi' ); ?>><?php esc_html_e( 'Puisi', 'sukusastra' ); ?></option>
 								<option value="cerpen" <?php selected( $selected_filter, 'cerpen' ); ?>><?php esc_html_e( 'Cerpen', 'sukusastra' ); ?></option>
 								<option value="esai" <?php selected( $selected_filter, 'esai' ); ?>><?php esc_html_e( 'Esai', 'sukusastra' ); ?></option>
-								<option value="review_buku" <?php selected( $selected_filter, 'review_buku' ); ?>><?php esc_html_e( 'Review Buku', 'sukusastra' ); ?></option>
+								<option value="review_buku" <?php selected( $selected_filter, 'review_buku' ); ?>><?php esc_html_e( 'Reviu Buku', 'sukusastra' ); ?></option>
 							</select>
 						</form>
 					</div>

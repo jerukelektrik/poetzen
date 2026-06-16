@@ -48,7 +48,7 @@
 			<div>
 				<div class="hidden md:block h-[34px]"></div> <!-- alignment spacer -->
 				<ul class="grid gap-2 text-sm text-slate-300 dark:text-zinc-400">
-					<li><a class="no-underline hover:text-red-400 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/review-buku/' ) ); ?>"><?php esc_html_e( 'Review Buku', 'sukusastra' ); ?></a></li>
+					<li><a class="no-underline hover:text-red-400 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/review-buku/' ) ); ?>"><?php esc_html_e( 'Reviu Buku', 'sukusastra' ); ?></a></li>
 					<li><a class="no-underline hover:text-red-400 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/berita/' ) ); ?>"><?php esc_html_e( 'Berita', 'sukusastra' ); ?></a></li>
 					<li><a class="no-underline hover:text-red-400 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/event/' ) ); ?>"><?php esc_html_e( 'Event & Agenda', 'sukusastra' ); ?></a></li>
 				</ul>

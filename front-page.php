@@ -932,9 +932,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	<section id="review-buku" class="ss-section">
 		<div class="ss-container grid gap-6">
 			<div class="flex items-center justify-between border-b border-slate-100 pb-2 dark:border-zinc-800/80">
-				<h2 class="ss-section-title ss-feed-section-title"><?php esc_html_e( 'Review Buku', 'sukusastra' ); ?></h2>
+				<h2 class="ss-section-title ss-feed-section-title"><?php esc_html_e( 'Reviu Buku', 'sukusastra' ); ?></h2>
 				<a class="ss-eyebrow" href="<?php echo esc_url( get_post_type_archive_link( 'review_buku' ) ); ?>">
-					<?php esc_html_e( 'Semua Review', 'sukusastra' ); ?> &rarr;
+					<?php esc_html_e( 'Semua Reviu', 'sukusastra' ); ?> &rarr;
 				</a>
 			</div>
 			<div class="ss-review-carousel flex gap-4 overflow-x-auto snap-x snap-mandatory no-scrollbar pb-2 md:grid md:gap-5 md:grid-cols-2 lg:grid-cols-3 md:overflow-visible md:snap-none">

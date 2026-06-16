@@ -263,7 +263,7 @@ if ( $gtm_id ) : ?>
 						'active' => !$is_home && ( is_category( 'esai' ) || ( is_single() && has_category( 'esai' ) ) )
 					),
 					array(
-						'label'  => __( 'Review Buku', 'sukusastra' ),
+						'label'  => __( 'Reviu Buku', 'sukusastra' ),
 						'url'    => $base_url . '#review-buku',
 						'hash'   => '#review-buku',
 						'active' => !$is_home && ( is_post_type_archive( 'review_buku' ) || is_singular( 'review_buku' ) )

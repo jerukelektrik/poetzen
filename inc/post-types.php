@@ -23,10 +23,10 @@ function sukusastra_register_review_buku_type(): void {
 		'review_buku',
 		array(
 			'labels'       => array(
-				'name'          => __( 'Review Buku', 'sukusastra' ),
-				'singular_name' => __( 'Review Buku', 'sukusastra' ),
-				'add_new_item'  => __( 'Tambah Review Buku', 'sukusastra' ),
-				'edit_item'     => __( 'Edit Review Buku', 'sukusastra' ),
+				'name'          => __( 'Reviu Buku', 'sukusastra' ),
+				'singular_name' => __( 'Reviu Buku', 'sukusastra' ),
+				'add_new_item'  => __( 'Tambah Reviu Buku', 'sukusastra' ),
+				'edit_item'     => __( 'Edit Reviu Buku', 'sukusastra' ),
 			),
 			'public'       => true,
 			'has_archive'  => true,

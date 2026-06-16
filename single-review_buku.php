@@ -28,7 +28,7 @@ get_header(); ?>
 			<div class="grid gap-2 lg:hidden">
 				<p class="ss-eyebrow">
 					<?php 
-					printf( '%s (%s)', esc_html__( 'Review Buku', 'sukusastra' ), esc_html( $book_type_label ) );
+					printf( '%s (%s)', esc_html__( 'Reviu Buku', 'sukusastra' ), esc_html( $book_type_label ) );
 					if ( $orig_author ) {
 						printf(
 							' · <a class="underline hover:text-red-700 dark:hover:text-red-300" href="%1$s">%2$s</a>',
@@ -168,7 +168,7 @@ get_header(); ?>
 			<div>
 				<p class="ss-eyebrow mb-2 hidden lg:block">
 					<?php 
-					printf( '%s (%s)', esc_html__( 'Review Buku', 'sukusastra' ), esc_html( $book_type_label ) );
+					printf( '%s (%s)', esc_html__( 'Reviu Buku', 'sukusastra' ), esc_html( $book_type_label ) );
 					if ( $orig_author ) {
 						printf(
 							' · <a class="underline hover:text-red-700 dark:hover:text-red-300" href="%1$s">%2$s</a>',

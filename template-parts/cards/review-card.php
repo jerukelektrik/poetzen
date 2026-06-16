@@ -79,7 +79,7 @@ if ( 'vertical' === $layout ) {
 			if ( 'vertical' === $layout ) {
 				echo esc_html( $book_type_label );
 			} else {
-				printf( '%s (%s)', esc_html__( 'Review Buku', 'sukusastra' ), esc_html( $book_type_label ) );
+				printf( '%s (%s)', esc_html__( 'Reviu Buku', 'sukusastra' ), esc_html( $book_type_label ) );
 
 				$reviewer_info = sukusastra_get_reviewer_info( $post_id );
 				if ( ! empty( $reviewer_info['name'] ) ) {

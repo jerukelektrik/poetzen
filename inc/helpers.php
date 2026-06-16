@@ -17,7 +17,7 @@ function sukusastra_primary_menu_fallback(): void {
 		'Puisi'       => home_url( '/category/puisi/' ),
 		'Cerpen'      => home_url( '/category/cerpen/' ),
 		'Esai'        => home_url( '/category/esai/' ),
-		'Review Buku' => home_url( '/review-buku/' ),
+		'Reviu Buku' => home_url( '/review-buku/' ),
 		'Berita'      => home_url( '/berita/' ),
 		'Event'       => home_url( '/event/' ),
 	);
@@ -107,7 +107,7 @@ function sukusastra_get_post_type_label( int $post_id ): string {
 		}
 		return esc_html__( 'Tulisan', 'sukusastra' );
 	} elseif ( 'review_buku' === $post_type ) {
-		return esc_html__( 'Review Buku', 'sukusastra' );
+		return esc_html__( 'Reviu Buku', 'sukusastra' );
 	} elseif ( 'berita' === $post_type ) {
 		return esc_html__( 'Berita', 'sukusastra' );
 	} elseif ( 'event' === $post_type ) {
@@ -146,7 +146,7 @@ function sukusastra_breadcrumbs(): void {
 			$cpt_label     = $post_type_obj->labels->singular_name;
 
 			if ( 'review_buku' === $post_type ) {
-				$cpt_label    = __( 'Review Buku', 'sukusastra' );
+				$cpt_label    = __( 'Reviu Buku', 'sukusastra' );
 				$archive_link = home_url( '/review-buku/' );
 			} elseif ( 'berita' === $post_type ) {
 				$cpt_label    = __( 'Berita', 'sukusastra' );

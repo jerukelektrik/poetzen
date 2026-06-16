@@ -32,7 +32,7 @@ function sukusastra_sample_content_notice(): void {
 	<div class="notice notice-info">
 		<p>
 			<strong><?php esc_html_e( 'Revamp Poetzen', 'sukusastra' ); ?></strong>: 
-			<?php esc_html_e( 'Klik tombol di bawah ini untuk membuat konten sampel (Puisi, Cerpen, Esai, Review Buku, Berita, Event) beserta kategori penulis secara otomatis.', 'sukusastra' ); ?>
+			<?php esc_html_e( 'Klik tombol di bawah ini untuk membuat konten sampel (Puisi, Cerpen, Esai, Reviu Buku, Berita, Event) beserta kategori penulis secara otomatis.', 'sukusastra' ); ?>
 		</p>
 		<p>
 			<a href="<?php echo esc_url( $url ); ?>" class="button button-primary"><?php esc_html_e( 'Buat Konten Sampel', 'sukusastra' ); ?></a>
@@ -320,7 +320,7 @@ function sukusastra_generate_samples(): void {
 		update_post_meta( $seo_id, '_ss_post_views', 5 );
 	}
 
-	// 7. Sample Review Buku CPT linked to Leila S. Chudori
+	// 7. Sample Reviu Buku CPT linked to Leila S. Chudori
 	$existing = get_posts( array(
 		'post_type'   => 'review_buku',
 		'title'       => 'Mengurai Luka Sejarah dalam Laut Bercerita',

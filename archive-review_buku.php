@@ -1,6 +1,6 @@
 <?php
 /**
- * Review Buku CPT archive template.
+ * Reviu Buku CPT archive template.
  *
  * @package SukuSastra
  */
@@ -12,7 +12,7 @@ get_header(); ?>
 		<div class="grid gap-6">
 		<header class="border-b border-slate-100 pb-4 dark:border-zinc-800/80">
 			<p class="ss-eyebrow mb-1"><?php esc_html_e( 'Tinjauan Pustaka', 'sukusastra' ); ?></p>
-			<h1 class="ss-page-title"><?php esc_html_e( 'Review Buku', 'sukusastra' ); ?></h1>
+			<h1 class="ss-page-title"><?php esc_html_e( 'Reviu Buku', 'sukusastra' ); ?></h1>
 			<p class="mt-2 max-w-2xl ss-body"><?php esc_html_e( 'Ulasan mendalam karya sastra terbaik—puisi, cerpen, novel, dan nonfiksi oleh para kurator Suku Sastra.', 'sukusastra' ); ?></p>
 		</header>
 
@@ -71,7 +71,7 @@ get_header(); ?>
 			<?php endwhile; else : ?>
 
 				<div class="col-span-full rounded-md border border-slate-200 p-8 text-center dark:border-zinc-800 bg-white dark:bg-zinc-900">
-					<p class="text-slate-500 dark:text-zinc-400"><?php esc_html_e( 'Tidak ada review buku yang sesuai dengan pencarian Anda.', 'sukusastra' ); ?></p>
+					<p class="text-slate-500 dark:text-zinc-400"><?php esc_html_e( 'Tidak ada reviu buku yang sesuai dengan pencarian Anda.', 'sukusastra' ); ?></p>
 				</div>
 			<?php endif; ?>
 		</div>
