@@ -24,6 +24,7 @@ jobs:
         server: ${{ secrets.FTP_SERVER }}
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
+        port: ${{ secrets.FTP_PORT }}
         # Karena folder FTP dikunci ke public_html/sukusastra, path ini diatur relatif terhadap root FTP:
         server-dir: wp-content/themes/poetzen/
         exclude: |
