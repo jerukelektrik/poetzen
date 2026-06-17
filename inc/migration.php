@@ -88,6 +88,55 @@ function sukusastra_register_image_attachment( string $relative_path, int $paren
 }
 
 /**
+ * Handle one-off category to CPT migration.
+ */
+add_action( 'admin_init', 'sukusastra_handle_peristiwa_migration' );
+function sukusastra_handle_peristiwa_migration(): void {
+	if ( ! is_admin() || ! isset( $_GET['page'] ) || 'sukusastra_migration' !== $_GET['page'] ) {
+		return;
+	}
+
+	if ( ! isset( $_GET['action'] ) || 'migrate_peristiwa' !== $_GET['action'] ) {
+		return;
+	}
+
+	if ( ! current_user_can( 'manage_options' ) ) {
+		wp_die( esc_html__( 'Unauthorized access.', 'sukusastra' ) );
+	}
+
+	check_admin_referer( 'sukusastra_migrate_peristiwa_action', 'nonce' );
+
+	global $wpdb;
+
+	$term = get_category_by_slug( 'peristiwa' );
+	if ( ! $term ) {
+		wp_redirect( admin_url( 'tools.php?page=sukusastra_migration&error=category_not_found' ) );
+		exit;
+	}
+
+	$term_taxonomy_id = $term->term_taxonomy_id;
+
+	$post_ids = $wpdb->get_col( $wpdb->prepare(
+		"SELECT object_id FROM $wpdb->term_relationships WHERE term_taxonomy_id = %d",
+		$term_taxonomy_id
+	) );
+
+	if ( empty( $post_ids ) ) {
+		wp_redirect( admin_url( 'tools.php?page=sukusastra_migration&error=no_posts_found' ) );
+		exit;
+	}
+
+	$placeholders = implode( ',', array_fill( 0, count( $post_ids ), '%d' ) );
+	$updated = $wpdb->query( $wpdb->prepare(
+		"UPDATE $wpdb->posts SET post_type = 'berita' WHERE post_type = 'post' AND ID IN ($placeholders)",
+		...$post_ids
+	) );
+
+	wp_redirect( admin_url( 'tools.php?page=sukusastra_migration&migration_success=1&count=' . (int) $updated ) );
+	exit;
+}
+
+/**
  * Handle the Export Trigger.
  */
 add_action( 'admin_init', 'sukusastra_handle_json_export' );
@@ -418,6 +467,10 @@ function sukusastra_render_migration_page(): void {
 	$skipped_count  = isset( $_GET['skipped'] ) ? (int) $_GET['skipped'] : 0;
 	$error_msg      = '';
 
+	$migration_success = isset( $_GET['migration_success'] ) && '1' === $_GET['migration_success'];
+	$migrated_count    = isset( $_GET['count'] ) ? (int) $_GET['count'] : 0;
+	$migration_error   = isset( $_GET['error'] ) ? sanitize_text_field( wp_unslash( $_GET['error'] ) ) : '';
+
 	if ( isset( $_GET['import_error'] ) ) {
 		$err = sanitize_text_field( wp_unslash( $_GET['import_error'] ) );
 		if ( 'invalid_json' === $err ) {
@@ -432,6 +485,25 @@ function sukusastra_render_migration_page(): void {
 	?>
 	<div class="wrap">
 		<h1><?php esc_html_e( 'Migrasi Database Suku Sastra', 'sukusastra' ); ?></h1>
+
+		<?php if ( $migration_success ) : ?>
+			<div class="notice notice-success is-dismissible" style="margin-left: 0; margin-right: 0; margin-top: 15px;">
+				<p>
+					<strong><?php echo esc_html( sprintf( __( 'Berhasil! Sebanyak %d artikel peristiwa telah dipindahkan ke Post Type Berita.', 'sukusastra' ), $migrated_count ) ); ?></strong>
+				</p>
+			</div>
+		<?php endif; ?>
+
+		<?php if ( 'category_not_found' === $migration_error ) : ?>
+			<div class="notice notice-error is-dismissible" style="margin-left: 0; margin-right: 0; margin-top: 15px;">
+				<p><strong><?php esc_html_e( 'Gagal: Kategori dengan slug "peristiwa" tidak ditemukan.', 'sukusastra' ); ?></strong></p>
+			</div>
+		<?php elseif ( 'no_posts_found' === $migration_error ) : ?>
+			<div class="notice notice-warning is-dismissible" style="margin-left: 0; margin-right: 0; margin-top: 15px;">
+				<p><strong><?php esc_html_e( 'Perhatian: Tidak ada artikel yang ditemukan di kategori "peristiwa".', 'sukusastra' ); ?></strong></p>
+			</div>
+		<?php endif; ?>
+
 		<p class="description">
 			<?php esc_html_e( 'Sistem kustom untuk memindahkan artikel, custom post types, kategori, dan metadata antar server menggunakan file JSON super ringan.', 'sukusastra' ); ?>
 		</p>
@@ -499,6 +571,25 @@ function sukusastra_render_migration_page(): void {
 				</form>
 			</div>
 
+		</div>
+
+		<!-- One-off Tools Box -->
+		<div class="card" style="background: #fff; padding: 20px; border-radius: 8px; margin-top: 25px; border-top: 4px solid #b42318; box-shadow: 0 1px 3px rgba(0,0,0,0.1); max-width: 100%;">
+			<h2>3. Perkakas Khusus (One-Off Tools)</h2>
+			<p>Gunakan tombol di bawah ini untuk memindahkan semua artikel dari kategori <strong>Peristiwa</strong> (slug: <code>peristiwa</code>) ke Custom Post Type <strong>Berita</strong> secara otomatis dan aman langsung di database.</p>
+			
+			<?php
+			$migrate_url = wp_nonce_url(
+				admin_url( 'tools.php?page=sukusastra_migration&action=migrate_peristiwa' ),
+				'sukusastra_migrate_peristiwa_action',
+				'nonce'
+			);
+			?>
+			<p style="margin-top: 15px;">
+				<a href="<?php echo esc_url( $migrate_url ); ?>" class="button button-primary" onclick="return confirm('Apakah Anda yakin ingin memindahkan semua artikel di kategori Peristiwa ke Post Type Berita? Tindakan ini akan mengubah post_type tulisan secara permanen.');" style="padding: 5px 15px; font-weight: 600;">
+					Migrasikan Kategori Peristiwa ke CPT Berita
+				</a>
+			</p>
 		</div>
 
 		<!-- Diagnostics Box -->
