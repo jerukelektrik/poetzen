@@ -4,7 +4,7 @@
   "private": true,
   "description": "Classic WordPress theme Poetzen.",
   "scripts": {
-    "build:css": "tailwindcss -i ./src/input.css -o ./assets/css/theme.css --minify",
+    "build:css": "tailwindcss -i ./src/input.css -o ./assets/css/theme.css --optimize",
     "watch:css": "tailwindcss -i ./src/input.css -o ./assets/css/theme.css --watch",
     "test:php": "php tests/event-state-test.php && php tests/helpers-test.php && php tests/queries-test.php",
     "lint:php": "find . -name '*.php' -not -path './vendor/*' -not -path './node_modules/*' -print0 | xargs -0 -n1 php -l"

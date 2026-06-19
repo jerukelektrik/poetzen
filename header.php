@@ -184,134 +184,6 @@ if ( $gtm_id ) : ?>
 			</div>
 		</div>
 
-		<!-- Mobile Navigation Backdrop overlay -->
-		<div id="mobile-menu-backdrop" class="fixed inset-0 bg-black/45 z-40 hidden backdrop-blur-[2px] transition-all duration-300" data-nav-toggle aria-controls="primary-menu-mobile"></div>
-
-		<!-- Mobile Navigation Drawer Menu (Slide-in) -->
-		<nav id="primary-menu-mobile" class="fixed top-0 right-0 h-full w-[290px] max-w-[85vw] bg-white dark:bg-zinc-950 z-50 shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col justify-between hidden" aria-label="<?php esc_attr_e( 'Menu utama mobile', 'sukusastra' ); ?>">
-			<!-- Drawer Header -->
-			<div class="flex items-center justify-between px-5 pt-5 pb-4 border-b border-slate-100/50 dark:border-zinc-900/50">
-				<a class="flex items-center gap-2 no-underline" href="<?php echo esc_url( home_url( '/' ) ); ?>">
-					<img src="<?php echo esc_url( $logo_light ); ?>" alt="<?php bloginfo( 'name' ); ?>" class="h-9 w-auto object-contain logo-light">
-					<img src="<?php echo esc_url( $logo_dark ); ?>" alt="<?php bloginfo( 'name' ); ?>" class="h-9 w-auto object-contain logo-dark">
-					<span class="text-sm font-extrabold text-slate-800 dark:text-zinc-50 tracking-tight ss-logo-font">Suku Sastra</span>
-				</a>
-				<button class="w-[32px] h-[32px] rounded-full border border-slate-200 dark:border-zinc-800 flex items-center justify-center text-slate-500 hover:bg-slate-100 dark:hover:bg-zinc-900 cursor-pointer shadow-sm" type="button" data-nav-toggle aria-controls="primary-menu-mobile">
-					<!-- Chevron Left Icon -->
-					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
-						<path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
-					</svg>
-				</button>
-			</div>
-
-			<!-- Drawer Scrollable Content -->
-			<div class="flex-1 overflow-y-auto px-4 py-5 flex flex-col gap-6">
-				<!-- Search Form -->
-				<div>
-					<form role="search" method="get" class="flex items-center bg-slate-50 dark:bg-zinc-900/60 border border-slate-200/60 dark:border-zinc-800 p-1 pl-4 rounded-xl w-full shadow-inner" action="<?php echo esc_url( home_url( '/' ) ); ?>">
-						<input type="search" class="bg-transparent border-0 outline-none text-xs flex-1 text-slate-900 dark:text-zinc-50 placeholder-slate-400 py-1.5 px-1 w-full" placeholder="<?php esc_attr_e( 'Cari tulisan...', 'sukusastra' ); ?>" value="<?php echo get_search_query(); ?>" name="s" />
-						<button type="submit" class="w-8 h-8 rounded-lg bg-red-700 text-white flex items-center justify-center hover:bg-red-800 transition cursor-pointer shrink-0">
-							<svg class="w-3.5 h-3.5 fill-none stroke-current stroke-[2.5]" viewBox="0 0 24 24">
-								<path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-							</svg>
-						</button>
-					</form>
-				</div>
-
-				<!-- Vertical Menu Items -->
-				<div class="flex flex-col gap-1.5">
-					<?php
-					$locations = get_nav_menu_locations();
-					$menu = isset( $locations['primary'] ) ? wp_get_nav_menu_object( $locations['primary'] ) : null;
-					$menu_items = $menu ? wp_get_nav_menu_items( $menu->term_id ) : array();
-
-					if ( ! empty( $menu_items ) ) {
-						foreach ( $menu_items as $item ) {
-							$active_class = ( (string) $item->object_id === (string) get_queried_object_id() || ( is_front_page() && strtolower(trim($item->title)) === 'depan' ) )
-								? 'bg-slate-50 dark:bg-zinc-900/60 text-red-700 dark:text-red-400 font-bold shadow-sm border border-slate-100 dark:border-zinc-900/50'
-								: 'text-slate-700 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-zinc-900 hover:text-red-700 dark:hover:text-red-400 font-medium border border-transparent';
-							?>
-							<a href="<?php echo esc_url( $item->url ); ?>" class="flex items-center justify-between px-3.5 py-3 rounded-xl transition-all duration-200 no-underline <?php echo esc_attr( $active_class ); ?>">
-								<div class="flex items-center gap-3.5">
-									<span class="text-slate-400 dark:text-zinc-500 shrink-0"><?php echo sukusastra_get_menu_icon( $item->title ); ?></span>
-									<span class="text-[11px] tracking-wide uppercase font-bold ss-nav-text leading-none"><?php echo esc_html( $item->title ); ?></span>
-								</div>
-								<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5 text-slate-300 dark:text-zinc-700 shrink-0">
-									<path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-								</svg>
-							</a>
-							<?php
-						}
-					} else {
-						// Fallback menu
-						?>
-						<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="flex items-center justify-between px-3.5 py-3 rounded-xl text-slate-700 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-zinc-900 font-medium no-underline">
-							<div class="flex items-center gap-3.5">
-								<span class="text-slate-400 shrink-0"><?php echo sukusastra_get_menu_icon( 'depan' ); ?></span>
-								<span class="text-[11px] tracking-wide uppercase font-bold ss-nav-text leading-none">DEPAN</span>
-							</div>
-							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5 text-slate-300 shrink-0">
-								<path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-							</svg>
-						</a>
-						<?php
-					}
-					?>
-				</div>
-
-				<!-- Kirim Karya Button (Call to Action) -->
-				<div>
-					<a class="flex items-center justify-center gap-2.5 rounded-xl border border-red-700 bg-white/95 dark:bg-zinc-900 dark:border-red-500/30 px-4 py-3 text-red-700 dark:text-red-400 no-underline shadow-sm hover:bg-red-50/50 dark:hover:bg-red-950/20 transition-all w-full cursor-pointer h-11" href="<?php echo esc_url( home_url( '/ketentuan-pengiriman-karya/' ) ); ?>">
-						<svg class="w-4 h-4 shrink-0 text-current" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
-							<path stroke-linecap="round" stroke-linejoin="round" d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7Z" />
-							<path stroke-linecap="round" stroke-linejoin="round" d="M14 2v5h5" />
-							<path stroke-linecap="round" stroke-linejoin="round" d="M12 11v6M9 14h6" />
-						</svg>
-						<span class="text-[11px] uppercase font-black tracking-wider leading-none">Kirim Karya</span>
-					</a>
-				</div>
-			</div>
-
-			<!-- Drawer Footer -->
-			<div class="px-5 py-4 border-t border-slate-100/50 dark:border-zinc-900/50 bg-slate-50/50 dark:bg-zinc-900/20">
-				<?php if ( is_user_logged_in() ) : 
-					$current_user = wp_get_current_user();
-					$avatar_url = get_avatar_url( $current_user->ID, array( 'size' => 64 ) );
-					?>
-					<div class="flex items-center justify-between w-full">
-						<div class="flex items-center gap-3">
-							<img src="<?php echo esc_url( $avatar_url ); ?>" alt="<?php echo esc_attr( $current_user->display_name ); ?>" class="w-9 h-9 rounded-full object-cover ring-2 ring-red-700/10 dark:ring-red-500/20 shrink-0">
-							<div class="flex flex-col text-left leading-normal">
-								<span class="text-[11px] font-bold text-slate-800 dark:text-zinc-100 leading-none truncate max-w-[140px]"><?php echo esc_html( $current_user->display_name ); ?></span>
-								<span class="text-[9px] text-slate-400 dark:text-zinc-500 mt-0.5 capitalize"><?php echo esc_html( reset( $current_user->roles ) ); ?></span>
-							</div>
-						</div>
-						<a href="<?php echo esc_url( wp_logout_url( home_url() ) ); ?>" class="text-slate-400 dark:text-zinc-500 hover:text-red-700 dark:hover:text-red-400 transition" title="<?php esc_attr_e( 'Keluar', 'sukusastra' ); ?>">
-							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="w-4.5 h-4.5">
-								<path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
-							</svg>
-						</a>
-					</div>
-				<?php else : ?>
-					<div class="flex items-center justify-between w-full">
-						<div class="flex items-center gap-3">
-							<div class="w-9 h-9 rounded-full bg-slate-100 dark:bg-zinc-900 flex items-center justify-center text-slate-400 dark:text-zinc-500 shrink-0">
-								<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="w-4.5 h-4.5">
-									<path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
-								</svg>
-							</div>
-							<div class="flex flex-col text-left leading-normal">
-								<span class="text-[11px] font-bold text-slate-800 dark:text-zinc-200 leading-none">Ruang Sastra & Seni</span>
-								<span class="text-[9px] text-slate-400 dark:text-zinc-500 mt-0.5">Suku Sastra</span>
-							</div>
-						</div>
-						<a href="<?php echo esc_url( wp_login_url() ); ?>" class="text-[10px] font-bold text-red-700 dark:text-red-400 hover:underline no-underline" title="<?php esc_attr_e( 'Masuk Admin', 'sukusastra' ); ?>">
-							Masuk
-						</a>
-					</div>
-				<?php endif; ?>
-			</div>
-		</nav>
 
 		<?php if ( $show_mobile_capsules ) : ?>
 		<!-- Bottom Row: Horizontal Scroll Categories Capsules (Homepage only) -->
@@ -486,7 +358,139 @@ if ( $gtm_id ) : ?>
 		});
 	</script>
 	<?php endif; ?>
-	</div>
 </header>
+
+<!-- Mobile Navigation Backdrop overlay -->
+<div id="mobile-menu-backdrop" class="fixed inset-0 bg-black/55 z-40 hidden transition-all duration-300" data-nav-toggle aria-controls="primary-menu-mobile"></div>
+
+<!-- Mobile Navigation Drawer Menu (Slide-in) -->
+<nav id="primary-menu-mobile" class="fixed top-0 right-0 h-full w-[290px] max-w-[85vw] bg-white dark:bg-zinc-950 z-50 shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col justify-between hidden border-l border-slate-100 dark:border-zinc-900" aria-label="<?php esc_attr_e( 'Menu utama mobile', 'sukusastra' ); ?>">
+	<!-- Drawer Header -->
+	<div class="flex items-center justify-between px-5 pt-5 pb-4 border-b border-slate-100/80 dark:border-zinc-900/80">
+		<a class="flex items-center gap-2 no-underline" href="<?php echo esc_url( home_url( '/' ) ); ?>">
+			<?php 
+			$logo_light = sukusastra_get_option( 'logo_light', get_template_directory_uri() . '/assets/images/logo.svg' );
+			$logo_dark = sukusastra_get_option( 'logo_dark', get_template_directory_uri() . '/assets/images/logo-white.svg' );
+			?>
+			<img src="<?php echo esc_url( $logo_light ); ?>" alt="<?php bloginfo( 'name' ); ?>" class="h-9 w-auto object-contain logo-light">
+			<img src="<?php echo esc_url( $logo_dark ); ?>" alt="<?php bloginfo( 'name' ); ?>" class="h-9 w-auto object-contain logo-dark">
+			<span class="text-sm font-extrabold text-slate-800 dark:text-zinc-50 tracking-tight ss-logo-font">Suku Sastra</span>
+		</a>
+		<button class="w-[32px] h-[32px] rounded-full border border-slate-200 dark:border-zinc-800 flex items-center justify-center text-slate-500 hover:bg-slate-100 dark:hover:bg-zinc-900 cursor-pointer shadow-sm" type="button" data-nav-toggle aria-controls="primary-menu-mobile">
+			<!-- Chevron Left Icon -->
+			<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+				<path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+			</svg>
+		</button>
+	</div>
+
+	<!-- Drawer Scrollable Content -->
+	<div class="flex-1 overflow-y-auto px-4 py-5 flex flex-col gap-6">
+		<!-- Search Form -->
+		<div>
+			<form role="search" method="get" class="flex items-center bg-slate-100 dark:bg-zinc-900 border border-slate-200/60 dark:border-zinc-800 p-1 pl-4 rounded-xl w-full shadow-inner" action="<?php echo esc_url( home_url( '/' ) ); ?>">
+				<input type="search" class="bg-transparent border-0 outline-none text-xs flex-1 text-slate-900 dark:text-zinc-50 placeholder-slate-400 py-1.5 px-1 w-full" placeholder="<?php esc_attr_e( 'Cari tulisan...', 'sukusastra' ); ?>" value="<?php echo get_search_query(); ?>" name="s" />
+				<button type="submit" class="w-8 h-8 rounded-lg bg-red-700 text-white flex items-center justify-center hover:bg-red-800 transition cursor-pointer shrink-0">
+					<svg class="w-3.5 h-3.5 fill-none stroke-current stroke-[2.5]" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+					</svg>
+				</button>
+			</form>
+		</div>
+
+		<!-- Vertical Menu Items -->
+		<div class="flex flex-col gap-1.5">
+			<?php
+			$locations = get_nav_menu_locations();
+			$menu = isset( $locations['primary'] ) ? wp_get_nav_menu_object( $locations['primary'] ) : null;
+			$menu_items = $menu ? wp_get_nav_menu_items( $menu->term_id ) : array();
+
+			if ( ! empty( $menu_items ) ) {
+				foreach ( $menu_items as $item ) {
+					$active_class = ( (string) $item->object_id === (string) get_queried_object_id() || ( is_front_page() && strtolower(trim($item->title)) === 'depan' ) )
+						? 'bg-slate-100 dark:bg-zinc-900 text-red-700 dark:text-red-400 font-bold shadow-sm border border-slate-200/40 dark:border-zinc-800/40'
+						: 'text-slate-700 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-zinc-900 hover:text-red-700 dark:hover:text-red-400 font-medium border border-transparent';
+					?>
+					<a href="<?php echo esc_url( $item->url ); ?>" class="flex items-center justify-between px-3.5 py-3 rounded-xl transition-all duration-200 no-underline <?php echo esc_attr( $active_class ); ?>">
+						<div class="flex items-center gap-3.5">
+							<span class="text-slate-400 dark:text-zinc-500 shrink-0"><?php echo sukusastra_get_menu_icon( $item->title ); ?></span>
+							<span class="text-[11px] tracking-wide uppercase font-bold ss-nav-text leading-none"><?php echo esc_html( $item->title ); ?></span>
+						</div>
+						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5 text-slate-300 dark:text-zinc-700 shrink-0">
+							<path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+						</svg>
+					</a>
+					<?php
+				}
+			} else {
+				// Fallback menu
+				?>
+				<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="flex items-center justify-between px-3.5 py-3 rounded-xl text-slate-700 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-zinc-900 font-medium no-underline">
+					<div class="flex items-center gap-3.5">
+						<span class="text-slate-400 shrink-0"><?php echo sukusastra_get_menu_icon( 'depan' ); ?></span>
+						<span class="text-[11px] tracking-wide uppercase font-bold ss-nav-text leading-none">DEPAN</span>
+					</div>
+					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5 text-slate-300 shrink-0">
+						<path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+					</svg>
+				</a>
+				<?php
+			}
+			?>
+		</div>
+
+		<!-- Kirim Karya Button (Call to Action) -->
+		<div>
+			<a class="flex items-center justify-center gap-2.5 rounded-xl border border-red-700 bg-white dark:bg-zinc-900 dark:border-red-500/30 px-4 py-3 text-red-700 dark:text-red-400 no-underline shadow-sm hover:bg-red-50 dark:hover:bg-red-950/20 transition-all w-full cursor-pointer h-11" href="<?php echo esc_url( home_url( '/ketentuan-pengiriman-karya/' ) ); ?>">
+				<svg class="w-4 h-4 shrink-0 text-current" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+					<path stroke-linecap="round" stroke-linejoin="round" d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7Z" />
+					<path stroke-linecap="round" stroke-linejoin="round" d="M14 2v5h5" />
+					<path stroke-linecap="round" stroke-linejoin="round" d="M12 11v6M9 14h6" />
+				</svg>
+				<span class="text-[11px] uppercase font-black tracking-wider leading-none">Kirim Karya</span>
+			</a>
+		</div>
+	</div>
+
+	<!-- Drawer Footer -->
+	<div class="px-5 py-4 border-t border-slate-200 dark:border-zinc-900 bg-slate-50 dark:bg-zinc-900/60">
+		<?php if ( is_user_logged_in() ) : 
+			$current_user = wp_get_current_user();
+			$avatar_url = get_avatar_url( $current_user->ID, array( 'size' => 64 ) );
+			?>
+			<div class="flex items-center justify-between w-full">
+				<div class="flex items-center gap-3">
+					<img src="<?php echo esc_url( $avatar_url ); ?>" alt="<?php echo esc_attr( $current_user->display_name ); ?>" class="w-9 h-9 rounded-full object-cover ring-2 ring-red-700/10 dark:ring-red-500/20 shrink-0">
+					<div class="flex flex-col text-left leading-normal">
+						<span class="text-[11px] font-bold text-slate-800 dark:text-zinc-100 leading-none truncate max-w-[140px]"><?php echo esc_html( $current_user->display_name ); ?></span>
+						<span class="text-[9px] text-slate-400 dark:text-zinc-500 mt-0.5 capitalize"><?php echo esc_html( reset( $current_user->roles ) ); ?></span>
+					</div>
+				</div>
+				<a href="<?php echo esc_url( wp_logout_url( home_url() ) ); ?>" class="text-slate-400 dark:text-zinc-500 hover:text-red-700 dark:hover:text-red-400 transition" title="<?php esc_attr_e( 'Keluar', 'sukusastra' ); ?>">
+					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="w-4.5 h-4.5">
+						<path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
+					</svg>
+				</a>
+			</div>
+		<?php else : ?>
+			<div class="flex items-center justify-between w-full">
+				<div class="flex items-center gap-3">
+					<div class="w-9 h-9 rounded-full bg-slate-200 dark:bg-zinc-800 flex items-center justify-center text-slate-400 dark:text-zinc-500 shrink-0">
+						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="w-4.5 h-4.5">
+							<path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+						</svg>
+					</div>
+					<div class="flex flex-col text-left leading-normal">
+						<span class="text-[11px] font-bold text-slate-800 dark:text-zinc-200 leading-none">Ruang Sastra & Seni</span>
+						<span class="text-[9px] text-slate-400 dark:text-zinc-500 mt-0.5">Suku Sastra</span>
+					</div>
+				</div>
+				<a href="<?php echo esc_url( wp_login_url() ); ?>" class="text-[10px] font-bold text-red-700 dark:text-red-400 hover:underline no-underline" title="<?php esc_attr_e( 'Masuk Admin', 'sukusastra' ); ?>">
+					Masuk
+				</a>
+			</div>
+		<?php endif; ?>
+	</div>
+</nav>
 
 <main id="main-content">
