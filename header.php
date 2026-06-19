@@ -367,14 +367,13 @@ if ( $gtm_id ) : ?>
 <nav id="primary-menu-mobile" class="fixed top-0 right-0 h-full w-[290px] max-w-[85vw] bg-white dark:bg-zinc-950 z-50 shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col justify-between hidden border-l border-slate-100 dark:border-zinc-900" aria-label="<?php esc_attr_e( 'Menu utama mobile', 'sukusastra' ); ?>">
 	<!-- Drawer Header -->
 	<div class="flex items-center justify-between px-5 pt-5 pb-4 border-b border-slate-100/80 dark:border-zinc-900/80">
-		<a class="flex items-center gap-2 no-underline" href="<?php echo esc_url( home_url( '/' ) ); ?>">
+		<a class="flex items-center no-underline" href="<?php echo esc_url( home_url( '/' ) ); ?>">
 			<?php 
 			$logo_light = sukusastra_get_option( 'logo_light', get_template_directory_uri() . '/assets/images/logo.svg' );
 			$logo_dark = sukusastra_get_option( 'logo_dark', get_template_directory_uri() . '/assets/images/logo-white.svg' );
 			?>
 			<img src="<?php echo esc_url( $logo_light ); ?>" alt="<?php bloginfo( 'name' ); ?>" class="h-9 w-auto object-contain logo-light">
 			<img src="<?php echo esc_url( $logo_dark ); ?>" alt="<?php bloginfo( 'name' ); ?>" class="h-9 w-auto object-contain logo-dark">
-			<span class="text-sm font-extrabold text-slate-800 dark:text-zinc-50 tracking-tight ss-logo-font">Suku Sastra</span>
 		</a>
 		<button class="w-[32px] h-[32px] rounded-full border border-slate-200 dark:border-zinc-800 flex items-center justify-center text-slate-500 hover:bg-slate-100 dark:hover:bg-zinc-900 cursor-pointer shadow-sm" type="button" data-nav-toggle aria-controls="primary-menu-mobile">
 			<!-- Chevron Left Icon -->
