@@ -33,6 +33,51 @@ function sukusastra_primary_menu_fallback(): void {
 	echo '</ul>';
 }
 
+/**
+ * Get outline SVG icon for a given Suku Sastra category/page title.
+ */
+function sukusastra_get_menu_icon( string $title ): string {
+	$title = strtolower( trim( $title ) );
+	
+	// Home icon
+	if ( 'depan' === $title || 'home' === $title || 'beranda' === $title ) {
+		return '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" /></svg>';
+	}
+	
+	// Peristiwa / Berita / News
+	if ( 'peristiwa' === $title || 'berita' === $title || 'news' === $title ) {
+		return '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M10.34 15.84c-.688-.06-1.386-.09-2.09-.09H7.5a4.5 4.5 0 1 1 0-9h.75c.704 0 1.402-.03 2.09-.09m0 9.18c.253.962.584 1.892.985 2.783.247.55.06 1.21-.463 1.511l-.357.205a.75.75 0 0 1-1.006-.322c-.387-.77-.693-1.577-.913-2.407a11.514 11.514 0 0 1-.806-1.77zm0-9.18c.253-.962.584-1.892.985-2.783a1.125 1.125 0 0 1 1.62-.48l.358.205a.75.75 0 0 1 .154 1.107l-.361.361c-.72.72-1.332 1.547-1.808 2.457a11.954 11.954 0 0 1-.948-1.87zM10.34 9.74c1.537-.089 3.09-.13 4.66-.13H15.5a2.25 2.25 0 1 1 0 4.5h-.5c-1.57 0-3.123-.04-4.66-.13m0-4.24v4.24m0 0v4.24m11.379-1.92A11.07 11.07 0 0 0 15.5 8.25m6.219 7.5a11.071 11.071 0 0 1-6.219-2.748" /></svg>';
+	}
+	
+	// Puisi
+	if ( 'puisi' === $title || 'poetry' === $title ) {
+		return '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" /></svg>';
+	}
+	
+	// Cerpen
+	if ( 'cerpen' === $title || 'short story' === $title || 'cerita' === $title ) {
+		return '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-16.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-16.25v16.25" /></svg>';
+	}
+	
+	// Esai
+	if ( 'esai' === $title || 'essay' === $title ) {
+		return '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" /></svg>';
+	}
+	
+	// Buku / Reviu Buku
+	if ( 'buku' === $title || 'review buku' === $title || 'reviu buku' === $title || 'book' === $title ) {
+		return '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M17.578 4.3l2.07 1.484a2.25 2.25 0 0 1 .902 1.8v10.166a2.25 2.25 0 0 1-2.25 2.25h-9.5a2.25 2.25 0 0 1-2.25-2.25V5.25A2.25 2.25 0 0 1 8.828 3h6.5a2.25 2.25 0 0 1 2.25 1.3Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M9 7.5h6m-6 3h6m-6 3h3" /></svg>';
+	}
+	
+	// Katalog Terbitan / Terbitan
+	if ( 'katalog terbitan' === $title || 'terbitan' === $title || 'store' === $title || 'katalog' === $title ) {
+		return '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" /></svg>';
+	}
+	
+	// Default document icon
+	return '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" /></svg>';
+}
+
 function sukusastra_get_meta( int $post_id, string $key, string $default = '' ): string {
 	$value = get_post_meta( $post_id, $key, true );
 	return is_string( $value ) && '' !== $value ? $value : $default;
