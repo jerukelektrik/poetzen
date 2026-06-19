@@ -80,7 +80,7 @@
 <?php wp_body_open(); ?>
 <?php
 $gtm_id = sukusastra_get_option( 'gtm_id' );
-$show_mobile_capsules = is_front_page() || is_home();
+$show_mobile_capsules = false;
 if ( $gtm_id ) : ?>
 	<!-- Google Tag Manager (noscript) -->
 	<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=<?php echo esc_attr( $gtm_id ); ?>"
