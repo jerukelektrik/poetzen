@@ -55,16 +55,10 @@ function sukusastra_enqueue_assets(): void {
 		SUKUSASTRA_URI . '/assets/js/theme-toggle.js',
 		array(),
 		$theme_toggle_js_version,
-		array( 'strategy' => 'defer', 'in_footer' => false )
+		false
 	);
 
-	wp_enqueue_script(
-		'sukusastra-navigation',
-		SUKUSASTRA_URI . '/assets/js/navigation.js',
-		array(),
-		SUKUSASTRA_VERSION,
-		array( 'strategy' => 'defer', 'in_footer' => true )
-	);
+
 }
 
 add_action( 'admin_enqueue_scripts', 'sukusastra_admin_assets' );

@@ -492,4 +492,51 @@ if ( $gtm_id ) : ?>
 	</div>
 </nav>
 
+<script>
+(function() {
+  document.addEventListener('DOMContentLoaded', function() {
+    var toggles = document.querySelectorAll('[data-nav-toggle]');
+    var target = document.getElementById('primary-menu-mobile');
+    var backdrop = document.getElementById('mobile-menu-backdrop');
+    if (!target) return;
+
+    toggles.forEach(function(toggle) {
+      toggle.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        var isExpanded = toggle.getAttribute('aria-expanded') === 'true';
+        
+        // Sync all toggles
+        document.querySelectorAll('[aria-controls="primary-menu-mobile"]').forEach(function(btn) {
+          btn.setAttribute('aria-expanded', isExpanded ? 'false' : 'true');
+        });
+
+        if (isExpanded) {
+          // Close
+          target.classList.add('translate-x-full');
+          target.classList.remove('translate-x-0');
+          if (backdrop) backdrop.classList.add('hidden');
+          setTimeout(function() {
+            if (target.classList.contains('translate-x-full')) {
+              target.classList.add('hidden');
+              target.classList.remove('flex');
+            }
+          }, 300);
+        } else {
+          // Open
+          target.classList.remove('hidden');
+          target.classList.add('flex');
+          if (backdrop) backdrop.classList.remove('hidden');
+          // Trigger reflow
+          target.offsetHeight;
+          target.classList.remove('translate-x-full');
+          target.classList.add('translate-x-0');
+        }
+      });
+    });
+  });
+})();
+</script>
+
 <main id="main-content">
