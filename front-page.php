@@ -808,27 +808,54 @@ if ( ! function_exists( 'sukusastra_home_feed_panel' ) ) {
 				</a>
 			</div>
 			
-			<!-- Monetization Banner -->
+			<!-- Katalog Banners (from Banner Placement System) -->
 			<?php 
-			$banner_toggle = sukusastra_get_option( 'monetization_banner_toggle', '0' );
-			$banner_image = sukusastra_get_option( 'monetization_banner_image' );
-			$banner_link = sukusastra_get_option( 'monetization_banner_link' );
-			if ( '1' === $banner_toggle && $banner_image ) : 
+			$catalog_banners = poetzen_get_active_banners( 'catalog' );
+			if ( ! empty( $catalog_banners ) ) :
 				?>
-				<div class="ss-terbitan-banner w-full md:w-full">
-					<?php if ( $banner_link ) : ?>
-						<a href="<?php echo esc_url( $banner_link ); ?>" target="_blank" rel="noopener" class="block w-full overflow-hidden rounded-2xl border border-slate-200/50 dark:border-zinc-800/80 shadow-sm transition hover:opacity-95 duration-200">
-					<?php else : ?>
-						<div class="w-full overflow-hidden rounded-2xl border border-slate-200/50 dark:border-zinc-800/80 shadow-sm">
-					<?php endif; ?>
-						<img src="<?php echo esc_url( $banner_image ); ?>" alt="<?php esc_attr_e( 'Monetization Banner', 'sukusastra' ); ?>" class="ss-terbitan-banner-img w-full h-auto object-cover block">
-					<?php if ( $banner_link ) : ?>
-						</a>
-					<?php else : ?>
+				<div class="poetzen-catalog-banners flex flex-col gap-4 mb-6 w-full">
+					<?php foreach ( $catalog_banners as $banner ) : 
+						$target_url = ! empty( $banner['url'] ) ? esc_url( $banner['url'] ) : '';
+						?>
+						<div class="poetzen-catalog-banner w-full">
+							<?php if ( $target_url ) : ?>
+								<a href="<?php echo esc_url( $target_url ); ?>" target="_blank" rel="noopener" class="block w-full overflow-hidden rounded-2xl border border-slate-200/50 dark:border-zinc-800/80 shadow-sm transition hover:opacity-95 duration-200">
+							<?php else : ?>
+								<div class="w-full overflow-hidden rounded-2xl border border-slate-200/50 dark:border-zinc-800/80 shadow-sm">
+							<?php endif; ?>
+								<img src="<?php echo esc_url( $banner['image'] ); ?>" alt="<?php esc_attr_e( 'Katalog Banner', 'sukusastra' ); ?>" class="ss-terbitan-banner-img w-full h-auto object-cover block">
+							<?php if ( $target_url ) : ?>
+								</a>
+							<?php else : ?>
+								</div>
+							<?php endif; ?>
 						</div>
-					<?php endif; ?>
+					<?php endforeach; ?>
 				</div>
-			<?php endif; ?>
+			<?php else :
+				// Fallback to old single monetization banner for backward compatibility
+				$banner_toggle = sukusastra_get_option( 'monetization_banner_toggle', '0' );
+				$banner_image = sukusastra_get_option( 'monetization_banner_image' );
+				$banner_link = sukusastra_get_option( 'monetization_banner_link' );
+				if ( '1' === $banner_toggle && $banner_image ) :
+					?>
+					<div class="ss-terbitan-banner w-full md:w-full mb-6">
+						<?php if ( $banner_link ) : ?>
+							<a href="<?php echo esc_url( $banner_link ); ?>" target="_blank" rel="noopener" class="block w-full overflow-hidden rounded-2xl border border-slate-200/50 dark:border-zinc-800/80 shadow-sm transition hover:opacity-95 duration-200">
+						<?php else : ?>
+							<div class="w-full overflow-hidden rounded-2xl border border-slate-200/50 dark:border-zinc-800/80 shadow-sm">
+						<?php endif; ?>
+							<img src="<?php echo esc_url( $banner_image ); ?>" alt="<?php esc_attr_e( 'Monetization Banner', 'sukusastra' ); ?>" class="ss-terbitan-banner-img w-full h-auto object-cover block">
+						<?php if ( $banner_link ) : ?>
+							</a>
+						<?php else : ?>
+							</div>
+						<?php endif; ?>
+					</div>
+					<?php
+				endif;
+			endif;
+			?>
 
 			<!-- Mobile carousel, desktop grid for Kumparan-style portrait cards -->
 			<div class="ss-terbitan-carousel -mx-4 flex gap-3 overflow-x-auto snap-x snap-mandatory no-scrollbar px-4 pb-2 sm:-mx-6 sm:px-6 md:mx-0 md:grid md:gap-5 md:grid-cols-4 md:px-0 lg:grid-cols-5 md:overflow-visible md:snap-none">

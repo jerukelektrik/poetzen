@@ -254,7 +254,7 @@ function poetzen_render_popup_banners(): void {
  */
 function poetzen_sanitize_banners( array $input ): array {
 	$sanitized       = array();
-	$placements      = array( 'popup', 'sidebar', 'article' );
+	$placements      = array( 'catalog', 'popup', 'sidebar', 'article' );
 	$allowed_targets = array( 'global', 'all_cat', 'cat_specific', 'all_single', 'single_specific' );
 
 	foreach ( $placements as $placement ) {

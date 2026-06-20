@@ -76,12 +76,7 @@ function sukusastra_render_options_page(): void {
 						</svg>
 						<span class="ss-tab-label"><?php esc_html_e( 'Integrasi', 'sukusastra' ); ?></span>
 					</button>
-					<button type="button" class="ss-tab-btn" data-tab="monetization">
-						<svg class="ss-tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-							<path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.559-1.172-.879-1.172-2.303 0-3.182 1.172-.879 3.07-.879 4.242 0l.024.018m-2.263-2.277v1.82m0 12.5v1.82" />
-						</svg>
-						<span class="ss-tab-label"><?php esc_html_e( 'Monetization', 'sukusastra' ); ?></span>
-					</button>
+
 					<button type="button" class="ss-tab-btn" data-tab="banners">
 						<svg class="ss-tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 							<rect x="3" y="3" width="18" height="18" rx="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -340,65 +335,28 @@ function sukusastra_render_options_page(): void {
 						</div>
 					</div>
 
-					<!-- Tab 6: Monetization -->
-					<div class="ss-tab-content" id="tab-monetization">
-						<div class="ss-card">
-							<h2><?php esc_html_e( 'Monetization & Ads', 'sukusastra' ); ?></h2>
-							<p class="ss-description"><?php esc_html_e( 'Pengaturan banner iklan untuk Katalog Terbitan di halaman beranda.', 'sukusastra' ); ?></p>
-							
-							<!-- Activate banner -->
-							<div class="ss-field-group flex-row">
-								<div class="ss-field-text">
-									<label class="ss-label"><?php esc_html_e( 'Aktifkan Banner Iklan', 'sukusastra' ); ?></label>
-									<p class="ss-description"><?php esc_html_e( 'Tampilkan banner iklan di atas Katalog Terbitan di beranda.', 'sukusastra' ); ?></p>
-								</div>
-								<div class="ss-toggle-wrapper">
-									<label class="ss-switch">
-										<input type="checkbox" name="sukusastra_options[monetization_banner_toggle]" value="1" <?php checked( isset( $options['monetization_banner_toggle'] ) ? $options['monetization_banner_toggle'] : '0', '1' ); ?>>
-										<span class="ss-slider"></span>
-									</label>
-								</div>
-							</div>
-							
-							<!-- Banner Image -->
-							<div class="ss-field-group">
-								<label class="ss-label"><?php esc_html_e( 'Gambar Banner', 'sukusastra' ); ?></label>
-								<p class="ss-description"><?php esc_html_e( 'Unggah atau pilih file gambar banner. Rekomendasi dimensi: 1200x150 piksel.', 'sukusastra' ); ?></p>
-								<div class="ss-media-upload-group flex items-center gap-2">
-									<input type="text" id="monetization_banner_image_input" class="regular-text ss-input-text" name="sukusastra_options[monetization_banner_image]" value="<?php echo esc_attr( isset( $options['monetization_banner_image'] ) ? $options['monetization_banner_image'] : '' ); ?>">
-									<button type="button" class="button ss-upload-btn" data-input="monetization_banner_image_input"><?php esc_html_e( 'Pilih Gambar', 'sukusastra' ); ?></button>
-								</div>
-								<div class="ss-image-preview mt-2" id="monetization_banner_image_preview">
-									<?php if ( ! empty( $options['monetization_banner_image'] ) ) : ?>
-										<img src="<?php echo esc_url( $options['monetization_banner_image'] ); ?>" alt="Banner Preview" style="max-width: 100%; height: auto; border: 1px solid #ccc; border-radius: 8px;">
-									<?php endif; ?>
-								</div>
-							</div>
-							
-							<!-- Banner Target Link -->
-							<div class="ss-field-group">
-								<label class="ss-label"><?php esc_html_e( 'Tautan Banner', 'sukusastra' ); ?></label>
-								<p class="ss-description"><?php esc_html_e( 'Tautan URL tujuan saat banner diklik.', 'sukusastra' ); ?></p>
-								<input type="url" class="regular-text ss-input-text" name="sukusastra_options[monetization_banner_link]" value="<?php echo esc_url( isset( $options['monetization_banner_link'] ) ? $options['monetization_banner_link'] : '' ); ?>" placeholder="e.g. https://sukusastra.com/katalog-terbitan/">
-							</div>
-						</div>
-					</div>
+
 
 					<!-- Tab 7: Manajemen Banner -->
 					<div class="ss-tab-content" id="tab-banners">
 						<div class="ss-card">
 							<h2><?php esc_html_e( 'Manajemen Banner', 'sukusastra' ); ?></h2>
-							<p class="ss-description"><?php esc_html_e( 'Kelola banner popup, sidebar, dan artikel di bawah ini. Anda dapat mengaktifkan hingga 5 banner per lokasi.', 'sukusastra' ); ?></p>
+							<p class="ss-description"><?php esc_html_e( 'Kelola banner katalog terbitan, popup, sidebar, dan artikel di bawah ini. Anda dapat mengaktifkan hingga 5 banner per lokasi.', 'sukusastra' ); ?></p>
 
 							<!-- Sub-tabs Navigation -->
 							<div class="poetzen-subtabs" style="display: flex; gap: 10px; border-bottom: 2px solid #f3f4f6; margin-top: 20px; margin-bottom: 25px; padding-bottom: 2px;">
-								<button type="button" class="poetzen-subtab-btn active" data-subtab="popup" style="background: transparent; border: 0; padding: 12px 20px; font-weight: 700; font-size: 13px; cursor: pointer; border-bottom: 3px solid #b42318; color: #b42318; margin-bottom: -2px; transition: all 0.2s ease; outline: none;"><?php esc_html_e( 'Popup Banner', 'sukusastra' ); ?></button>
+								<button type="button" class="poetzen-subtab-btn active" data-subtab="catalog" style="background: transparent; border: 0; padding: 12px 20px; font-weight: 700; font-size: 13px; cursor: pointer; border-bottom: 3px solid #b42318; color: #b42318; margin-bottom: -2px; transition: all 0.2s ease; outline: none;"><?php esc_html_e( 'Katalog Banner', 'sukusastra' ); ?></button>
+								<button type="button" class="poetzen-subtab-btn" data-subtab="popup" style="background: transparent; border: 0; padding: 12px 20px; font-weight: 700; font-size: 13px; cursor: pointer; border-bottom: 3px solid transparent; color: #6b7280; margin-bottom: -2px; transition: all 0.2s ease; outline: none;"><?php esc_html_e( 'Popup Banner', 'sukusastra' ); ?></button>
 								<button type="button" class="poetzen-subtab-btn" data-subtab="sidebar" style="background: transparent; border: 0; padding: 12px 20px; font-weight: 700; font-size: 13px; cursor: pointer; border-bottom: 3px solid transparent; color: #6b7280; margin-bottom: -2px; transition: all 0.2s ease; outline: none;"><?php esc_html_e( 'Sidebar Banner', 'sukusastra' ); ?></button>
 								<button type="button" class="poetzen-subtab-btn" data-subtab="article" style="background: transparent; border: 0; padding: 12px 20px; font-weight: 700; font-size: 13px; cursor: pointer; border-bottom: 3px solid transparent; color: #6b7280; margin-bottom: -2px; transition: all 0.2s ease; outline: none;"><?php esc_html_e( 'Article Banner', 'sukusastra' ); ?></button>
 							</div>
 
 							<?php
 							$placements = array(
+								'catalog' => array(
+									'label' => __( 'Banner Katalog Terbitan (1200x150)', 'sukusastra' ),
+									'desc'  => __( 'Ukuran rekomendasi: 1200x150 piksel. Tampil di halaman beranda di atas atau di area Katalog Terbitan.', 'sukusastra' ),
+								),
 								'popup'   => array(
 									'label' => __( 'Popup Banners (Square 250x250)', 'sukusastra' ),
 									'desc'  => __( 'Ukuran: 250x250 piksel. Tampil di tengah layar sebagai popup overlay.', 'sukusastra' ),
@@ -415,7 +373,7 @@ function sukusastra_render_options_page(): void {
 
 							foreach ( $placements as $key => $info ) :
 								?>
-								<div class="poetzen-subtab-content <?php echo 'popup' === $key ? '' : 'hidden'; ?>" id="subtab-<?php echo esc_attr( $key ); ?>">
+								<div class="poetzen-subtab-content <?php echo 'catalog' === $key ? '' : 'hidden'; ?>" id="subtab-<?php echo esc_attr( $key ); ?>">
 									<h3 style="border-bottom: 1px solid #f3f4f6; padding-bottom: 8px; font-weight: 800; font-size: 15px; color: #111827; margin-top: 0;"><?php echo esc_html( $info['label'] ); ?></h3>
 									<p class="ss-description" style="margin-bottom: 20px;"><?php echo esc_html( $info['desc'] ); ?></p>
 
