@@ -1232,3 +1232,24 @@
     @apply border-transparent bg-transparent text-slate-400 dark:bg-transparent dark:border-transparent dark:text-zinc-500 cursor-default pointer-events-none min-w-[1.5rem] px-1 shadow-none;
   }
 }
+
+/* ─── Banner Placement System Styles ─── */
+.poetzen-popup-overlay {
+  transition: opacity 0.3s ease;
+}
+
+.poetzen-popup-content {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.poetzen-sidebar-banner {
+  @apply transition-all duration-300;
+}
+
+.poetzen-sidebar-banner a:hover {
+  @apply opacity-90 scale-[1.01] shadow-md border-red-200/50 dark:border-red-900/50;
+}
+
+.poetzen-article-banner a:hover {
+  @apply opacity-90 scale-[1.01] shadow-md border-red-200/50 dark:border-red-900/50;
+}

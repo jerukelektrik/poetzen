@@ -32,6 +32,8 @@ get_header(); ?>
 				
 				<div class="ss-reading mt-8"><?php the_content(); ?></div>
 
+				<?php poetzen_render_article_banner(); ?>
+
 				<?php 
 				$tags = get_the_tags();
 				if ( $tags ) : 

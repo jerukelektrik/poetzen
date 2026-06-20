@@ -125,6 +125,8 @@ get_header(); ?>
 				</div>
 
 				<div class="ss-reading mt-8"><?php the_content(); ?></div>
+
+				<?php poetzen_render_article_banner(); ?>
 			</div>
 			
 			<?php get_template_part( 'template-parts/sidebar-single' ); ?>

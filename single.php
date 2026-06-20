@@ -60,6 +60,8 @@ get_header(); ?>
 					</div>
 				<?php endif; ?>
 
+				<?php poetzen_render_article_banner(); ?>
+
 				<?php if ( $orig_author ) : ?>
 					<!-- Premium Original Author Box -->
 					<div class="mt-10 flex flex-col sm:flex-row gap-5 rounded-2xl border border-slate-200 bg-slate-50/50 p-6 dark:border-zinc-800 dark:bg-zinc-900/30">

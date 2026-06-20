@@ -25,6 +25,7 @@ $sukusastra_files = array(
 	'inc/queries.php',
 	'inc/sample-content.php',
 	'inc/options.php',
+	'inc/banners.php',
 	'inc/importer.php',
 	'inc/migration.php',
 );

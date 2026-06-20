@@ -2216,6 +2216,10 @@
     inset-inline: calc(var(--spacing) * 0);
   }
 
+  .-top-3 {
+    top: calc(var(--spacing) * -3);
+  }
+
   .top-0 {
     top: calc(var(--spacing) * 0);
   }
@@ -2226,6 +2230,10 @@
 
   .top-4 {
     top: calc(var(--spacing) * 4);
+  }
+
+  .-right-3 {
+    right: calc(var(--spacing) * -3);
   }
 
   .-right-4 {
@@ -2657,8 +2665,16 @@
     height: 68px;
   }
 
+  .h-\[100px\] {
+    height: 100px;
+  }
+
   .h-\[120px\] {
     height: 120px;
+  }
+
+  .h-\[250px\] {
+    height: 250px;
   }
 
   .h-auto {
@@ -2683,6 +2699,10 @@
 
   .max-h-36 {
     max-height: calc(var(--spacing) * 36);
+  }
+
+  .max-h-\[90vh\] {
+    max-height: 90vh;
   }
 
   .max-h-\[500px\] {
@@ -2809,6 +2829,10 @@
     width: 120px;
   }
 
+  .w-\[250px\] {
+    width: 250px;
+  }
+
   .w-\[290px\] {
     width: 290px;
   }
@@ -2869,6 +2893,10 @@
     max-width: 85vw;
   }
 
+  .max-w-\[90vw\] {
+    max-width: 90vw;
+  }
+
   .max-w-\[140px\] {
     max-width: 140px;
   }
@@ -2883,6 +2911,10 @@
 
   .max-w-\[380px\] {
     max-width: 380px;
+  }
+
+  .max-w-\[468px\] {
+    max-width: 468px;
   }
 
   .max-w-full {
@@ -3408,6 +3440,16 @@
   @supports (color: color-mix(in lab, red, red)) {
     .border-slate-200\/60 {
       border-color: color-mix(in oklab, var(--color-slate-200) 60%, transparent);
+    }
+  }
+
+  .border-slate-200\/80 {
+    border-color: #e2e8f0cc;
+  }
+
+  @supports (color: color-mix(in lab, red, red)) {
+    .border-slate-200\/80 {
+      border-color: color-mix(in oklab, var(--color-slate-200) 80%, transparent);
     }
   }
 
@@ -4178,11 +4220,6 @@
     font-weight: var(--font-weight-bold);
   }
 
-  .font-extrabold {
-    --tw-font-weight: var(--font-weight-extrabold);
-    font-weight: var(--font-weight-extrabold);
-  }
-
   .font-medium {
     --tw-font-weight: var(--font-weight-medium);
     font-weight: var(--font-weight-medium);
@@ -4405,6 +4442,10 @@
 
   .opacity-80 {
     opacity: .8;
+  }
+
+  .opacity-100 {
+    opacity: 1;
   }
 
   .shadow {
@@ -5076,6 +5117,10 @@
 
     .md\:h-40 {
       height: calc(var(--spacing) * 40);
+    }
+
+    .md\:h-\[60px\] {
+      height: 60px;
     }
 
     .md\:h-\[320px\] {
@@ -5868,6 +5913,76 @@
 
   .dark\:aria-expanded\:text-red-400:where(.dark, .dark *)[aria-expanded="true"] {
     color: var(--color-red-400);
+  }
+}
+
+.poetzen-popup-overlay {
+  transition: opacity .3s;
+}
+
+.poetzen-popup-content {
+  transition: transform .3s cubic-bezier(.34, 1.56, .64, 1);
+}
+
+.poetzen-sidebar-banner {
+  transition-property: all;
+  transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
+  transition-duration: var(--tw-duration, var(--default-transition-duration));
+  --tw-duration: .3s;
+  transition-duration: .3s;
+}
+
+.poetzen-sidebar-banner a:hover {
+  border-color: #ffcaca80;
+  scale: 1.01;
+}
+
+@supports (color: color-mix(in lab, red, red)) {
+  .poetzen-sidebar-banner a:hover {
+    border-color: color-mix(in oklab, var(--color-red-200) 50%, transparent);
+  }
+}
+
+.poetzen-sidebar-banner a:hover {
+  opacity: .9;
+  --tw-shadow: 0 4px 6px -1px var(--tw-shadow-color, #0000001a), 0 2px 4px -2px var(--tw-shadow-color, #0000001a);
+  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+}
+
+.poetzen-sidebar-banner a:hover:where(.dark, .dark *) {
+  border-color: #82181a80;
+}
+
+@supports (color: color-mix(in lab, red, red)) {
+  .poetzen-sidebar-banner a:hover:where(.dark, .dark *) {
+    border-color: color-mix(in oklab, var(--color-red-900) 50%, transparent);
+  }
+}
+
+.poetzen-article-banner a:hover {
+  border-color: #ffcaca80;
+  scale: 1.01;
+}
+
+@supports (color: color-mix(in lab, red, red)) {
+  .poetzen-article-banner a:hover {
+    border-color: color-mix(in oklab, var(--color-red-200) 50%, transparent);
+  }
+}
+
+.poetzen-article-banner a:hover {
+  opacity: .9;
+  --tw-shadow: 0 4px 6px -1px var(--tw-shadow-color, #0000001a), 0 2px 4px -2px var(--tw-shadow-color, #0000001a);
+  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+}
+
+.poetzen-article-banner a:hover:where(.dark, .dark *) {
+  border-color: #82181a80;
+}
+
+@supports (color: color-mix(in lab, red, red)) {
+  .poetzen-article-banner a:hover:where(.dark, .dark *) {
+    border-color: color-mix(in oklab, var(--color-red-900) 50%, transparent);
   }
 }
 

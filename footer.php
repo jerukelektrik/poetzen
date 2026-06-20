@@ -197,6 +197,8 @@
 		</a>
 	</div>
 
+	<?php poetzen_render_popup_banners(); ?>
+
 <?php wp_footer(); ?>
 
 <?php 
