@@ -812,26 +812,134 @@ if ( ! function_exists( 'sukusastra_home_feed_panel' ) ) {
 			<?php 
 			$catalog_banners = poetzen_get_active_banners( 'catalog' );
 			if ( ! empty( $catalog_banners ) ) :
-				?>
-				<div class="poetzen-catalog-banners flex flex-col gap-4 mb-6 w-full">
-					<?php foreach ( $catalog_banners as $banner ) : 
-						$target_url = ! empty( $banner['url'] ) ? esc_url( $banner['url'] ) : '';
-						?>
-						<div class="poetzen-catalog-banner w-full">
-							<?php if ( $target_url ) : ?>
-								<a href="<?php echo esc_url( $target_url ); ?>" target="_blank" rel="noopener" class="block w-full overflow-hidden rounded-2xl border border-slate-200/50 dark:border-zinc-800/80 shadow-sm transition hover:opacity-95 duration-200">
-							<?php else : ?>
-								<div class="w-full overflow-hidden rounded-2xl border border-slate-200/50 dark:border-zinc-800/80 shadow-sm">
-							<?php endif; ?>
-								<img src="<?php echo esc_url( $banner['image'] ); ?>" alt="<?php esc_attr_e( 'Katalog Banner', 'sukusastra' ); ?>" class="ss-terbitan-banner-img w-full h-auto object-cover block">
-							<?php if ( $target_url ) : ?>
-								</a>
-							<?php else : ?>
+				if ( count( $catalog_banners ) === 1 ) :
+					$banner     = $catalog_banners[0];
+					$target_url = ! empty( $banner['url'] ) ? esc_url( $banner['url'] ) : '';
+					?>
+					<div class="poetzen-catalog-banner w-full mb-6">
+						<?php if ( $target_url ) : ?>
+							<a href="<?php echo esc_url( $target_url ); ?>" target="_blank" rel="noopener" class="block w-full overflow-hidden rounded-2xl border border-slate-200/50 dark:border-zinc-800/80 shadow-sm transition hover:opacity-95 duration-200">
+						<?php else : ?>
+							<div class="w-full overflow-hidden rounded-2xl border border-slate-200/50 dark:border-zinc-800/80 shadow-sm">
+						<?php endif; ?>
+							<img src="<?php echo esc_url( $banner['image'] ); ?>" alt="<?php esc_attr_e( 'Katalog Banner', 'sukusastra' ); ?>" class="ss-terbitan-banner-img w-full h-auto object-cover block">
+						<?php if ( $target_url ) : ?>
+							</a>
+						<?php else : ?>
+							</div>
+						<?php endif; ?>
+					</div>
+				<?php else : ?>
+					<div class="poetzen-catalog-slider relative w-full overflow-hidden rounded-2xl border border-slate-200/50 dark:border-zinc-800/80 shadow-sm mb-6" style="aspect-ratio: 1200/150;" id="poetzen-catalog-slider">
+						<div class="poetzen-slider-track flex transition-transform duration-500 ease-in-out h-full w-full">
+							<?php foreach ( $catalog_banners as $banner ) : 
+								$target_url = ! empty( $banner['url'] ) ? esc_url( $banner['url'] ) : '';
+								?>
+								<div class="poetzen-slide min-w-full w-full h-full flex-shrink-0">
+									<?php if ( $target_url ) : ?>
+										<a href="<?php echo esc_url( $target_url ); ?>" target="_blank" rel="noopener" class="block w-full h-full">
+									<?php else : ?>
+										<div class="w-full h-full">
+									<?php endif; ?>
+										<img src="<?php echo esc_url( $banner['image'] ); ?>" alt="<?php esc_attr_e( 'Katalog Banner', 'sukusastra' ); ?>" class="w-full h-full object-cover block">
+									<?php if ( $target_url ) : ?>
+										</a>
+									<?php else : ?>
+										</div>
+									<?php endif; ?>
 								</div>
-							<?php endif; ?>
+							<?php endforeach; ?>
 						</div>
-					<?php endforeach; ?>
-				</div>
+						<!-- Slider dots / indicators -->
+						<div class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+							<?php foreach ( $catalog_banners as $index => $banner ) : ?>
+								<button class="poetzen-slider-dot w-2 h-2 rounded-full bg-white/40 transition-colors duration-200 cursor-pointer border-0 p-0" data-slide="<?php echo $index; ?>" aria-label="<?php printf( esc_attr__( 'Slide %d', 'sukusastra' ), $index + 1 ); ?>"></button>
+							<?php endforeach; ?>
+						</div>
+						<!-- Slider navigation arrows -->
+						<button class="poetzen-slider-prev absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/30 hover:bg-black/50 text-white flex items-center justify-center cursor-pointer transition duration-200 z-10 border-0 p-0" aria-label="<?php esc_attr_e( 'Previous Slide', 'sukusastra' ); ?>">
+							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" /></svg>
+						</button>
+						<button class="poetzen-slider-next absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/30 hover:bg-black/50 text-white flex items-center justify-center cursor-pointer transition duration-200 z-10 border-0 p-0" aria-label="<?php esc_attr_e( 'Next Slide', 'sukusastra' ); ?>">
+							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" /></svg>
+						</button>
+					</div>
+
+					<script>
+						document.addEventListener('DOMContentLoaded', function() {
+							var slider = document.getElementById('poetzen-catalog-slider');
+							if (!slider) return;
+
+							var track = slider.querySelector('.poetzen-slider-track');
+							var slides = slider.querySelectorAll('.poetzen-slide');
+							var dots = slider.querySelectorAll('.poetzen-slider-dot');
+							var prevBtn = slider.querySelector('.poetzen-slider-prev');
+							var nextBtn = slider.querySelector('.poetzen-slider-next');
+							
+							var currentIndex = 0;
+							var slideCount = slides.length;
+							var slideInterval = 5000; // 5 seconds autoplay
+							var autoPlayTimer;
+
+							function updateSlider(index) {
+								if (index >= slideCount) currentIndex = 0;
+								else if (index < 0) currentIndex = slideCount - 1;
+								else currentIndex = index;
+
+								track.style.transform = 'translateX(-' + (currentIndex * 100) + '%)';
+
+								dots.forEach(function(dot, idx) {
+									if (idx === currentIndex) {
+										dot.classList.remove('bg-white/40');
+										dot.classList.add('bg-white', 'scale-110');
+									} else {
+										dot.classList.remove('bg-white', 'scale-110');
+										dot.classList.add('bg-white/40');
+									}
+								});
+							}
+
+							function startAutoPlay() {
+								stopAutoPlay();
+								autoPlayTimer = setInterval(function() {
+									updateSlider(currentIndex + 1);
+								}, slideInterval);
+							}
+
+							function stopAutoPlay() {
+								if (autoPlayTimer) {
+									clearInterval(autoPlayTimer);
+								}
+							}
+
+							dots.forEach(function(dot, idx) {
+								dot.addEventListener('click', function() {
+									updateSlider(idx);
+									startAutoPlay();
+								});
+							});
+
+							if (prevBtn) {
+								prevBtn.addEventListener('click', function() {
+									updateSlider(currentIndex - 1);
+									startAutoPlay();
+								});
+							}
+							if (nextBtn) {
+								nextBtn.addEventListener('click', function() {
+									updateSlider(currentIndex + 1);
+									startAutoPlay();
+								});
+							}
+
+							slider.addEventListener('mouseenter', stopAutoPlay);
+							slider.addEventListener('mouseleave', startAutoPlay);
+
+							updateSlider(0);
+							startAutoPlay();
+						});
+					</script>
+				<?php endif; ?>
 			<?php else :
 				// Fallback to old single monetization banner for backward compatibility
 				$banner_toggle = sukusastra_get_option( 'monetization_banner_toggle', '0' );
