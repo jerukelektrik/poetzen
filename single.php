@@ -12,6 +12,12 @@ get_header(); ?>
 			<div class="grid gap-y-16 gap-x-10 lg:grid-cols-[minmax(0,760px)_320px]">
 				<div>
 				<?php $orig_author = sukusastra_get_original_author( get_the_ID() ); ?>
+				
+				<!-- Mobile Sidebar Banner (Tampil hanya di Mobile) -->
+				<div class="block lg:hidden mb-6">
+					<?php poetzen_render_sidebar_banners(); ?>
+				</div>
+
 				<h1 class="ss-page-title"><?php the_title(); ?></h1>
 				<p class="mt-3 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400">
 					<?php

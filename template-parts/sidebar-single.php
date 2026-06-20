@@ -24,7 +24,9 @@ if ( 'review_buku' !== $post_type ) {
 ?>
 <aside class="<?php echo esc_attr( $aside_classes ); ?>">
 
-	<?php poetzen_render_sidebar_banners(); ?>
+	<div class="hidden lg:block">
+		<?php poetzen_render_sidebar_banners(); ?>
+	</div>
 
 	<!-- Tabs Widget -->
 	<section class="ss-sidebar-tabs-widget rounded-md border border-slate-200 bg-white p-5 dark:border-zinc-800 dark:bg-[#262B4E]/40 shadow-sm">

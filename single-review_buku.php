@@ -26,6 +26,12 @@ get_header(); ?>
 			<?php sukusastra_breadcrumbs(); ?>
 			<div class="grid gap-y-16 gap-x-10 lg:grid-cols-[280px_minmax(0,760px)]">
 			<div class="grid gap-2 lg:hidden">
+				
+				<!-- Mobile Sidebar Banner (Tampil hanya di Mobile) -->
+				<div class="block lg:hidden mb-4">
+					<?php poetzen_render_sidebar_banners(); ?>
+				</div>
+
 				<p class="ss-eyebrow">
 					<?php 
 					printf( '%s (%s)', esc_html__( 'Reviu Buku', 'sukusastra' ), esc_html( $book_type_label ) );
