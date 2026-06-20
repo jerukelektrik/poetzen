@@ -21,12 +21,12 @@ get_header(); ?>
 				</header>
 
 				<!-- Editorial Board Grid Cards -->
-				<div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+				<div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
 					<!-- Leader -->
 					<div class="ss-card rounded-2xl p-6 text-center grid gap-3 border border-red-200/50 bg-red-50/20 dark:border-red-950/40 dark:bg-red-950/10">
-						<div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-red-700 text-white font-serif text-2xl font-black shadow-md">F</div>
+						<div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-red-700 text-white font-serif text-2xl font-black shadow-md">A</div>
 						<div>
-							<h3 class="text-base font-black text-slate-900 dark:text-zinc-50 m-0">Fairuzul Mumtaz</h3>
+							<h3 class="text-base font-black text-slate-900 dark:text-zinc-50 m-0">An. Ismanto</h3>
 							<p class="text-[10px] font-black uppercase tracking-wider text-red-700 dark:text-red-400 mt-1"><?php esc_html_e( 'Pemimpin Redaksi', 'sukusastra' ); ?></p>
 						</div>
 					</div>
@@ -35,63 +35,45 @@ get_header(); ?>
 					<div class="ss-card rounded-2xl p-6 text-center grid gap-3">
 						<div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-slate-200 text-slate-700 dark:bg-zinc-800 dark:text-zinc-300 font-serif text-2xl font-black shadow-sm">M</div>
 						<div>
-							<h3 class="text-base font-black text-slate-900 dark:text-zinc-50 m-0">Maharani Khan Jade</h3>
-							<p class="text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-zinc-500 mt-1"><?php esc_html_e( 'Sekretaris', 'sukusastra' ); ?></p>
+							<h3 class="text-base font-black text-slate-900 dark:text-zinc-50 m-0">M. Rizqy Fathurrohman</h3>
+							<p class="text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-zinc-500 mt-1"><?php esc_html_e( 'Sekretaris Redaksi', 'sukusastra' ); ?></p>
 						</div>
 					</div>
 
-					<!-- Treasurer -->
+					<!-- Admin -->
 					<div class="ss-card rounded-2xl p-6 text-center grid gap-3">
-						<div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-slate-200 text-slate-700 dark:bg-zinc-800 dark:text-zinc-300 font-serif text-2xl font-black shadow-sm">B</div>
+						<div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-slate-200 text-slate-700 dark:bg-zinc-800 dark:text-zinc-300 font-serif text-2xl font-black shadow-sm">M</div>
 						<div>
-							<h3 class="text-base font-black text-slate-900 dark:text-zinc-50 m-0">Brenda Christina Putri</h3>
-							<p class="text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-zinc-500 mt-1"><?php esc_html_e( 'Bendahara', 'sukusastra' ); ?></p>
-						</div>
-					</div>
-
-					<!-- Visual Designer -->
-					<div class="ss-card rounded-2xl p-6 text-center grid gap-3">
-						<div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-slate-200 text-slate-700 dark:bg-zinc-800 dark:text-zinc-300 font-serif text-2xl font-black shadow-sm">D</div>
-						<div>
-							<h3 class="text-base font-black text-slate-900 dark:text-zinc-50 m-0">Dhea Jhoty Putri</h3>
-							<p class="text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-zinc-500 mt-1"><?php esc_html_e( 'Desain Visual', 'sukusastra' ); ?></p>
-						</div>
-					</div>
-
-					<!-- Social Media -->
-					<div class="ss-card rounded-2xl p-6 text-center grid gap-3">
-						<div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-slate-200 text-slate-700 dark:bg-zinc-800 dark:text-zinc-300 font-serif text-2xl font-black shadow-sm">K</div>
-						<div>
-							<h3 class="text-base font-black text-slate-900 dark:text-zinc-50 m-0">Kanya Kiarra</h3>
-							<p class="text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-zinc-500 mt-1"><?php esc_html_e( 'Media Sosial', 'sukusastra' ); ?></p>
+							<h3 class="text-base font-black text-slate-900 dark:text-zinc-50 m-0">M. Qadhafi</h3>
+							<p class="text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-zinc-500 mt-1"><?php esc_html_e( 'Admin', 'sukusastra' ); ?></p>
 						</div>
 					</div>
 
 					<!-- Public Relations -->
 					<div class="ss-card rounded-2xl p-6 text-center grid gap-3">
-						<div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-slate-200 text-slate-700 dark:bg-zinc-800 dark:text-zinc-300 font-serif text-2xl font-black shadow-sm">Z</div>
+						<div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-slate-200 text-slate-700 dark:bg-zinc-800 dark:text-zinc-300 font-serif text-2xl font-black shadow-sm">B</div>
 						<div>
-							<h3 class="text-base font-black text-slate-900 dark:text-zinc-50 m-0">Zsa Zsa Yusharyahya Permata</h3>
-							<p class="text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-zinc-500 mt-1"><?php esc_html_e( 'Humas & Kerja Sama', 'sukusastra' ); ?></p>
-						</div>
-					</div>
-
-					<!-- Public Relations 2 -->
-					<div class="ss-card rounded-2xl p-6 text-center grid gap-3">
-						<div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-slate-200 text-slate-700 dark:bg-zinc-800 dark:text-zinc-300 font-serif text-2xl font-black shadow-sm">K</div>
-						<div>
-							<h3 class="text-base font-black text-slate-900 dark:text-zinc-50 m-0">Kind Shella Happy M.</h3>
-							<p class="text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-zinc-500 mt-1"><?php esc_html_e( 'Humas & Kerja Sama', 'sukusastra' ); ?></p>
+							<h3 class="text-base font-black text-slate-900 dark:text-zinc-50 m-0">Brenda Christina Putri</h3>
+							<p class="text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-zinc-500 mt-1"><?php esc_html_e( 'Humas dan Kerja Sama', 'sukusastra' ); ?></p>
 						</div>
 					</div>
 				</div>
 
 				<!-- Editors / Redaktur Section -->
 				<div class="border-t border-slate-100 pt-8 dark:border-zinc-800/80">
-					<h2 class="ss-section-title text-xl mb-6"><?php esc_html_e( 'Dewan Redaktur / Editorial Board', 'sukusastra' ); ?></h2>
+					<h2 class="ss-section-title text-xl mb-6"><?php esc_html_e( 'Redaksi', 'sukusastra' ); ?></h2>
 					<div class="grid gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
 						<?php 
-						$editors = array( 'An. Ismanto', 'Muhammad Qadhafi', 'Maharani Khan Jade', 'Kanya Kiarra', 'Dhea Jhoty Putri', 'Kind Shella Happy M.' );
+						$editors = array(
+							'An. Ismanto',
+							'M. Qadhafi',
+							'Abdillah Danny',
+							'Fairuzul Mumtaz',
+							'M. Rizqy Fathurrohman',
+							'Maharani Khan Jade',
+							'Dhea Jhoty Putri',
+							'Citra Cinta Ridya Kusuma'
+						);
 						foreach ( $editors as $editor ) :
 							?>
 							<div class="flex items-center gap-3 bg-slate-50 dark:bg-zinc-900/40 p-4 rounded-xl border border-slate-200/50 dark:border-zinc-800/60">
