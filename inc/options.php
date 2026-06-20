@@ -390,6 +390,13 @@ function sukusastra_render_options_page(): void {
 							<h2><?php esc_html_e( 'Manajemen Banner', 'sukusastra' ); ?></h2>
 							<p class="ss-description"><?php esc_html_e( 'Kelola banner popup, sidebar, dan artikel di bawah ini. Anda dapat mengaktifkan hingga 5 banner per lokasi.', 'sukusastra' ); ?></p>
 
+							<!-- Sub-tabs Navigation -->
+							<div class="poetzen-subtabs" style="display: flex; gap: 10px; border-bottom: 2px solid #f3f4f6; margin-top: 20px; margin-bottom: 25px; padding-bottom: 2px;">
+								<button type="button" class="poetzen-subtab-btn active" data-subtab="popup" style="background: transparent; border: 0; padding: 12px 20px; font-weight: 700; font-size: 13px; cursor: pointer; border-bottom: 3px solid #b42318; color: #b42318; margin-bottom: -2px; transition: all 0.2s ease; outline: none;"><?php esc_html_e( 'Popup Banner', 'sukusastra' ); ?></button>
+								<button type="button" class="poetzen-subtab-btn" data-subtab="sidebar" style="background: transparent; border: 0; padding: 12px 20px; font-weight: 700; font-size: 13px; cursor: pointer; border-bottom: 3px solid transparent; color: #6b7280; margin-bottom: -2px; transition: all 0.2s ease; outline: none;"><?php esc_html_e( 'Sidebar Banner', 'sukusastra' ); ?></button>
+								<button type="button" class="poetzen-subtab-btn" data-subtab="article" style="background: transparent; border: 0; padding: 12px 20px; font-weight: 700; font-size: 13px; cursor: pointer; border-bottom: 3px solid transparent; color: #6b7280; margin-bottom: -2px; transition: all 0.2s ease; outline: none;"><?php esc_html_e( 'Article Banner', 'sukusastra' ); ?></button>
+							</div>
+
 							<?php
 							$placements = array(
 								'popup'   => array(
@@ -408,120 +415,122 @@ function sukusastra_render_options_page(): void {
 
 							foreach ( $placements as $key => $info ) :
 								?>
-								<h3 style="margin-top: 30px; border-bottom: 2px solid #f3f4f6; padding-bottom: 8px; font-weight: 800; font-size: 16px; color: #111827;"><?php echo esc_html( $info['label'] ); ?></h3>
-								<p class="ss-description" style="margin-bottom: 15px;"><?php echo esc_html( $info['desc'] ); ?></p>
+								<div class="poetzen-subtab-content <?php echo 'popup' === $key ? '' : 'hidden'; ?>" id="subtab-<?php echo esc_attr( $key ); ?>">
+									<h3 style="border-bottom: 1px solid #f3f4f6; padding-bottom: 8px; font-weight: 800; font-size: 15px; color: #111827; margin-top: 0;"><?php echo esc_html( $info['label'] ); ?></h3>
+									<p class="ss-description" style="margin-bottom: 20px;"><?php echo esc_html( $info['desc'] ); ?></p>
 
-								<div class="poetzen-banners-list" style="display: grid; gap: 15px; margin-bottom: 30px;">
-									<?php
-									for ( $i = 0; $i < 5; $i++ ) :
-										$banner       = isset( $options['banners'][ $key ][ $i ] ) ? $options['banners'][ $key ][ $i ] : array();
-										$status       = isset( $banner['status'] ) ? $banner['status'] : '0';
-										$image        = isset( $banner['image'] ) ? $banner['image'] : '';
-										$url          = isset( $banner['url'] ) ? $banner['url'] : '';
-										$target       = isset( $banner['target'] ) ? $banner['target'] : 'global';
-										$target_value = isset( $banner['target_value'] ) ? $banner['target_value'] : '';
-										$order        = isset( $banner['order'] ) ? $banner['order'] : '0';
-										$start_date   = isset( $banner['start_date'] ) ? $banner['start_date'] : '';
-										$end_date     = isset( $banner['end_date'] ) ? $banner['end_date'] : '';
-										?>
-										<div class="poetzen-banner-card" style="border: 1px solid #e5e7eb; border-radius: 12px; background: #f9fafb; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
-											<div class="poetzen-banner-header" style="padding: 14px 20px; background: #f3f4f6; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: bold; border-bottom: 1px solid #e5e7eb; user-select: none;">
-												<span style="display: flex; align-items: center; gap: 10px; font-size: 13px; color: #374151;">
-													<span class="poetzen-accordion-icon" style="color: #9ca3af; font-family: monospace; font-size: 14px;">[+]</span>
-													<?php printf( esc_html__( 'Slot Banner #%d', 'sukusastra' ), $i + 1 ); ?>
-													<?php if ( '1' === $status ) : ?>
-														<span style="background: #ecfdf5; color: #047857; font-size: 10px; padding: 2px 8px; border-radius: 9999px; font-weight: 700; border: 1px solid #a7f3d0;"><?php esc_html_e( 'Aktif', 'sukusastra' ); ?></span>
-													<?php else : ?>
-														<span style="background: #fef2f2; color: #b91c1c; font-size: 10px; padding: 2px 8px; border-radius: 9999px; font-weight: 700; border: 1px solid #fecaca;"><?php esc_html_e( 'Nonaktif', 'sukusastra' ); ?></span>
-													<?php endif; ?>
-												</span>
-												<span style="font-size: 11px; color: #6b7280; font-weight: normal;">
-													<?php
-													if ( $url ) {
-														echo esc_html( wp_parse_url( $url, PHP_URL_HOST ) );
-													}
-													?>
-												</span>
-											</div>
-											<div class="poetzen-banner-body hidden" style="padding: 20px; display: flex; flex-direction: column; gap: 16px; border-top: 1px solid #e5e7eb; background: #ffffff;">
-												<!-- Status Toggle -->
-												<div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 12px; border-bottom: 1px solid #f3f4f6;">
-													<label class="ss-label" style="margin: 0; font-size: 13px; font-weight: 700; color: #374151;"><?php esc_html_e( 'Aktifkan Slot Banner Ini', 'sukusastra' ); ?></label>
-													<div class="ss-toggle-wrapper">
-														<label class="ss-switch">
-															<input type="checkbox" name="sukusastra_options[banners][<?php echo esc_attr( $key ); ?>][<?php echo $i; ?>][status]" value="1" <?php checked( $status, '1' ); ?>>
-															<span class="ss-slider"></span>
-														</label>
-													</div>
-												</div>
-
-												<!-- Image Selection -->
-												<div class="ss-field-group" style="margin-bottom: 0;">
-													<label class="ss-label"><?php esc_html_e( 'Gambar Banner', 'sukusastra' ); ?></label>
-													<div class="ss-upload-wrapper" style="display: flex; gap: 10px; margin-top: 5px;">
-														<input type="text" id="banner_<?php echo esc_attr( $key ); ?>_<?php echo $i; ?>_image_input" class="regular-text ss-input-text" style="flex: 1;" name="sukusastra_options[banners][<?php echo esc_attr( $key ); ?>][<?php echo $i; ?>][image]" value="<?php echo esc_attr( $image ); ?>">
-														<button type="button" class="button ss-upload-btn" data-input="banner_<?php echo esc_attr( $key ); ?>_<?php echo $i; ?>_image_input" style="height: 40px; border-radius: 8px;"><?php esc_html_e( 'Pilih Gambar', 'sukusastra' ); ?></button>
-													</div>
-													<div class="ss-image-preview mt-2" id="banner_<?php echo esc_attr( $key ); ?>_<?php echo $i; ?>_image_preview" style="max-width: 100%; max-height: 120px; overflow: hidden; border: 1px dashed #d1d5db; border-radius: 8px; display: flex; align-items: center; justify-content: center; background: #f9fafb; padding: 8px;">
-														<?php if ( $image ) : ?>
-															<img src="<?php echo esc_url( $image ); ?>" style="max-height: 100px; width: auto; object-contain; border-radius: 4px;">
+									<div class="poetzen-banners-list" style="display: grid; gap: 15px; margin-bottom: 15px;">
+										<?php
+										for ( $i = 0; $i < 5; $i++ ) :
+											$banner       = isset( $options['banners'][ $key ][ $i ] ) ? $options['banners'][ $key ][ $i ] : array();
+											$status       = isset( $banner['status'] ) ? $banner['status'] : '0';
+											$image        = isset( $banner['image'] ) ? $banner['image'] : '';
+											$url          = isset( $banner['url'] ) ? $banner['url'] : '';
+											$target       = isset( $banner['target'] ) ? $banner['target'] : 'global';
+											$target_value = isset( $banner['target_value'] ) ? $banner['target_value'] : '';
+											$order        = isset( $banner['order'] ) ? $banner['order'] : '0';
+											$start_date   = isset( $banner['start_date'] ) ? $banner['start_date'] : '';
+											$end_date     = isset( $banner['end_date'] ) ? $banner['end_date'] : '';
+											?>
+											<div class="poetzen-banner-card" style="border: 1px solid #e5e7eb; border-radius: 12px; background: #f9fafb; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+												<div class="poetzen-banner-header" style="padding: 14px 20px; background: #f3f4f6; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: bold; border-bottom: 1px solid #e5e7eb; user-select: none;">
+													<span style="display: flex; align-items: center; gap: 10px; font-size: 13px; color: #374151;">
+														<span class="poetzen-accordion-icon" style="color: #9ca3af; font-family: monospace; font-size: 14px;">[+]</span>
+														<?php printf( esc_html__( 'Slot Banner #%d', 'sukusastra' ), $i + 1 ); ?>
+														<?php if ( '1' === $status ) : ?>
+															<span style="background: #ecfdf5; color: #047857; font-size: 10px; padding: 2px 8px; border-radius: 9999px; font-weight: 700; border: 1px solid #a7f3d0;"><?php esc_html_e( 'Aktif', 'sukusastra' ); ?></span>
 														<?php else : ?>
-															<span style="padding: 20px; color: #9ca3af; font-size: 12px; italic;"><?php esc_html_e( 'Belum ada gambar terpilih', 'sukusastra' ); ?></span>
+															<span style="background: #fef2f2; color: #b91c1c; font-size: 10px; padding: 2px 8px; border-radius: 9999px; font-weight: 700; border: 1px solid #fecaca;"><?php esc_html_e( 'Nonaktif', 'sukusastra' ); ?></span>
 														<?php endif; ?>
-													</div>
+													</span>
+													<span style="font-size: 11px; color: #6b7280; font-weight: normal;">
+														<?php
+														if ( $url ) {
+															echo esc_html( wp_parse_url( $url, PHP_URL_HOST ) );
+														}
+														?>
+													</span>
 												</div>
-
-												<!-- Target Link -->
-												<div class="ss-field-group" style="margin-bottom: 0;">
-													<label class="ss-label"><?php esc_html_e( 'Tautan URL (Target Link)', 'sukusastra' ); ?></label>
-													<input type="url" class="large-text ss-input-text" name="sukusastra_options[banners][<?php echo esc_attr( $key ); ?>][<?php echo $i; ?>][url]" value="<?php echo esc_url( $url ); ?>" placeholder="e.g. https://sukusastra.com/promo">
-												</div>
-
-												<!-- Grid of Target settings -->
-												<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; padding-top: 12px; border-top: 1px solid #f3f4f6;">
-													<!-- Display Target -->
-													<div class="ss-field-group" style="margin-bottom: 0;">
-														<label class="ss-label"><?php esc_html_e( 'Target Lokasi Penayangan', 'sukusastra' ); ?></label>
-														<select name="sukusastra_options[banners][<?php echo esc_attr( $key ); ?>][<?php echo $i; ?>][target]" class="ss-select" style="width: 100%; margin-top: 5px;">
-															<option value="global" <?php selected( $target, 'global' ); ?>><?php esc_html_e( 'Seluruh Website (Global)', 'sukusastra' ); ?></option>
-															<option value="all_cat" <?php selected( $target, 'all_cat' ); ?>><?php esc_html_e( 'Semua Halaman Kategori', 'sukusastra' ); ?></option>
-															<option value="cat_specific" <?php selected( $target, 'cat_specific' ); ?>><?php esc_html_e( 'Kategori Tertentu (atau Single Post dengan Kategori Ini)', 'sukusastra' ); ?></option>
-															<option value="all_single" <?php selected( $target, 'all_single' ); ?>><?php esc_html_e( 'Semua Single Post', 'sukusastra' ); ?></option>
-															<option value="single_specific" <?php selected( $target, 'single_specific' ); ?>><?php esc_html_e( 'Single Post Tertentu', 'sukusastra' ); ?></option>
-														</select>
+												<div class="poetzen-banner-body hidden" style="padding: 20px; display: flex; flex-direction: column; gap: 16px; border-top: 1px solid #e5e7eb; background: #ffffff;">
+													<!-- Status Toggle -->
+													<div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 12px; border-bottom: 1px solid #f3f4f6;">
+														<label class="ss-label" style="margin: 0; font-size: 13px; font-weight: 700; color: #374151;"><?php esc_html_e( 'Aktifkan Slot Banner Ini', 'sukusastra' ); ?></label>
+														<div class="ss-toggle-wrapper">
+															<label class="ss-switch">
+																<input type="checkbox" name="sukusastra_options[banners][<?php echo esc_attr( $key ); ?>][<?php echo $i; ?>][status]" value="1" <?php checked( $status, '1' ); ?>>
+																<span class="ss-slider"></span>
+															</label>
+														</div>
 													</div>
 
-													<!-- Target Value -->
+													<!-- Image Selection -->
 													<div class="ss-field-group" style="margin-bottom: 0;">
-														<label class="ss-label"><?php esc_html_e( 'Spesifikasi Target (ID / Slug)', 'sukusastra' ); ?></label>
-														<input type="text" class="ss-input-text" style="width: 100%; margin-top: 5px;" name="sukusastra_options[banners][<?php echo esc_attr( $key ); ?>][<?php echo $i; ?>][target_value]" value="<?php echo esc_attr( $target_value ); ?>" placeholder="e.g. cerpen, puisi, 124">
-														<span class="description" style="font-size: 11px; color: #9ca3af; margin-top: 4px;"><?php esc_html_e( 'Isi slug kategori (pisahkan koma) atau ID/slug postingan spesifik.', 'sukusastra' ); ?></span>
-													</div>
-												</div>
-
-												<!-- Grid of Schedule & Order -->
-												<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 16px; padding-top: 12px; border-top: 1px solid #f3f4f6;">
-													<!-- Start Date -->
-													<div class="ss-field-group" style="margin-bottom: 0;">
-														<label class="ss-label"><?php esc_html_e( 'Tanggal Mulai', 'sukusastra' ); ?></label>
-														<input type="date" class="ss-input-text" style="width: 100%; margin-top: 5px; height: 40px;" name="sukusastra_options[banners][<?php echo esc_attr( $key ); ?>][<?php echo $i; ?>][start_date]" value="<?php echo esc_attr( $start_date ); ?>">
-													</div>
-
-													<!-- End Date -->
-													<div class="ss-field-group" style="margin-bottom: 0;">
-														<label class="ss-label"><?php esc_html_e( 'Tanggal Berakhir', 'sukusastra' ); ?></label>
-														<input type="date" class="ss-input-text" style="width: 100%; margin-top: 5px; height: 40px;" name="sukusastra_options[banners][<?php echo esc_attr( $key ); ?>][<?php echo $i; ?>][end_date]" value="<?php echo esc_attr( $end_date ); ?>">
+														<label class="ss-label"><?php esc_html_e( 'Gambar Banner', 'sukusastra' ); ?></label>
+														<div class="ss-upload-wrapper" style="display: flex; gap: 10px; margin-top: 5px;">
+															<input type="text" id="banner_<?php echo esc_attr( $key ); ?>_<?php echo $i; ?>_image_input" class="regular-text ss-input-text" style="flex: 1;" name="sukusastra_options[banners][<?php echo esc_attr( $key ); ?>][<?php echo $i; ?>][image]" value="<?php echo esc_attr( $image ); ?>">
+															<button type="button" class="button ss-upload-btn" data-input="banner_<?php echo esc_attr( $key ); ?>_<?php echo $i; ?>_image_input" style="height: 40px; border-radius: 8px;"><?php esc_html_e( 'Pilih Gambar', 'sukusastra' ); ?></button>
+														</div>
+														<div class="ss-image-preview mt-2" id="banner_<?php echo esc_attr( $key ); ?>_<?php echo $i; ?>_image_preview" style="max-width: 100%; max-height: 120px; overflow: hidden; border: 1px dashed #d1d5db; border-radius: 8px; display: flex; align-items: center; justify-content: center; background: #f9fafb; padding: 8px;">
+															<?php if ( $image ) : ?>
+																<img src="<?php echo esc_url( $image ); ?>" style="max-height: 100px; width: auto; object-contain; border-radius: 4px;">
+															<?php else : ?>
+																<span style="padding: 20px; color: #9ca3af; font-size: 12px; italic;"><?php esc_html_e( 'Belum ada gambar terpilih', 'sukusastra' ); ?></span>
+															<?php endif; ?>
+														</div>
 													</div>
 
-													<!-- Order -->
+													<!-- Target Link -->
 													<div class="ss-field-group" style="margin-bottom: 0;">
-														<label class="ss-label"><?php esc_html_e( 'Urutan (Priority Order)', 'sukusastra' ); ?></label>
-														<input type="number" min="0" class="ss-input-text" style="width: 100%; margin-top: 5px; height: 40px;" name="sukusastra_options[banners][<?php echo esc_attr( $key ); ?>][<?php echo $i; ?>][order]" value="<?php echo esc_attr( $order ); ?>">
+														<label class="ss-label"><?php esc_html_e( 'Tautan URL (Target Link)', 'sukusastra' ); ?></label>
+														<input type="url" class="large-text ss-input-text" name="sukusastra_options[banners][<?php echo esc_attr( $key ); ?>][<?php echo $i; ?>][url]" value="<?php echo esc_url( $url ); ?>" placeholder="e.g. https://sukusastra.com/promo">
+													</div>
+
+													<!-- Grid of Target settings -->
+													<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; padding-top: 12px; border-top: 1px solid #f3f4f6;">
+														<!-- Display Target -->
+														<div class="ss-field-group" style="margin-bottom: 0;">
+															<label class="ss-label"><?php esc_html_e( 'Target Lokasi Penayangan', 'sukusastra' ); ?></label>
+															<select name="sukusastra_options[banners][<?php echo esc_attr( $key ); ?>][<?php echo $i; ?>][target]" class="ss-select" style="width: 100%; margin-top: 5px;">
+																<option value="global" <?php selected( $target, 'global' ); ?>><?php esc_html_e( 'Seluruh Website (Global)', 'sukusastra' ); ?></option>
+																<option value="all_cat" <?php selected( $target, 'all_cat' ); ?>><?php esc_html_e( 'Semua Halaman Kategori', 'sukusastra' ); ?></option>
+																<option value="cat_specific" <?php selected( $target, 'cat_specific' ); ?>><?php esc_html_e( 'Kategori Tertentu (atau Single Post dengan Kategori Ini)', 'sukusastra' ); ?></option>
+																<option value="all_single" <?php selected( $target, 'all_single' ); ?>><?php esc_html_e( 'Semua Single Post', 'sukusastra' ); ?></option>
+																<option value="single_specific" <?php selected( $target, 'single_specific' ); ?>><?php esc_html_e( 'Single Post Tertentu', 'sukusastra' ); ?></option>
+															</select>
+														</div>
+
+														<!-- Target Value -->
+														<div class="ss-field-group" style="margin-bottom: 0;">
+															<label class="ss-label"><?php esc_html_e( 'Spesifikasi Target (ID / Slug)', 'sukusastra' ); ?></label>
+															<input type="text" class="ss-input-text" style="width: 100%; margin-top: 5px;" name="sukusastra_options[banners][<?php echo esc_attr( $key ); ?>][<?php echo $i; ?>][target_value]" value="<?php echo esc_attr( $target_value ); ?>" placeholder="e.g. cerpen, puisi, 124">
+															<span class="description" style="font-size: 11px; color: #9ca3af; margin-top: 4px;"><?php esc_html_e( 'Isi slug kategori (pisahkan koma) atau ID/slug postingan spesifik.', 'sukusastra' ); ?></span>
+														</div>
+													</div>
+
+													<!-- Grid of Schedule & Order -->
+													<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 16px; padding-top: 12px; border-top: 1px solid #f3f4f6;">
+														<!-- Start Date -->
+														<div class="ss-field-group" style="margin-bottom: 0;">
+															<label class="ss-label"><?php esc_html_e( 'Tanggal Mulai', 'sukusastra' ); ?></label>
+															<input type="date" class="ss-input-text" style="width: 100%; margin-top: 5px; height: 40px;" name="sukusastra_options[banners][<?php echo esc_attr( $key ); ?>][<?php echo $i; ?>][start_date]" value="<?php echo esc_attr( $start_date ); ?>">
+														</div>
+
+														<!-- End Date -->
+														<div class="ss-field-group" style="margin-bottom: 0;">
+															<label class="ss-label"><?php esc_html_e( 'Tanggal Berakhir', 'sukusastra' ); ?></label>
+															<input type="date" class="ss-input-text" style="width: 100%; margin-top: 5px; height: 40px;" name="sukusastra_options[banners][<?php echo esc_attr( $key ); ?>][<?php echo $i; ?>][end_date]" value="<?php echo esc_attr( $end_date ); ?>">
+														</div>
+
+														<!-- Order -->
+														<div class="ss-field-group" style="margin-bottom: 0;">
+															<label class="ss-label"><?php esc_html_e( 'Urutan (Priority Order)', 'sukusastra' ); ?></label>
+															<input type="number" min="0" class="ss-input-text" style="width: 100%; margin-top: 5px; height: 40px;" name="sukusastra_options[banners][<?php echo esc_attr( $key ); ?>][<?php echo $i; ?>][order]" value="<?php echo esc_attr( $order ); ?>">
+														</div>
 													</div>
 												</div>
 											</div>
-										</div>
-									<?php endfor; ?>
+										<?php endfor; ?>
+									</div>
 								</div>
 							<?php endforeach; ?>
 						</div>
@@ -888,6 +897,28 @@ function sukusastra_render_options_page(): void {
 					} else {
 						icon.textContent = '[-]';
 					}
+				});
+			});
+
+			// 4. Sub-tab switching logic inside Banner tab
+			const subtabBtns = document.querySelectorAll('.poetzen-subtab-btn');
+			const subtabContents = document.querySelectorAll('.poetzen-subtab-content');
+			
+			subtabBtns.forEach(btn => {
+				btn.addEventListener('click', function() {
+					const targetSubtab = this.getAttribute('data-subtab');
+					
+					subtabBtns.forEach(b => {
+						b.classList.remove('active');
+						b.style.borderBottomColor = 'transparent';
+						b.style.color = '#6b7280';
+					});
+					subtabContents.forEach(c => c.classList.add('hidden'));
+					
+					this.classList.add('active');
+					this.style.borderBottomColor = '#b42318';
+					this.style.color = '#b42318';
+					document.getElementById('subtab-' + targetSubtab).classList.remove('hidden');
 				});
 			});
 		});
