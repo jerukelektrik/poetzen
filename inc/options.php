@@ -360,8 +360,8 @@ function sukusastra_render_options_page(): void {
 									'desc'  => __( 'Ukuran rekomendasi: 1200x150 piksel. Tampil di halaman beranda di atas atau di area Katalog Terbitan.', 'sukusastra' ),
 								),
 								'popup'   => array(
-									'label' => __( 'Popup Banners (Square 250x250)', 'sukusastra' ),
-									'desc'  => __( 'Ukuran: 250x250 piksel. Tampil di tengah layar sebagai popup overlay.', 'sukusastra' ),
+									'label' => __( 'Popup Banners (Square 350x350)', 'sukusastra' ),
+									'desc'  => __( 'Ukuran: 350x350 piksel. Tampil di tengah layar sebagai popup overlay.', 'sukusastra' ),
 								),
 								'sidebar' => array(
 									'label' => __( 'Sidebar Banners (3:1 Rectangle 300x100)', 'sukusastra' ),
