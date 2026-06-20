@@ -95,6 +95,18 @@ get_header(); ?>
 					<?php if ( sukusastra_get_meta( $post_id, '_ss_book_pages' ) ) : ?>
 						<p><strong><?php esc_html_e( 'Halaman:', 'sukusastra' ); ?></strong> <?php echo esc_html( sukusastra_get_meta( $post_id, '_ss_book_pages' ) ); ?></p>
 					<?php endif; ?>
+					<?php if ( sukusastra_get_meta( $post_id, '_ss_book_cover_type' ) ) : ?>
+						<p><strong><?php esc_html_e( 'Jenis Cover:', 'sukusastra' ); ?></strong> <?php echo esc_html( sukusastra_get_meta( $post_id, '_ss_book_cover_type' ) ); ?></p>
+					<?php endif; ?>
+					<?php if ( sukusastra_get_meta( $post_id, '_ss_book_dimensions' ) ) : ?>
+						<p><strong><?php esc_html_e( 'Dimensi:', 'sukusastra' ); ?></strong> <?php echo esc_html( sukusastra_get_meta( $post_id, '_ss_book_dimensions' ) ); ?></p>
+					<?php endif; ?>
+					<?php if ( sukusastra_get_meta( $post_id, '_ss_book_paper' ) ) : ?>
+						<p><strong><?php esc_html_e( 'Jenis Kertas:', 'sukusastra' ); ?></strong> <?php echo esc_html( sukusastra_get_meta( $post_id, '_ss_book_paper' ) ); ?></p>
+					<?php endif; ?>
+					<?php if ( sukusastra_get_meta( $post_id, '_ss_book_isbn' ) ) : ?>
+						<p><strong><?php esc_html_e( 'ISBN:', 'sukusastra' ); ?></strong> <?php echo esc_html( sukusastra_get_meta( $post_id, '_ss_book_isbn' ) ); ?></p>
+					<?php endif; ?>
 					<?php
 					$reviewer_info = sukusastra_get_reviewer_info( $post_id );
 					if ( ! empty( $reviewer_info['name'] ) ) :

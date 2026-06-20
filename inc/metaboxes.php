@@ -249,6 +249,22 @@ function sukusastra_render_review_metabox( WP_Post $post ): void {
 			'_ss_book_year'         => __( 'Tahun Terbit', 'sukusastra' ),
 			'_ss_book_edition'      => __( 'Cetakan (misal: Cetakan I, Agustus 2017)', 'sukusastra' ),
 			'_ss_book_pages'        => __( 'Halaman (Jumlah Halaman)', 'sukusastra' ),
+			'_ss_book_cover_type'   => array(
+				'label'       => __( 'Jenis Cover', 'sukusastra' ),
+				'placeholder' => __( 'Softcover / Hardcover', 'sukusastra' ),
+			),
+			'_ss_book_dimensions'   => array(
+				'label'       => __( 'Dimensi', 'sukusastra' ),
+				'placeholder' => __( '13.5 x 20 cm', 'sukusastra' ),
+			),
+			'_ss_book_paper'        => array(
+				'label'       => __( 'Jenis Kertas', 'sukusastra' ),
+				'placeholder' => __( 'Bookpaper 72 gsm', 'sukusastra' ),
+			),
+			'_ss_book_isbn'         => array(
+				'label'       => __( 'ISBN', 'sukusastra' ),
+				'placeholder' => __( '978-602-xxxx-xx-x', 'sukusastra' ),
+			),
 			'_ss_review_summary'    => __( 'Ringkasan Pendek', 'sukusastra' ),
 			'_ss_shopee_url'        => array(
 				'label'       => __( 'Shopee URL', 'sukusastra' ),
