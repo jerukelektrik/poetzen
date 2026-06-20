@@ -177,7 +177,7 @@ function poetzen_render_popup_banners(): void {
 					<path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
 				</svg>
 			</button>
-			<a href="<?php echo esc_url( $target_url ); ?>" target="_blank" rel="noopener" class="block overflow-hidden rounded-xl bg-slate-50 dark:bg-zinc-900" style="width: 400px; height: 400px; max-width: 100%; max-height: 100%;">
+			<a href="<?php echo esc_url( $target_url ); ?>" target="_blank" rel="noopener" class="block overflow-hidden rounded-xl bg-slate-50 dark:bg-zinc-900" style="width: 500px; height: 500px; max-width: 100%; max-height: 100%; aspect-ratio: 1/1;">
 				<img src="<?php echo esc_url( $image_url ); ?>" alt="<?php esc_attr_e( 'Promo Banner', 'sukusastra' ); ?>" class="w-full h-full object-cover block">
 			</a>
 		</div>
