@@ -2937,8 +2937,8 @@
     max-width: 380px;
   }
 
-  .max-w-\[468px\] {
-    max-width: 468px;
+  .max-w-\[760px\] {
+    max-width: 760px;
   }
 
   .max-w-full {
@@ -5189,8 +5189,8 @@
       height: calc(var(--spacing) * 40);
     }
 
-    .md\:h-\[60px\] {
-      height: 60px;
+    .md\:h-\[150px\] {
+      height: 150px;
     }
 
     .md\:h-\[320px\] {

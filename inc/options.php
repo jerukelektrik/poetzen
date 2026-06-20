@@ -368,8 +368,8 @@ function sukusastra_render_options_page(): void {
 									'desc'  => __( 'Ukuran: 300x100 piksel. Tampil di sidebar artikel.', 'sukusastra' ),
 								),
 								'article' => array(
-									'label' => __( 'Article Banners (Full Banner 468x60)', 'sukusastra' ),
-									'desc'  => __( 'Ukuran: 468x60 piksel. Tampil di bawah isi artikel sebelum kotak penulis.', 'sukusastra' ),
+									'label' => __( 'Article Banners (Full Banner 760x150)', 'sukusastra' ),
+									'desc'  => __( 'Ukuran: 760x150 piksel. Tampil di bawah isi artikel sebelum kotak penulis.', 'sukusastra' ),
 								),
 							);
 

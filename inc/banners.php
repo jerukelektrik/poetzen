@@ -256,9 +256,9 @@ function poetzen_render_article_banner(): void {
 		$target_url = ! empty( $banner['url'] ) ? esc_url( $banner['url'] ) : '#';
 		?>
 		<div class="poetzen-article-banners flex justify-center my-8 w-full">
-			<div class="poetzen-article-banner flex justify-center w-full max-w-[468px]">
+			<div class="poetzen-article-banner flex justify-center w-full max-w-[760px]">
 				<a href="<?php echo esc_url( $target_url ); ?>" target="_blank" rel="noopener" class="block overflow-hidden rounded-xl border border-slate-200/50 dark:border-zinc-800/80 shadow-sm transition hover:opacity-95 duration-200 w-full">
-					<img src="<?php echo esc_url( $banner['image'] ); ?>" alt="<?php esc_attr_e( 'Advertisement', 'sukusastra' ); ?>" class="w-full h-auto md:h-[60px] object-cover block" style="aspect-ratio: 468/60;">
+					<img src="<?php echo esc_url( $banner['image'] ); ?>" alt="<?php esc_attr_e( 'Advertisement', 'sukusastra' ); ?>" class="w-full h-auto md:h-[150px] object-cover block" style="aspect-ratio: 760/150;">
 				</a>
 			</div>
 		</div>
@@ -266,7 +266,7 @@ function poetzen_render_article_banner(): void {
 	} else {
 		?>
 		<div class="poetzen-article-banners flex justify-center my-8 w-full">
-			<div class="poetzen-article-slider relative overflow-hidden rounded-xl border border-slate-200/50 dark:border-zinc-800/80 shadow-sm w-full max-w-[468px]" style="aspect-ratio: 468/60;" id="poetzen-article-slider-container">
+			<div class="poetzen-article-slider relative overflow-hidden rounded-xl border border-slate-200/50 dark:border-zinc-800/80 shadow-sm w-full max-w-[760px]" style="aspect-ratio: 760/150;" id="poetzen-article-slider-container">
 				<div class="poetzen-article-slider-track flex transition-transform duration-500 ease-in-out h-full w-full">
 					<?php foreach ( $banners as $banner ) : 
 						$target_url = ! empty( $banner['url'] ) ? esc_url( $banner['url'] ) : '#';
