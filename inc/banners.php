@@ -188,14 +188,15 @@ function poetzen_render_popup_banners(): void {
 			var popup = document.getElementById('poetzen-popup-banner');
 			if (!popup) return;
 
-			var popupId = popup.getAttribute('data-popup-id');
-			var dismissedTime = localStorage.getItem('poetzen_popup_dismissed_' + popupId);
-			var now = new Date().getTime();
+			var hasTriggered = false;
 
-			// Show popup if not dismissed or cooldown has expired (24 hours = 86400000 ms)
-			if (!dismissedTime || (now - dismissedTime) > 86400000) {
+			function triggerPopup() {
+				if (hasTriggered) return;
+				hasTriggered = true;
+
+				window.removeEventListener('scroll', handleScroll);
+
 				popup.classList.remove('hidden');
-				// Allow browser layout pass then transition in
 				setTimeout(function() {
 					popup.classList.add('opacity-100');
 					popup.style.opacity = '1';
@@ -204,11 +205,16 @@ function poetzen_render_popup_banners(): void {
 						content.classList.remove('scale-95');
 						content.classList.add('scale-100');
 					}
-					// Focus close button for accessibility
 					var closeBtn = document.getElementById('poetzen-popup-close');
 					if (closeBtn) closeBtn.focus();
-				}, 100);
+				}, 50);
 			}
+
+			function handleScroll() {
+				triggerPopup();
+			}
+
+			window.addEventListener('scroll', handleScroll);
 
 			function closePopup() {
 				popup.style.opacity = '0';
@@ -217,7 +223,6 @@ function poetzen_render_popup_banners(): void {
 					content.classList.remove('scale-100');
 					content.classList.add('scale-95');
 				}
-				localStorage.setItem('poetzen_popup_dismissed_' + popupId, new Date().getTime());
 				setTimeout(function() {
 					popup.classList.add('hidden');
 				}, 300);
@@ -228,14 +233,12 @@ function poetzen_render_popup_banners(): void {
 				closeBtn.addEventListener('click', closePopup);
 			}
 
-			// Dismiss on backdrop click
 			popup.addEventListener('click', function(e) {
 				if (e.target === popup) {
 					closePopup();
 				}
 			});
 
-			// Dismiss on Escape key
 			document.addEventListener('keydown', function(e) {
 				if (e.key === 'Escape' && !popup.classList.contains('hidden')) {
 					closePopup();
