@@ -51,6 +51,7 @@
 					<li><a class="no-underline hover:text-red-400 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/review-buku/' ) ); ?>"><?php esc_html_e( 'Reviu Buku', 'sukusastra' ); ?></a></li>
 					<li><a class="no-underline hover:text-red-400 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/peristiwa/' ) ); ?>"><?php esc_html_e( 'Peristiwa', 'sukusastra' ); ?></a></li>
 					<li><a class="no-underline hover:text-red-400 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/event/' ) ); ?>"><?php esc_html_e( 'Event & Agenda', 'sukusastra' ); ?></a></li>
+					<li><a class="no-underline hover:text-red-400 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/katalog-terbitan/' ) ); ?>"><?php esc_html_e( 'Katalog Terbitan', 'sukusastra' ); ?></a></li>
 				</ul>
 			</div>
 
