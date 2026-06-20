@@ -61,7 +61,6 @@
 					<li><a class="no-underline hover:text-red-400 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/tentang-kami/' ) ); ?>"><?php esc_html_e( 'Tentang Kami', 'sukusastra' ); ?></a></li>
 					<li><a class="no-underline hover:text-red-400 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/redaksi/' ) ); ?>"><?php esc_html_e( 'Redaksi', 'sukusastra' ); ?></a></li>
 					<li><a class="no-underline hover:text-red-400 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/hubungi-kami/' ) ); ?>"><?php esc_html_e( 'Hubungi Kami', 'sukusastra' ); ?></a></li>
-					<li><a class="no-underline hover:text-red-400 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/faq/' ) ); ?>"><?php esc_html_e( 'F.A.Q.', 'sukusastra' ); ?></a></li>
 					<li><a class="no-underline hover:text-red-400 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/ketentuan-pengiriman-karya/' ) ); ?>"><?php esc_html_e( 'Ketentuan Kirim Karya', 'sukusastra' ); ?></a></li>
 					<li><a class="no-underline hover:text-red-400 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/kebijakan-privasi/' ) ); ?>"><?php esc_html_e( 'Kebijakan Privasi', 'sukusastra' ); ?></a></li>
 				</ul>
