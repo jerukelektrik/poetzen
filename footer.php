@@ -155,8 +155,8 @@
 	<!-- Floating Sticky Kirim Karya Button -->
 	<div class="hidden md:block fixed bottom-6 right-6 z-50">
 		<a class="block hover:scale-105 active:scale-95 transition-all duration-300" style="width: 140px; height: 140px;" href="<?php echo esc_url( home_url( '/ketentuan-pengiriman-karya/' ) ); ?>" aria-label="<?php esc_attr_e( 'Kirim Karya', 'sukusastra' ); ?>">
-			<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/kirim.png' ); ?>" alt="<?php esc_attr_e( 'Kirim Karya', 'sukusastra' ); ?>" class="w-full h-full object-contain dark:hidden block">
-			<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/kirim-white.png' ); ?>" alt="<?php esc_attr_e( 'Kirim Karya', 'sukusastra' ); ?>" class="w-full h-full object-contain hidden dark:block">
+			<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/kirim.png?v=2' ); ?>" alt="<?php esc_attr_e( 'Kirim Karya', 'sukusastra' ); ?>" class="w-full h-full object-contain dark:hidden block">
+			<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/kirim-white.png?v=2' ); ?>" alt="<?php esc_attr_e( 'Kirim Karya', 'sukusastra' ); ?>" class="w-full h-full object-contain hidden dark:block">
 		</a>
 	</div>
 
