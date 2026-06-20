@@ -2272,6 +2272,10 @@
     bottom: calc(var(--spacing) * 0);
   }
 
+  .bottom-1\.5 {
+    bottom: calc(var(--spacing) * 1.5);
+  }
+
   .bottom-2 {
     bottom: calc(var(--spacing) * 2);
   }
