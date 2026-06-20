@@ -18,7 +18,7 @@ get_header(); ?>
 					<?php poetzen_render_sidebar_banners(); ?>
 				</div>
 
-				<p class="ss-eyebrow mb-2"><?php esc_html_e( 'Berita', 'sukusastra' ); ?></p>
+				<p class="ss-eyebrow mb-2"><?php esc_html_e( 'Peristiwa', 'sukusastra' ); ?></p>
 				<h1 class="ss-page-title"><?php the_title(); ?></h1>
 				
 				<!-- Media Embed Area -->

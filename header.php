@@ -225,9 +225,9 @@ if ( $gtm_id ) : ?>
 						'active' => !$is_home && ( is_post_type_archive( 'review_buku' ) || is_singular( 'review_buku' ) )
 					),
 					array(
-						'label'  => __( 'Berita', 'sukusastra' ),
-						'url'    => $base_url . '#berita',
-						'hash'   => '#berita',
+						'label'  => __( 'Peristiwa', 'sukusastra' ),
+						'url'    => $base_url . '#peristiwa',
+						'hash'   => '#peristiwa',
 						'active' => !$is_home && ( is_post_type_archive( 'berita' ) || is_singular( 'berita' ) )
 					),
 					array(
@@ -327,7 +327,7 @@ if ( $gtm_id ) : ?>
 			// Intersection Observer for Scrollspy
 			const isHome = window.location.pathname === '/' || window.location.pathname === '/index.php' || document.getElementById('hero');
 			if (isHome) {
-				const sectionIds = ['hero', 'puisi', 'cerpen', 'katalog-terbitan', 'esai', 'review-buku', 'berita', 'event'];
+				const sectionIds = ['hero', 'puisi', 'cerpen', 'katalog-terbitan', 'esai', 'review-buku', 'peristiwa', 'event'];
 				const sections = sectionIds.map(id => document.getElementById(id)).filter(el => el !== null);
 				
 				const observerOptions = {

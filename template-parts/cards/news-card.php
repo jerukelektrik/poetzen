@@ -22,7 +22,7 @@ $youtube = sukusastra_get_meta( get_the_ID(), '_ss_youtube_url' );
 	<div class="mt-4 flex flex-col gap-1 text-xs font-semibold tracking-wide uppercase">
 		<div class="flex flex-wrap items-center gap-1.5">
 			<span class="text-red-700 dark:text-red-400 font-black">
-				<?php esc_html_e( 'Berita', 'sukusastra' ); ?><?php echo $youtube ? ' · Video' : ''; ?>
+				<?php esc_html_e( 'Peristiwa', 'sukusastra' ); ?><?php echo $youtube ? ' · Video' : ''; ?>
 			</span>
 			<span class="text-slate-350 dark:text-zinc-655 font-normal">·</span>
 			<span class="text-slate-800 dark:text-zinc-200 font-bold">

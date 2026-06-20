@@ -1090,12 +1090,12 @@ document.addEventListener('DOMContentLoaded', function() {
 <?php endif; ?>
 
 <!-- News Section -->
-<section id="berita" class="ss-section">
+<section id="peristiwa" class="ss-section">
 	<div class="ss-container grid gap-6">
 		<div class="flex items-center justify-between border-b border-slate-100 pb-2 dark:border-zinc-800/80">
-			<h2 class="ss-section-title ss-feed-section-title"><?php esc_html_e( 'Berita Suku Sastra', 'sukusastra' ); ?></h2>
+			<h2 class="ss-section-title ss-feed-section-title"><?php esc_html_e( 'Peristiwa Suku Sastra', 'sukusastra' ); ?></h2>
 			<a class="ss-eyebrow" href="<?php echo esc_url( get_post_type_archive_link( 'berita' ) ); ?>">
-				<?php esc_html_e( 'Semua Berita', 'sukusastra' ); ?> &rarr;
+				<?php esc_html_e( 'Semua Peristiwa', 'sukusastra' ); ?> &rarr;
 			</a>
 		</div>
 		<?php $news = sukusastra_latest_cpt( 'berita', 3 ); ?>
@@ -1108,7 +1108,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				<?php endwhile; wp_reset_postdata(); ?>
 			</div>
 		<?php else : ?>
-			<p class="text-sm text-slate-500 dark:text-zinc-400 py-6 text-center"><?php esc_html_e( 'Belum ada berita terbaru.', 'sukusastra' ); ?></p>
+			<p class="text-sm text-slate-500 dark:text-zinc-400 py-6 text-center"><?php esc_html_e( 'Belum ada peristiwa terbaru.', 'sukusastra' ); ?></p>
 		<?php endif; ?>
 	</div>
 </section>

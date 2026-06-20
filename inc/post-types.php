@@ -44,15 +44,15 @@ function sukusastra_register_berita_type(): void {
 		'berita',
 		array(
 			'labels'       => array(
-				'name'          => __( 'Berita', 'sukusastra' ),
-				'singular_name' => __( 'Berita', 'sukusastra' ),
-				'add_new_item'  => __( 'Tambah Berita', 'sukusastra' ),
-				'edit_item'     => __( 'Edit Berita', 'sukusastra' ),
+				'name'          => __( 'Peristiwa', 'sukusastra' ),
+				'singular_name' => __( 'Peristiwa', 'sukusastra' ),
+				'add_new_item'  => __( 'Tambah Peristiwa', 'sukusastra' ),
+				'edit_item'     => __( 'Edit Peristiwa', 'sukusastra' ),
 			),
 			'public'       => true,
 			'has_archive'  => true,
 			'menu_icon'    => 'dashicons-megaphone',
-			'rewrite'      => array( 'slug' => 'berita' ),
+			'rewrite'      => array( 'slug' => 'peristiwa' ),
 			'show_in_rest' => true,
 			'supports'     => array( 'title', 'editor', 'excerpt', 'thumbnail', 'author', 'revisions' ),
 		)
