@@ -5,7 +5,22 @@
  * @package SukuSastra
  */
 
-get_header(); ?>
+get_header();
+
+if ( ! function_exists( 'sukusastra_render_editor_name_link' ) ) {
+	function sukusastra_render_editor_name_link( string $name ): string {
+		$penulis = sukusastra_find_penulis_by_name( $name );
+		if ( $penulis ) {
+			return sprintf(
+				'<a class="hover:text-red-500 dark:hover:text-red-400 no-underline transition-colors" href="%1$s">%2$s</a>',
+				esc_url( get_permalink( $penulis->ID ) ),
+				esc_html( $name )
+			);
+		}
+		return esc_html( $name );
+	}
+}
+?>
 
 <?php while ( have_posts() ) : the_post(); ?>
 	<article class="ss-section">
@@ -26,7 +41,7 @@ get_header(); ?>
 					<div class="ss-card rounded-2xl p-6 text-center grid gap-3 border border-red-200/50 bg-red-50/20 dark:border-red-950/40 dark:bg-red-950/10">
 						<div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-red-700 text-white font-serif text-2xl font-black shadow-md">A</div>
 						<div>
-							<h3 class="text-base font-black text-slate-900 dark:text-zinc-50 m-0">An. Ismanto</h3>
+							<h3 class="text-base font-black text-slate-900 dark:text-zinc-50 m-0"><?php echo sukusastra_render_editor_name_link( 'An. Ismanto' ); ?></h3>
 							<p class="text-[10px] font-black uppercase tracking-wider text-red-700 dark:text-red-400 mt-1"><?php esc_html_e( 'Pemimpin Redaksi', 'sukusastra' ); ?></p>
 						</div>
 					</div>
@@ -35,7 +50,7 @@ get_header(); ?>
 					<div class="ss-card rounded-2xl p-6 text-center grid gap-3">
 						<div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-slate-200 text-slate-700 dark:bg-zinc-800 dark:text-zinc-300 font-serif text-2xl font-black shadow-sm">M</div>
 						<div>
-							<h3 class="text-base font-black text-slate-900 dark:text-zinc-50 m-0">M. Rizqy Fathurrohman</h3>
+							<h3 class="text-base font-black text-slate-900 dark:text-zinc-50 m-0"><?php echo sukusastra_render_editor_name_link( 'M. Rizqy Fathurrohman' ); ?></h3>
 							<p class="text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-zinc-500 mt-1"><?php esc_html_e( 'Sekretaris Redaksi', 'sukusastra' ); ?></p>
 						</div>
 					</div>
@@ -44,7 +59,7 @@ get_header(); ?>
 					<div class="ss-card rounded-2xl p-6 text-center grid gap-3">
 						<div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-slate-200 text-slate-700 dark:bg-zinc-800 dark:text-zinc-300 font-serif text-2xl font-black shadow-sm">M</div>
 						<div>
-							<h3 class="text-base font-black text-slate-900 dark:text-zinc-50 m-0">M. Qadhafi</h3>
+							<h3 class="text-base font-black text-slate-900 dark:text-zinc-50 m-0"><?php echo sukusastra_render_editor_name_link( 'M. Qadhafi' ); ?></h3>
 							<p class="text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-zinc-500 mt-1"><?php esc_html_e( 'Admin', 'sukusastra' ); ?></p>
 						</div>
 					</div>
@@ -53,7 +68,7 @@ get_header(); ?>
 					<div class="ss-card rounded-2xl p-6 text-center grid gap-3">
 						<div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-slate-200 text-slate-700 dark:bg-zinc-800 dark:text-zinc-300 font-serif text-2xl font-black shadow-sm">B</div>
 						<div>
-							<h3 class="text-base font-black text-slate-900 dark:text-zinc-50 m-0">Brenda Christina Putri</h3>
+							<h3 class="text-base font-black text-slate-900 dark:text-zinc-50 m-0"><?php echo sukusastra_render_editor_name_link( 'Brenda Christina Putri' ); ?></h3>
 							<p class="text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-zinc-500 mt-1"><?php esc_html_e( 'Humas dan Kerja Sama', 'sukusastra' ); ?></p>
 						</div>
 					</div>
@@ -80,7 +95,7 @@ get_header(); ?>
 								<div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-200 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 font-serif text-sm font-black">
 									<?php echo esc_html( substr( $editor, 0, 1 ) ); ?>
 								</div>
-								<span class="text-sm font-bold text-slate-800 dark:text-zinc-200"><?php echo esc_html( $editor ); ?></span>
+								<span class="text-sm font-bold text-slate-800 dark:text-zinc-200"><?php echo sukusastra_render_editor_name_link( $editor ); ?></span>
 							</div>
 						<?php endforeach; ?>
 					</div>
