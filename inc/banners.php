@@ -156,7 +156,7 @@ function poetzen_render_article_banner(): void {
 }
 
 /**
- * Render Popup Banner (Max 5, shows highest priority active popup).
+ * Render Popup Banner (Max 5, shows highest priority active popup, or slider if multiple are active).
  */
 function poetzen_render_popup_banners(): void {
 	$banners = poetzen_get_active_banners( 'popup' );
@@ -164,11 +164,9 @@ function poetzen_render_popup_banners(): void {
 		return;
 	}
 
-	// Only show the highest priority (first after sort) active banner
-	$banner     = $banners[0];
-	$target_url = ! empty( $banner['url'] ) ? esc_url( $banner['url'] ) : '#';
-	$image_url  = esc_url( $banner['image'] );
-	$banner_id  = md5( $image_url . $target_url );
+	$has_multiple = count( $banners ) > 1;
+	$first_banner = $banners[0];
+	$banner_id    = md5( esc_url( $first_banner['image'] ) . ( ! empty( $first_banner['url'] ) ? esc_url( $first_banner['url'] ) : '#' ) );
 	?>
 	<div id="poetzen-popup-banner" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 hidden opacity-0 poetzen-popup-overlay" data-popup-id="<?php echo esc_attr( $banner_id ); ?>">
 		<div class="relative bg-white dark:bg-zinc-950 p-2.5 rounded-2xl shadow-2xl max-w-[90vw] max-h-[90vh] border border-slate-200/80 dark:border-zinc-800 transform scale-95 transition-transform duration-300 poetzen-popup-content">
@@ -177,9 +175,43 @@ function poetzen_render_popup_banners(): void {
 					<path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
 				</svg>
 			</button>
-			<a href="<?php echo esc_url( $target_url ); ?>" target="_blank" rel="noopener" class="block overflow-hidden rounded-xl bg-slate-50 dark:bg-zinc-900" style="width: 500px; height: 500px; max-width: 100%; max-height: 100%; aspect-ratio: 1/1;">
-				<img src="<?php echo esc_url( $image_url ); ?>" alt="<?php esc_attr_e( 'Promo Banner', 'sukusastra' ); ?>" class="w-full h-full object-cover block">
-			</a>
+
+			<?php if ( ! $has_multiple ) : 
+				$target_url = ! empty( $first_banner['url'] ) ? esc_url( $first_banner['url'] ) : '#';
+				$image_url  = esc_url( $first_banner['image'] );
+				?>
+				<a href="<?php echo esc_url( $target_url ); ?>" target="_blank" rel="noopener" class="block overflow-hidden rounded-xl bg-slate-50 dark:bg-zinc-900" style="width: 500px; height: 500px; max-width: 100%; max-height: 100%; aspect-ratio: 1/1;">
+					<img src="<?php echo esc_url( $image_url ); ?>" alt="<?php esc_attr_e( 'Promo Banner', 'sukusastra' ); ?>" class="w-full h-full object-cover block">
+				</a>
+			<?php else : ?>
+				<div class="poetzen-popup-slider relative overflow-hidden rounded-xl bg-slate-50 dark:bg-zinc-900" style="width: 500px; height: 500px; max-width: 100%; max-height: 100%; aspect-ratio: 1/1;" id="poetzen-popup-slider-container">
+					<div class="poetzen-popup-slider-track flex transition-transform duration-500 ease-in-out h-full w-full">
+						<?php foreach ( $banners as $banner ) : 
+							$target_url = ! empty( $banner['url'] ) ? esc_url( $banner['url'] ) : '#';
+							$image_url  = esc_url( $banner['image'] );
+							?>
+							<div class="poetzen-popup-slide min-w-full w-full h-full flex-shrink-0">
+								<a href="<?php echo esc_url( $target_url ); ?>" target="_blank" rel="noopener" class="block w-full h-full">
+									<img src="<?php echo esc_url( $image_url ); ?>" alt="<?php esc_attr_e( 'Promo Banner', 'sukusastra' ); ?>" class="w-full h-full object-cover block">
+								</a>
+							</div>
+						<?php endforeach; ?>
+					</div>
+					<!-- Slider dots / indicators -->
+					<div class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+						<?php foreach ( $banners as $index => $banner ) : ?>
+							<button class="poetzen-popup-slider-dot w-2 h-2 rounded-full bg-white/40 transition-colors duration-200 cursor-pointer border-0 p-0" data-slide="<?php echo $index; ?>" aria-label="<?php printf( esc_attr__( 'Slide %d', 'sukusastra' ), $index + 1 ); ?>"></button>
+						<?php endforeach; ?>
+					</div>
+					<!-- Slider navigation arrows -->
+					<button class="poetzen-popup-slider-prev absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/30 hover:bg-black/50 text-white flex items-center justify-center cursor-pointer transition duration-200 z-10 border-0 p-0" aria-label="<?php esc_attr_e( 'Previous Slide', 'sukusastra' ); ?>">
+						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" /></svg>
+					</button>
+					<button class="poetzen-popup-slider-next absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/30 hover:bg-black/50 text-white flex items-center justify-center cursor-pointer transition duration-200 z-10 border-0 p-0" aria-label="<?php esc_attr_e( 'Next Slide', 'sukusastra' ); ?>">
+						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" /></svg>
+					</button>
+				</div>
+			<?php endif; ?>
 		</div>
 	</div>
 
@@ -189,6 +221,87 @@ function poetzen_render_popup_banners(): void {
 			if (!popup) return;
 
 			var hasTriggered = false;
+			var isSlider = <?php echo $has_multiple ? 'true' : 'false'; ?>;
+			var autoPlayTimer;
+
+			// Slider variables
+			var track, slides, dots, prevBtn, nextBtn;
+			var currentIndex = 0;
+			var slideCount = 0;
+			var slideInterval = 5000;
+
+			if (isSlider) {
+				var sliderContainer = document.getElementById('poetzen-popup-slider-container');
+				if (sliderContainer) {
+					track = sliderContainer.querySelector('.poetzen-popup-slider-track');
+					slides = sliderContainer.querySelectorAll('.poetzen-popup-slide');
+					dots = sliderContainer.querySelectorAll('.poetzen-popup-slider-dot');
+					prevBtn = sliderContainer.querySelector('.poetzen-popup-slider-prev');
+					nextBtn = sliderContainer.querySelector('.poetzen-popup-slider-next');
+					slideCount = slides.length;
+				}
+			}
+
+			function updateSlider(index) {
+				if (!isSlider || !track) return;
+				if (index >= slideCount) currentIndex = 0;
+				else if (index < 0) currentIndex = slideCount - 1;
+				else currentIndex = index;
+
+				track.style.transform = 'translateX(-' + (currentIndex * 100) + '%)';
+
+				dots.forEach(function(dot, idx) {
+					if (idx === currentIndex) {
+						dot.classList.remove('bg-white/40');
+						dot.classList.add('bg-white', 'scale-110');
+					} else {
+						dot.classList.remove('bg-white', 'scale-110');
+						dot.classList.add('bg-white/40');
+					}
+				});
+			}
+
+			function startAutoPlay() {
+				if (!isSlider) return;
+				stopAutoPlay();
+				autoPlayTimer = setInterval(function() {
+					updateSlider(currentIndex + 1);
+				}, slideInterval);
+			}
+
+			function stopAutoPlay() {
+				if (autoPlayTimer) {
+					clearInterval(autoPlayTimer);
+				}
+			}
+
+			if (isSlider && dots) {
+				dots.forEach(function(dot, idx) {
+					dot.addEventListener('click', function() {
+						updateSlider(idx);
+						startAutoPlay();
+					});
+				});
+
+				if (prevBtn) {
+					prevBtn.addEventListener('click', function() {
+						updateSlider(currentIndex - 1);
+						startAutoPlay();
+					});
+				}
+				if (nextBtn) {
+					nextBtn.addEventListener('click', function() {
+						updateSlider(currentIndex + 1);
+						startAutoPlay();
+					});
+				}
+
+				var sliderContainer = document.getElementById('poetzen-popup-slider-container');
+				if (sliderContainer) {
+					sliderContainer.addEventListener('mouseenter', stopAutoPlay);
+					sliderContainer.addEventListener('mouseleave', startAutoPlay);
+				}
+			}
 
 			function triggerPopup() {
 				if (hasTriggered) return;
@@ -207,6 +320,11 @@ function poetzen_render_popup_banners(): void {
 					}
 					var closeBtn = document.getElementById('poetzen-popup-close');
 					if (closeBtn) closeBtn.focus();
+
+					if (isSlider) {
+						updateSlider(0);
+						startAutoPlay();
+					}
 				}, 50);
 			}
 
@@ -217,6 +335,7 @@ function poetzen_render_popup_banners(): void {
 			window.addEventListener('scroll', handleScroll);
 
 			function closePopup() {
+				stopAutoPlay();
 				popup.style.opacity = '0';
 				var content = popup.querySelector('.poetzen-popup-content');
 				if (content) {
