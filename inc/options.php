@@ -9,6 +9,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+// Build trigger: Monetization merge v1.0.2
+
 // Enqueue WordPress Media Library on Suku Sastra Theme Options page
 add_action( 'admin_enqueue_scripts', 'sukusastra_admin_enqueue_scripts' );
 function sukusastra_admin_enqueue_scripts( string $hook_suffix ): void {
