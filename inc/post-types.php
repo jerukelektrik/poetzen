@@ -16,6 +16,12 @@ function sukusastra_register_post_types(): void {
 	sukusastra_register_event_type();
 	sukusastra_register_penulis_type();
 	sukusastra_register_terbitan_type();
+
+	// Flush rewrite rules on CPT change to prevent 404
+	if ( ! get_transient( 'sukusastra_peristiwa_flushed' ) ) {
+		flush_rewrite_rules( false );
+		set_transient( 'sukusastra_peristiwa_flushed', '1', DAY_IN_SECONDS );
+	}
 }
 
 function sukusastra_register_review_buku_type(): void {
