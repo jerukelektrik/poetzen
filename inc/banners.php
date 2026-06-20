@@ -118,18 +118,126 @@ function poetzen_render_sidebar_banners(): void {
 		return;
 	}
 
-	echo '<div class="poetzen-sidebar-banners grid gap-4 mb-6">';
-	foreach ( $banners as $banner ) {
+	$has_multiple = count( $banners ) > 1;
+
+	if ( ! $has_multiple ) {
+		$banner     = $banners[0];
 		$target_url = ! empty( $banner['url'] ) ? esc_url( $banner['url'] ) : '#';
 		?>
-		<div class="poetzen-sidebar-banner w-full">
-			<a href="<?php echo esc_url( $target_url ); ?>" target="_blank" rel="noopener" class="block overflow-hidden rounded-xl border border-slate-200/50 dark:border-zinc-800/80 shadow-sm transition hover:opacity-95 duration-200">
-				<img src="<?php echo esc_url( $banner['image'] ); ?>" alt="<?php esc_attr_e( 'Advertisement', 'sukusastra' ); ?>" class="w-full h-[100px] object-cover block">
-			</a>
+		<div class="poetzen-sidebar-banners mb-6 w-full">
+			<div class="poetzen-sidebar-banner w-full">
+				<a href="<?php echo esc_url( $target_url ); ?>" target="_blank" rel="noopener" class="block overflow-hidden rounded-xl border border-slate-200/50 dark:border-zinc-800/80 shadow-sm transition hover:opacity-95 duration-200">
+					<img src="<?php echo esc_url( $banner['image'] ); ?>" alt="<?php esc_attr_e( 'Advertisement', 'sukusastra' ); ?>" class="w-full h-[100px] object-cover block">
+				</a>
+			</div>
 		</div>
 		<?php
+	} else {
+		?>
+		<div class="poetzen-sidebar-slider relative w-full overflow-hidden rounded-xl border border-slate-200/50 dark:border-zinc-800/80 shadow-sm mb-6" style="height: 100px;" id="poetzen-sidebar-slider-container">
+			<div class="poetzen-sidebar-slider-track flex transition-transform duration-500 ease-in-out h-full w-full">
+				<?php foreach ( $banners as $banner ) : 
+					$target_url = ! empty( $banner['url'] ) ? esc_url( $banner['url'] ) : '#';
+					$image_url  = esc_url( $banner['image'] );
+					?>
+					<div class="poetzen-sidebar-slide min-w-full w-full h-full flex-shrink-0">
+						<a href="<?php echo esc_url( $target_url ); ?>" target="_blank" rel="noopener" class="block w-full h-full">
+							<img src="<?php echo esc_url( $image_url ); ?>" alt="<?php esc_attr_e( 'Advertisement', 'sukusastra' ); ?>" class="w-full h-full object-cover block">
+						</a>
+					</div>
+				<?php endforeach; ?>
+			</div>
+			<!-- Slider dots / indicators -->
+			<div class="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+				<?php foreach ( $banners as $index => $banner ) : ?>
+					<button class="poetzen-sidebar-slider-dot w-1.5 h-1.5 rounded-full bg-white/40 transition-colors duration-200 cursor-pointer border-0 p-0" data-slide="<?php echo $index; ?>" aria-label="<?php printf( esc_attr__( 'Slide %d', 'sukusastra' ), $index + 1 ); ?>"></button>
+				<?php endforeach; ?>
+			</div>
+			<!-- Slider navigation arrows -->
+			<button class="poetzen-sidebar-slider-prev absolute left-2 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-black/30 hover:bg-black/50 text-white flex items-center justify-center cursor-pointer transition duration-200 z-10 border-0 p-0" aria-label="<?php esc_attr_e( 'Previous Slide', 'sukusastra' ); ?>">
+				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3 h-3"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" /></svg>
+			</button>
+			<button class="poetzen-sidebar-slider-next absolute right-2 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-black/30 hover:bg-black/50 text-white flex items-center justify-center cursor-pointer transition duration-200 z-10 border-0 p-0" aria-label="<?php esc_attr_e( 'Next Slide', 'sukusastra' ); ?>">
+				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3 h-3"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" /></svg>
+			</button>
+		</div>
+
+		<script>
+			document.addEventListener('DOMContentLoaded', function() {
+				var sliderContainer = document.getElementById('poetzen-sidebar-slider-container');
+				if (!sliderContainer) return;
+
+				var track = sliderContainer.querySelector('.poetzen-sidebar-slider-track');
+				var slides = sliderContainer.querySelectorAll('.poetzen-sidebar-slide');
+				var dots = sliderContainer.querySelectorAll('.poetzen-sidebar-slider-dot');
+				var prevBtn = sliderContainer.querySelector('.poetzen-sidebar-slider-prev');
+				var nextBtn = sliderContainer.querySelector('.poetzen-sidebar-slider-next');
+				
+				var currentIndex = 0;
+				var slideCount = slides.length;
+				var slideInterval = 5000;
+				var autoPlayTimer;
+
+				function updateSlider(index) {
+					if (index >= slideCount) currentIndex = 0;
+					else if (index < 0) currentIndex = slideCount - 1;
+					else currentIndex = index;
+
+					track.style.transform = 'translateX(-' + (currentIndex * 100) + '%)';
+
+					dots.forEach(function(dot, idx) {
+						if (idx === currentIndex) {
+							dot.classList.remove('bg-white/40');
+							dot.classList.add('bg-white', 'scale-110');
+						} else {
+							dot.classList.remove('bg-white', 'scale-110');
+							dot.classList.add('bg-white/40');
+						}
+					});
+				}
+
+				function startAutoPlay() {
+					stopAutoPlay();
+					autoPlayTimer = setInterval(function() {
+						updateSlider(currentIndex + 1);
+					}, slideInterval);
+				}
+
+				function stopAutoPlay() {
+					if (autoPlayTimer) {
+						clearInterval(autoPlayTimer);
+					}
+				}
+
+				dots.forEach(function(dot, idx) {
+					dot.addEventListener('click', function() {
+						updateSlider(idx);
+						startAutoPlay();
+					});
+				});
+
+				if (prevBtn) {
+					prevBtn.addEventListener('click', function() {
+						updateSlider(currentIndex - 1);
+						startAutoPlay();
+					});
+				}
+				if (nextBtn) {
+					nextBtn.addEventListener('click', function() {
+						updateSlider(currentIndex + 1);
+						startAutoPlay();
+					});
+				}
+
+				sliderContainer.addEventListener('mouseenter', stopAutoPlay);
+				sliderContainer.addEventListener('mouseleave', startAutoPlay);
+
+				updateSlider(0);
+				startAutoPlay();
+			});
+		</script>
+		<?php
 	}
-	echo '</div>';
 }
 
 /**
