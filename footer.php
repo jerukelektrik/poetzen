@@ -60,7 +60,10 @@
 				<ul class="grid gap-2 text-sm text-slate-300 dark:text-zinc-400">
 					<li><a class="no-underline hover:text-red-400 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/tentang-kami/' ) ); ?>"><?php esc_html_e( 'Tentang Kami', 'sukusastra' ); ?></a></li>
 					<li><a class="no-underline hover:text-red-400 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/redaksi/' ) ); ?>"><?php esc_html_e( 'Redaksi', 'sukusastra' ); ?></a></li>
+					<li><a class="no-underline hover:text-red-400 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/hubungi-kami/' ) ); ?>"><?php esc_html_e( 'Hubungi Kami', 'sukusastra' ); ?></a></li>
+					<li><a class="no-underline hover:text-red-400 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/faq/' ) ); ?>"><?php esc_html_e( 'F.A.Q.', 'sukusastra' ); ?></a></li>
 					<li><a class="no-underline hover:text-red-400 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/ketentuan-pengiriman-karya/' ) ); ?>"><?php esc_html_e( 'Ketentuan Kirim Karya', 'sukusastra' ); ?></a></li>
+					<li><a class="no-underline hover:text-red-400 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/kebijakan-privasi/' ) ); ?>"><?php esc_html_e( 'Kebijakan Privasi', 'sukusastra' ); ?></a></li>
 				</ul>
 			</div>
 
@@ -82,31 +85,6 @@
 			</div>
 		</div>
 
-		<!-- 3. Secondary Links Grid -->
-		<div class="border-t border-slate-800 dark:border-zinc-800 py-8 grid gap-6 sm:grid-cols-2 md:grid-cols-4 text-sm">
-			<div>
-				<ul class="grid gap-2 text-slate-400 dark:text-zinc-500">
-					<li><a class="no-underline hover:text-red-400 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/tentang-kami/' ) ); ?>"><?php esc_html_e( 'Tentang Kami', 'sukusastra' ); ?></a></li>
-					<li><a class="no-underline hover:text-red-400 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/hubungi-kami/' ) ); ?>"><?php esc_html_e( 'Hubungi Kami', 'sukusastra' ); ?></a></li>
-				</ul>
-			</div>
-			<div>
-				<ul class="grid gap-2 text-slate-400 dark:text-zinc-500">
-					<li><a class="no-underline hover:text-red-400 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/faq/' ) ); ?>"><?php esc_html_e( 'F.A.Q.', 'sukusastra' ); ?></a></li>
-					<li><a class="no-underline hover:text-red-400 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/redaksi/' ) ); ?>"><?php esc_html_e( 'Redaksi', 'sukusastra' ); ?></a></li>
-				</ul>
-			</div>
-			<div>
-				<ul class="grid gap-2 text-slate-400 dark:text-zinc-500">
-					<li><a class="no-underline hover:text-red-400 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/ketentuan-pengiriman-karya/' ) ); ?>"><?php esc_html_e( 'Ketentuan Kirim Karya', 'sukusastra' ); ?></a></li>
-				</ul>
-			</div>
-			<div>
-				<ul class="grid gap-2 text-slate-400 dark:text-zinc-500">
-					<li><a class="no-underline hover:text-red-400 dark:hover:text-red-400 transition-colors" href="<?php echo esc_url( home_url( '/kebijakan-privasi/' ) ); ?>"><?php esc_html_e( 'Kebijakan Privasi', 'sukusastra' ); ?></a></li>
-				</ul>
-			</div>
-		</div>
 
 		<!-- 4. Bottom Copyright & Social Icons -->
 		<div class="border-t border-slate-800 dark:border-zinc-800 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-slate-500 dark:text-zinc-500">
