@@ -701,8 +701,6 @@ function sukusastra_save_metaboxes( int $post_id ): void {
 			'_ss_comm_tiktok',
 			'_ss_comm_youtube',
 			'_ss_comm_contact',
-			'_ss_comm_activities',
-			'_ss_comm_publications',
 			'_ss_comm_gallery',
 		);
 
@@ -710,6 +708,14 @@ function sukusastra_save_metaboxes( int $post_id ): void {
 			if ( isset( $_POST[ $field ] ) ) {
 				update_post_meta( $post_id, $field, sanitize_text_field( wp_unslash( $_POST[ $field ] ) ) );
 			}
+		}
+
+		if ( isset( $_POST['_ss_comm_activities'] ) ) {
+			update_post_meta( $post_id, '_ss_comm_activities', sanitize_textarea_field( wp_unslash( $_POST['_ss_comm_activities'] ) ) );
+		}
+
+		if ( isset( $_POST['_ss_comm_publications'] ) ) {
+			update_post_meta( $post_id, '_ss_comm_publications', sanitize_textarea_field( wp_unslash( $_POST['_ss_comm_publications'] ) ) );
 		}
 
 		if ( isset( $_POST['_ss_pesan_moral'] ) ) {
@@ -1011,16 +1017,21 @@ function sukusastra_render_komunitas_metabox( WP_Post $post ): void {
 				'label'       => __( 'Kontak', 'sukusastra' ),
 				'placeholder' => __( 'Nomor WhatsApp atau Email Kontak', 'sukusastra' ),
 			),
-			'_ss_comm_activities'   => array(
-				'label'       => __( 'Kegiatan', 'sukusastra' ),
-				'placeholder' => __( 'Kegiatan rutin atau berkala', 'sukusastra' ),
-			),
-			'_ss_comm_publications' => array(
-				'label'       => __( 'Publikasi Karya', 'sukusastra' ),
-				'placeholder' => __( 'Karya/antologi yang pernah diterbitkan', 'sukusastra' ),
-			),
 		)
 	);
+
+	$activities   = sukusastra_get_meta( $post->ID, '_ss_comm_activities', '' );
+	$publications = sukusastra_get_meta( $post->ID, '_ss_comm_publications', '' );
+	?>
+	<p>
+		<label for="_ss_comm_activities"><strong><?php esc_html_e( 'Kegiatan', 'sukusastra' ); ?></strong></label><br>
+		<textarea class="widefat" id="_ss_comm_activities" name="_ss_comm_activities" rows="8" placeholder="<?php esc_attr_e( 'Tuliskan deskripsi lengkap mengenai kegiatan rutin, berkala, atau program utama komunitas. Bidang ini mendukung penulisan teks panjang dan daftar (list) kegiatan.', 'sukusastra' ); ?>"><?php echo esc_textarea( $activities ); ?></textarea>
+	</p>
+	<p>
+		<label for="_ss_comm_publications"><strong><?php esc_html_e( 'Publikasi Karya', 'sukusastra' ); ?></strong></label><br>
+		<textarea class="widefat" id="_ss_comm_publications" name="_ss_comm_publications" rows="8" placeholder="<?php esc_attr_e( 'Tuliskan deskripsi lengkap mengenai karya, antologi, majalah, atau buku yang telah diterbitkan oleh komunitas. Bidang ini mendukung penulisan teks panjang dan daftar (list) karya.', 'sukusastra' ); ?>"><?php echo esc_textarea( $publications ); ?></textarea>
+	</p>
+	<?php
 
 	// Multi-image gallery uploader for Galeri Aktivitas
 	$gallery_ids = sukusastra_get_meta( $post->ID, '_ss_comm_gallery', '' );
