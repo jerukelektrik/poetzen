@@ -1130,3 +1130,64 @@ function sukusastra_inject_related_article( string $content ): string {
 
 	return $new_content;
 }
+
+add_action( 'pre_get_posts', 'sukusastra_komunitas_archive_filter' );
+function sukusastra_komunitas_archive_filter( WP_Query $query ): void {
+	if ( is_admin() || ! $query->is_main_query() ) {
+		return;
+	}
+
+	if ( $query->is_post_type_archive( 'komunitas' ) ) {
+		$cari_komunitas = isset( $_GET['cari_komunitas'] ) ? sanitize_text_field( wp_unslash( $_GET['cari_komunitas'] ) ) : '';
+		$filter_prov    = isset( $_GET['filter_prov'] ) ? sanitize_text_field( wp_unslash( $_GET['filter_prov'] ) ) : '';
+
+		$meta_query = array();
+
+		if ( '' !== $filter_prov ) {
+			$meta_query[] = array(
+				'key'     => '_ss_comm_province',
+				'value'   => $filter_prov,
+				'compare' => 'LIKE',
+			);
+		}
+
+		if ( '' !== $cari_komunitas ) {
+			// Find post IDs matching title or content, or city, in CPT komunitas
+			$post_ids_standard = get_posts( array(
+				'post_type'      => 'komunitas',
+				'posts_per_page' => -1,
+				's'              => $cari_komunitas,
+				'fields'         => 'ids',
+				'post_status'    => 'publish',
+			) );
+
+			$post_ids_city = get_posts( array(
+				'post_type'      => 'komunitas',
+				'posts_per_page' => -1,
+				'fields'         => 'ids',
+				'post_status'    => 'publish',
+				'meta_query'     => array(
+					array(
+						'key'     => '_ss_comm_city',
+						'value'   => $cari_komunitas,
+						'compare' => 'LIKE',
+					),
+				),
+			) );
+
+			$combined_ids = array_unique( array_merge( $post_ids_standard, $post_ids_city ) );
+
+			if ( ! empty( $combined_ids ) ) {
+				$query->set( 'post__in', $combined_ids );
+			} else {
+				$query->set( 'post__in', array( 0 ) ); // Force empty results
+			}
+		}
+
+		if ( ! empty( $meta_query ) ) {
+			$query->set( 'meta_query', $meta_query );
+		}
+
+		$query->set( 'posts_per_page', 9 );
+	}
+}

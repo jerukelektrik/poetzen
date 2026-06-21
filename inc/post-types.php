@@ -16,11 +16,12 @@ function sukusastra_register_post_types(): void {
 	sukusastra_register_event_type();
 	sukusastra_register_penulis_type();
 	sukusastra_register_terbitan_type();
+	sukusastra_register_komunitas_type();
 
 	// Flush rewrite rules on CPT change to prevent 404
-	if ( ! get_transient( 'sukusastra_peristiwa_flushed' ) ) {
+	if ( ! get_transient( 'sukusastra_komunitas_flushed' ) ) {
 		flush_rewrite_rules( false );
-		set_transient( 'sukusastra_peristiwa_flushed', '1', DAY_IN_SECONDS );
+		set_transient( 'sukusastra_komunitas_flushed', '1', DAY_IN_SECONDS );
 	}
 }
 
@@ -125,3 +126,24 @@ function sukusastra_register_terbitan_type(): void {
 		)
 	);
 }
+
+function sukusastra_register_komunitas_type(): void {
+	register_post_type(
+		'komunitas',
+		array(
+			'labels'       => array(
+				'name'          => __( 'Komunitas', 'sukusastra' ),
+				'singular_name' => __( 'Komunitas', 'sukusastra' ),
+				'add_new_item'  => __( 'Tambah Komunitas', 'sukusastra' ),
+				'edit_item'     => __( 'Edit Komunitas', 'sukusastra' ),
+			),
+			'public'       => true,
+			'has_archive'  => true,
+			'menu_icon'    => 'dashicons-groups',
+			'rewrite'      => array( 'slug' => 'komunitas' ),
+			'show_in_rest' => true,
+			'supports'     => array( 'title', 'editor', 'excerpt', 'thumbnail', 'revisions' ),
+		)
+	);
+}
+
