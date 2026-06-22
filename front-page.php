@@ -1100,9 +1100,9 @@ document.addEventListener('DOMContentLoaded', function() {
 		</div>
 		<?php $news = sukusastra_latest_cpt( 'berita', 3 ); ?>
 		<?php if ( $news->have_posts() ) : ?>
-			<div class="ss-news-carousel flex gap-4 overflow-x-auto snap-x snap-mandatory no-scrollbar pb-2 md:grid md:gap-6 md:grid-cols-3 md:overflow-visible md:snap-none" data-drag-scroll>
+			<div class="ss-news-carousel ss-peristiwa-list flex gap-4 overflow-x-auto snap-x snap-mandatory no-scrollbar pb-2 md:grid md:gap-6 md:grid-cols-3 md:overflow-visible md:snap-none">
 				<?php while ( $news->have_posts() ) : $news->the_post(); ?>
-					<div class="ss-news-carousel-item w-[82vw] shrink-0 snap-start md:w-auto md:shrink">
+					<div class="ss-news-carousel-item ss-peristiwa-list-item w-[82vw] shrink-0 snap-start md:w-auto md:shrink">
 						<?php get_template_part( 'template-parts/cards/news-card' ); ?>
 					</div>
 				<?php endwhile; wp_reset_postdata(); ?>

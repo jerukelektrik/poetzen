@@ -96,9 +96,13 @@
     --color-amber-900: oklch(41.4% .112 45.904);
     --color-amber-950: oklch(27.9% .077 45.635);
     --color-yellow-500: oklch(79.5% .184 86.047);
+    --color-green-50: oklch(98.2% .018 155.826);
+    --color-green-200: oklch(92.5% .084 155.995);
     --color-green-400: oklch(79.2% .209 151.711);
     --color-green-600: oklch(62.7% .194 149.214);
     --color-green-700: oklch(52.7% .154 150.069);
+    --color-green-800: oklch(44.8% .119 151.328);
+    --color-green-950: oklch(26.6% .065 152.934);
     --color-emerald-500: oklch(69.6% .17 162.48);
     --color-emerald-600: oklch(59.6% .145 163.225);
     --color-blue-800: oklch(42.4% .199 265.638);
@@ -1409,6 +1413,72 @@
       scroll-snap-type: none;
       -webkit-user-select: none;
       user-select: none;
+    }
+
+    #peristiwa .ss-peristiwa-list {
+      box-shadow: none;
+      cursor: default;
+      touch-action: pan-y;
+      gap: 0 !important;
+      width: 100% !important;
+      padding-bottom: 0 !important;
+      display: grid !important;
+      overflow: visible !important;
+    }
+
+    #peristiwa .ss-peristiwa-list-item {
+      scroll-snap-align: none;
+      border-bottom: 1px solid #94a3b838;
+      flex: none !important;
+      width: 100% !important;
+    }
+
+    #peristiwa .ss-peristiwa-list-item > article {
+      grid-template-columns: minmax(0, 1fr) 5.75rem;
+      grid-template-areas: "title media"
+                           "meta media";
+      padding: 1rem 0;
+      gap: .35rem 1rem !important;
+      display: grid !important;
+    }
+
+    #peristiwa .ss-peristiwa-list-item article > a:first-child {
+      box-shadow: none;
+      border: 0;
+      border-radius: .625rem;
+      grid-area: media;
+      align-self: start;
+    }
+
+    #peristiwa .ss-peristiwa-list-item article > a:first-child img, #peristiwa .ss-peristiwa-list-item article > a:first-child .ss-post-card-placeholder {
+      border-radius: inherit;
+      aspect-ratio: 1 !important;
+      object-fit: cover !important;
+    }
+
+    #peristiwa .ss-peristiwa-list-item article > div:first-of-type {
+      text-transform: none;
+      grid-area: meta;
+      align-self: start;
+      gap: .25rem;
+      margin-top: 0;
+      font-size: .72rem;
+    }
+
+    #peristiwa .ss-peristiwa-list-item article > div:nth-of-type(2) {
+      grid-area: title;
+      align-self: start;
+      margin-top: 0;
+    }
+
+    #peristiwa .ss-peristiwa-list-item .ss-news-card-title {
+      font-family: var(--font-sans), sans-serif;
+      font-size: 1rem !important;
+      line-height: 1.32 !important;
+    }
+
+    #peristiwa .ss-peristiwa-list-item article > div:nth-of-type(2) > svg, #peristiwa .ss-peristiwa-list-item article > p {
+      display: none !important;
     }
 
     .ss-review-carousel-item .ss-review-card {
@@ -2729,6 +2799,10 @@
     max-height: 90vh;
   }
 
+  .max-h-\[400px\] {
+    max-height: 400px;
+  }
+
   .max-h-\[500px\] {
     max-height: 500px;
   }
@@ -3329,6 +3403,16 @@
     border-color: var(--color-amber-500);
   }
 
+  .border-green-200\/50 {
+    border-color: #b9f8cf80;
+  }
+
+  @supports (color: color-mix(in lab, red, red)) {
+    .border-green-200\/50 {
+      border-color: color-mix(in oklab, var(--color-green-200) 50%, transparent);
+    }
+  }
+
   .border-purple-200\/50 {
     border-color: #e9d5ff80;
   }
@@ -3594,6 +3678,16 @@
   @supports (color: color-mix(in lab, red, red)) {
     .bg-black\/60 {
       background-color: color-mix(in oklab, var(--color-black) 60%, transparent);
+    }
+  }
+
+  .bg-green-50\/60 {
+    background-color: #f0fdf499;
+  }
+
+  @supports (color: color-mix(in lab, red, red)) {
+    .bg-green-50\/60 {
+      background-color: color-mix(in oklab, var(--color-green-50) 60%, transparent);
     }
   }
 
@@ -4342,6 +4436,10 @@
     color: var(--color-green-600);
   }
 
+  .text-green-700 {
+    color: var(--color-green-700);
+  }
+
   .text-purple-700 {
     color: var(--color-purple-700);
   }
@@ -4645,6 +4743,12 @@
     transition-duration: var(--tw-duration, var(--default-transition-duration));
   }
 
+  .transition-shadow {
+    transition-property: box-shadow;
+    transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
+    transition-duration: var(--tw-duration, var(--default-transition-duration));
+  }
+
   .transition-transform {
     transition-property: transform, translate, scale, rotate;
     transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
@@ -4736,6 +4840,13 @@
     .hover\:-translate-y-0\.5:hover {
       --tw-translate-y: calc(var(--spacing) * -.5);
       translate: var(--tw-translate-x) var(--tw-translate-y);
+    }
+
+    .hover\:scale-102:hover {
+      --tw-scale-x: 102%;
+      --tw-scale-y: 102%;
+      --tw-scale-z: 102%;
+      scale: var(--tw-scale-x) var(--tw-scale-y);
     }
 
     .hover\:scale-105:hover {
@@ -5081,6 +5192,10 @@
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
+    .sm\:grid-cols-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
     .sm\:flex-row {
       flex-direction: row;
     }
@@ -5407,6 +5522,16 @@
     }
   }
 
+  .dark\:border-green-800\/40:where(.dark, .dark *) {
+    border-color: #01663066;
+  }
+
+  @supports (color: color-mix(in lab, red, red)) {
+    .dark\:border-green-800\/40:where(.dark, .dark *) {
+      border-color: color-mix(in oklab, var(--color-green-800) 40%, transparent);
+    }
+  }
+
   .dark\:border-purple-900\/30:where(.dark, .dark *) {
     border-color: #59168b4d;
   }
@@ -5624,6 +5749,16 @@
   @supports (color: color-mix(in lab, red, red)) {
     .dark\:bg-black\/40:where(.dark, .dark *) {
       background-color: color-mix(in oklab, var(--color-black) 40%, transparent);
+    }
+  }
+
+  .dark\:bg-green-950\/20:where(.dark, .dark *) {
+    background-color: #032e1533;
+  }
+
+  @supports (color: color-mix(in lab, red, red)) {
+    .dark\:bg-green-950\/20:where(.dark, .dark *) {
+      background-color: color-mix(in oklab, var(--color-green-950) 20%, transparent);
     }
   }
 

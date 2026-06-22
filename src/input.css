@@ -549,6 +549,75 @@
       user-select: none;
     }
 
+    #peristiwa .ss-peristiwa-list {
+      box-shadow: none;
+      cursor: default;
+      display: grid !important;
+      gap: 0 !important;
+      overflow: visible !important;
+      padding-bottom: 0 !important;
+      touch-action: pan-y;
+      width: 100% !important;
+    }
+
+    #peristiwa .ss-peristiwa-list-item {
+      border-bottom: 1px solid rgba(148, 163, 184, 0.22);
+      flex: none !important;
+      scroll-snap-align: none;
+      width: 100% !important;
+    }
+
+    #peristiwa .ss-peristiwa-list-item > article {
+      display: grid !important;
+      gap: 0.35rem 1rem !important;
+      grid-template-areas:
+        "title media"
+        "meta media";
+      grid-template-columns: minmax(0, 1fr) 5.75rem;
+      padding: 1rem 0;
+    }
+
+    #peristiwa .ss-peristiwa-list-item article > a:first-child {
+      align-self: start;
+      border: 0;
+      border-radius: 0.625rem;
+      box-shadow: none;
+      grid-area: media;
+    }
+
+    #peristiwa .ss-peristiwa-list-item article > a:first-child img,
+    #peristiwa .ss-peristiwa-list-item article > a:first-child .ss-post-card-placeholder {
+      aspect-ratio: 1 / 1 !important;
+      border-radius: inherit;
+      object-fit: cover !important;
+    }
+
+    #peristiwa .ss-peristiwa-list-item article > div:nth-of-type(1) {
+      align-self: start;
+      font-size: 0.72rem;
+      gap: 0.25rem;
+      grid-area: meta;
+      margin-top: 0;
+      text-transform: none;
+    }
+
+    #peristiwa .ss-peristiwa-list-item article > div:nth-of-type(2) {
+      align-self: start;
+      grid-area: title;
+      margin-top: 0;
+    }
+
+    #peristiwa .ss-peristiwa-list-item .ss-news-card-title {
+      font-family: var(--font-sans), sans-serif;
+      font-size: 1rem !important;
+      line-height: 1.32 !important;
+    }
+
+    #peristiwa .ss-peristiwa-list-item article > div:nth-of-type(2) > svg,
+    #peristiwa .ss-peristiwa-list-item article > p {
+      display: none !important;
+    }
+
     .ss-review-carousel-item .ss-review-card {
       aspect-ratio: 3 / 4;
       background: #090d16;
