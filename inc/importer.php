@@ -186,3 +186,188 @@ function sukusastra_render_import_penulis_page(): void {
 	</div>
 	<?php
 }
+
+add_action( 'admin_menu', 'sukusastra_komunitas_importer_menu' );
+function sukusastra_komunitas_importer_menu(): void {
+	add_submenu_page(
+		'edit.php?post_type=komunitas',
+		__( 'Import Komunitas via CSV', 'sukusastra' ),
+		__( 'Import CSV', 'sukusastra' ),
+		'manage_options',
+		'sukusastra_import_komunitas',
+		'sukusastra_render_import_komunitas_page'
+	);
+}
+
+function sukusastra_render_import_komunitas_page(): void {
+	if ( ! current_user_can( 'manage_options' ) ) {
+		return;
+	}
+
+	$import_success = false;
+	$imported_count = 0;
+	$skipped_count  = 0;
+	$error_msg      = '';
+
+	if ( isset( $_POST['sukusastra_comm_import_nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['sukusastra_comm_import_nonce'] ) ), 'sukusastra_do_comm_import' ) ) {
+		if ( ! empty( $_FILES['komunitas_csv']['tmp_name'] ) ) {
+			$file = sanitize_text_field( wp_unslash( $_FILES['komunitas_csv']['tmp_name'] ) );
+			
+			if ( ( $handle = fopen( $file, 'r' ) ) !== false ) {
+				// Read headers
+				$headers = fgetcsv( $handle, 1000, ',' );
+				
+				// Map header names to indices
+				$header_map = array();
+				if ( $headers ) {
+					foreach ( $headers as $index => $label ) {
+						// Clean BOM and spaces
+						$clean_label = trim( preg_replace( '/[\x00-\x1F\x80-\xFF]/', '', $label ) );
+						$header_map[ $clean_label ] = $index;
+					}
+				}
+
+				while ( ( $data = fgetcsv( $handle, 1000, ',' ) ) !== false ) {
+					// Extract Name
+					$name = '';
+					if ( isset( $header_map['Nama Komunitas'] ) && isset( $data[ $header_map['Nama Komunitas'] ] ) ) {
+						$name = trim( $data[ $header_map['Nama Komunitas'] ] );
+					} elseif ( isset( $data[0] ) ) {
+						$name = trim( $data[0] );
+					}
+
+					if ( empty( $name ) ) {
+						continue;
+					}
+
+					// Prevent duplicate import by checking post title
+					$existing_query = new WP_Query( array(
+						'post_type'      => 'komunitas',
+						'title'          => $name,
+						'posts_per_page' => 1,
+						'post_status'    => 'any',
+					) );
+
+					if ( $existing_query->have_posts() ) {
+						$skipped_count++;
+						continue;
+					}
+
+					// Fetch extra fields from CSV
+					$tentang = '';
+					if ( isset( $header_map['Tentang Komunitas'] ) && isset( $data[ $header_map['Tentang Komunitas'] ] ) ) {
+						$tentang = wp_kses_post( trim( $data[ $header_map['Tentang Komunitas'] ] ) );
+					}
+
+					// Insert post of CPT komunitas
+					$post_id = wp_insert_post( array(
+						'post_title'   => $name,
+						'post_type'    => 'komunitas',
+						'post_status'  => 'publish',
+						'post_content' => $tentang,
+					) );
+
+					if ( ! is_wp_error( $post_id ) && $post_id > 0 ) {
+						// Store metadata
+						$meta_fields = array(
+							'_ss_comm_name'         => 'Nama Komunitas',
+							'_ss_comm_desc'         => 'Deskripsi Singkat',
+							'_ss_comm_year'         => 'Tahun Berdiri',
+							'_ss_comm_address'      => 'Alamat',
+							'_ss_comm_city'         => 'Kota',
+							'_ss_comm_province'     => 'Provinsi',
+							'_ss_comm_website'      => 'Website',
+							'_ss_comm_instagram'    => 'Instagram',
+							'_ss_comm_tiktok'       => 'TikTok',
+							'_ss_comm_youtube'      => 'YouTube',
+							'_ss_comm_contact'      => 'Kontak',
+							'_ss_comm_activities'   => 'Kegiatan',
+							'_ss_comm_publications' => 'Publikasi Karya',
+						);
+
+						foreach ( $meta_fields as $meta_key => $csv_header ) {
+							if ( isset( $header_map[ $csv_header ] ) && isset( $data[ $header_map[ $csv_header ] ] ) ) {
+								$val = trim( $data[ $header_map[ $csv_header ] ] );
+								if ( in_array( $meta_key, array( '_ss_comm_website', '_ss_comm_instagram', '_ss_comm_tiktok', '_ss_comm_youtube' ), true ) ) {
+									// Support either clean URL or raw handle
+									if ( ! empty( $val ) && ! str_starts_with( $val, 'http' ) ) {
+										if ( '_ss_comm_instagram' === $meta_key ) {
+											$val = 'https://instagram.com/' . trim( $val, '@' );
+										} elseif ( '_ss_comm_tiktok' === $meta_key ) {
+											$val = 'https://tiktok.com/@' . trim( $val, '@' );
+										}
+									}
+									update_post_meta( $post_id, $meta_key, esc_url_raw( $val ) );
+								} elseif ( in_array( $meta_key, array( '_ss_comm_activities', '_ss_comm_publications' ), true ) ) {
+									update_post_meta( $post_id, $meta_key, sanitize_textarea_field( $val ) );
+								} else {
+									update_post_meta( $post_id, $meta_key, sanitize_text_field( $val ) );
+								}
+							}
+						}
+						
+						// Auto-set the _ss_comm_name using community name if not explicitly filled
+						$saved_name = get_post_meta( $post_id, '_ss_comm_name', true );
+						if ( empty( $saved_name ) ) {
+							update_post_meta( $post_id, '_ss_comm_name', $name );
+						}
+
+						$imported_count++;
+					}
+				}
+				fclose( $handle );
+				$import_success = true;
+			} else {
+				$error_msg = __( 'Gagal membuka file CSV.', 'sukusastra' );
+			}
+		} else {
+			$error_msg = __( 'Silakan unggah file CSV terlebih dahulu.', 'sukusastra' );
+		}
+	}
+
+	?>
+	<div class="wrap">
+		<h1><?php esc_html_e( 'Import Komunitas via CSV', 'sukusastra' ); ?></h1>
+		<p class="description">
+			<?php esc_html_e( 'Gunakan halaman ini untuk mendaftarkan data Komunitas secara masal langsung ke dalam Custom Post Type Komunitas melalui file spreadsheet (.csv).', 'sukusastra' ); ?>
+		</p>
+
+		<?php if ( $import_success ) : ?>
+			<div class="notice notice-success is-dismissible">
+				<p>
+					<strong><?php echo esc_html( sprintf( __( 'Impor selesai! Berhasil menambahkan %1$d komunitas baru, %2$d dilewati karena sudah ada.', 'sukusastra' ), $imported_count, $skipped_count ) ); ?></strong>
+				</p>
+			</div>
+		<?php endif; ?>
+
+		<?php if ( ! empty( $error_msg ) ) : ?>
+			<div class="notice notice-error is-dismissible">
+				<p><strong><?php echo esc_html( $error_msg ); ?></strong></p>
+			</div>
+		<?php endif; ?>
+
+		<div class="card" style="max-width: 600px; margin-top: 20px; padding: 20px;">
+			<h2><?php esc_html_e( 'Unggah File CSV Komunitas', 'sukusastra' ); ?></h2>
+			<form method="post" enctype="multipart/form-data">
+				<?php wp_nonce_field( 'sukusastra_do_comm_import', 'sukusastra_comm_import_nonce' ); ?>
+				<table class="form-table">
+					<tr>
+						<th scope="row"><label for="komunitas_csv"><?php esc_html_e( 'Pilih File CSV', 'sukusastra' ); ?></label></th>
+						<td>
+							<input type="file" name="komunitas_csv" id="komunitas_csv" accept=".csv" required>
+							<p class="description" style="margin-top: 10px; line-height: 1.5;">
+								<?php esc_html_e( 'File harus berupa format .csv dengan header kolom berikut:', 'sukusastra' ); ?><br>
+								<code style="display: block; background: #f0f0f0; padding: 6px; margin-top: 4px; border-radius: 4px; border: 1px solid #ddd; font-family: monospace; font-size: 11px;">
+									Nama Komunitas, Tentang Komunitas, Deskripsi Singkat, Tahun Berdiri, Alamat, Kota, Provinsi, Website, Instagram, TikTok, YouTube, Kontak, Kegiatan, Publikasi Karya
+								</code>
+							</p>
+						</td>
+					</tr>
+				</table>
+				<?php submit_button( __( 'Mulai Impor Komunitas', 'sukusastra' ), 'primary' ); ?>
+			</form>
+		</div>
+	</div>
+	<?php
+}
+
