@@ -69,28 +69,15 @@ function sukusastra_render_import_penulis_page(): void {
 						continue;
 					}
 
-					// Prevent duplicate import by checking slug
-					$existing_query = new WP_Query( array(
-						'post_type'      => 'penulis',
-						'name'           => $slug,
-						'posts_per_page' => 1,
-						'post_status'    => 'any',
+					// Prevent duplicate import by checking slug or title via direct DB query
+					global $wpdb;
+					$post_exists = $wpdb->get_var( $wpdb->prepare(
+						"SELECT ID FROM $wpdb->posts WHERE (post_name = %s OR post_title = %s) AND post_type = 'penulis' AND post_status NOT IN ('trash', 'auto-draft') LIMIT 1",
+						$slug,
+						$name
 					) );
 
-					if ( $existing_query->have_posts() ) {
-						$skipped_count++;
-						continue;
-					}
-
-					// If slug check passes, verify by title just in case
-					$existing_title_query = new WP_Query( array(
-						'post_type'      => 'penulis',
-						'title'          => $name,
-						'posts_per_page' => 1,
-						'post_status'    => 'any',
-					) );
-
-					if ( $existing_title_query->have_posts() ) {
+					if ( $post_exists ) {
 						$skipped_count++;
 						continue;
 					}
@@ -240,15 +227,14 @@ function sukusastra_render_import_komunitas_page(): void {
 						continue;
 					}
 
-					// Prevent duplicate import by checking post title
-					$existing_query = new WP_Query( array(
-						'post_type'      => 'komunitas',
-						'title'          => $name,
-						'posts_per_page' => 1,
-						'post_status'    => 'any',
+					// Prevent duplicate import by checking post title via direct DB query
+					global $wpdb;
+					$post_exists = $wpdb->get_var( $wpdb->prepare(
+						"SELECT ID FROM $wpdb->posts WHERE post_title = %s AND post_type = 'komunitas' AND post_status NOT IN ('trash', 'auto-draft') LIMIT 1",
+						$name
 					) );
 
-					if ( $existing_query->have_posts() ) {
+					if ( $post_exists ) {
 						$skipped_count++;
 						continue;
 					}
@@ -404,15 +390,14 @@ function sukusastra_api_import_komunitas_callback( WP_REST_Request $request ) {
 		), 400 );
 	}
 
-	// Prevent duplicate check by title
-	$existing = new WP_Query( array(
-		'post_type'      => 'komunitas',
-		'title'          => $name,
-		'posts_per_page' => 1,
-		'post_status'    => 'any',
+	// Prevent duplicate check by title via direct DB query
+	global $wpdb;
+	$post_exists = $wpdb->get_var( $wpdb->prepare(
+		"SELECT ID FROM $wpdb->posts WHERE post_title = %s AND post_type = 'komunitas' AND post_status NOT IN ('trash', 'auto-draft') LIMIT 1",
+		$name
 	) );
 
-	if ( $existing->have_posts() ) {
+	if ( $post_exists ) {
 		return new WP_REST_Response( array(
 			'success' => false,
 			'message' => 'Duplicate: Community already exists.',
@@ -519,15 +504,14 @@ function sukusastra_api_import_dongeng_callback( WP_REST_Request $request ) {
 		), 400 );
 	}
 
-	// Prevent duplicate check by title
-	$existing = new WP_Query( array(
-		'post_type'      => 'post',
-		'title'          => $name,
-		'posts_per_page' => 1,
-		'post_status'    => 'any',
+	// Prevent duplicate check by title via direct DB query
+	global $wpdb;
+	$post_exists = $wpdb->get_var( $wpdb->prepare(
+		"SELECT ID FROM $wpdb->posts WHERE post_title = %s AND post_type = 'post' AND post_status NOT IN ('trash', 'auto-draft') LIMIT 1",
+		$name
 	) );
 
-	if ( $existing->have_posts() ) {
+	if ( $post_exists ) {
 		return new WP_REST_Response( array(
 			'success' => false,
 			'message' => 'Duplicate: Article already exists.',
