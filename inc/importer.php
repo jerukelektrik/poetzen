@@ -486,4 +486,135 @@ function sukusastra_api_import_komunitas_callback( WP_REST_Request $request ) {
 	), 200 );
 }
 
+add_action( 'rest_api_init', 'sukusastra_register_dongeng_api' );
+function sukusastra_register_dongeng_api(): void {
+	register_rest_route( 'sukusastra/v1', '/import-dongeng', array(
+		'methods'             => 'POST',
+		'callback'            => 'sukusastra_api_import_dongeng_callback',
+		'permission_callback' => '__return_true',
+	) );
+}
+
+function sukusastra_api_import_dongeng_callback( WP_REST_Request $request ) {
+	$token = $request->get_header( 'X-SukuSastra-Token' );
+	$valid_token = 'sukusastra_sheets_token_2026';
+
+	if ( empty( $token ) || $token !== $valid_token ) {
+		return new WP_REST_Response( array(
+			'success' => false,
+			'message' => 'Unauthorized: Invalid API Token.',
+		), 401 );
+	}
+
+	$params = $request->get_json_params();
+	if ( empty( $params ) ) {
+		$params = $request->get_body_params();
+	}
+
+	$name = isset( $params['Judul Artikel'] ) ? trim( $params['Judul Artikel'] ) : '';
+	if ( empty( $name ) ) {
+		return new WP_REST_Response( array(
+			'success' => false,
+			'message' => 'Missing parameter: Judul Artikel is required.',
+		), 400 );
+	}
+
+	// Prevent duplicate check by title
+	$existing = new WP_Query( array(
+		'post_type'      => 'post',
+		'title'          => $name,
+		'posts_per_page' => 1,
+		'post_status'    => 'any',
+	) );
+
+	if ( $existing->have_posts() ) {
+		return new WP_REST_Response( array(
+			'success' => false,
+			'message' => 'Duplicate: Article already exists.',
+		), 200 );
+	}
+
+	// Fetch or create "Dongeng" category
+	$cat_id = get_cat_ID( 'Dongeng' );
+	if ( 0 === $cat_id ) {
+		$new_cat = wp_insert_term( 'Dongeng', 'category' );
+		if ( ! is_wp_error( $new_cat ) ) {
+			$cat_id = $new_cat['term_id'];
+		}
+	}
+
+	// Fetch or create CPT Penulis profile
+	$author_name = isset( $params['Penulis Asli'] ) ? trim( $params['Penulis Asli'] ) : '';
+	$author_id = 0;
+	if ( ! empty( $author_name ) ) {
+		$author_query = new WP_Query( array(
+			'post_type'      => 'penulis',
+			'title'          => $author_name,
+			'posts_per_page' => 1,
+			'post_status'    => 'any',
+		) );
+		if ( $author_query->have_posts() ) {
+			$author_query->the_post();
+			$author_id = get_the_ID();
+			wp_reset_postdata();
+		} else {
+			// Auto create CPT Penulis profile
+			$author_post_id = wp_insert_post( array(
+				'post_title'  => $author_name,
+				'post_type'   => 'penulis',
+				'post_status' => 'publish',
+			) );
+			if ( ! is_wp_error( $author_post_id ) ) {
+				$author_id = $author_post_id;
+				update_post_meta( $author_id, '_ss_penulis_bio_summary', sprintf( esc_html__( 'Profil penulis %s.', 'sukusastra' ), $author_name ) );
+			}
+		}
+	}
+
+	$post_data = array(
+		'post_title'   => $name,
+		'post_content' => isset( $params['Body Artikel'] ) ? wp_kses_post( trim( $params['Body Artikel'] ) ) : '',
+		'post_type'    => 'post',
+		'post_status'  => 'draft',
+	);
+
+	if ( $cat_id > 0 ) {
+		$post_data['post_category'] = array( $cat_id );
+	}
+
+	$post_id = wp_insert_post( $post_data );
+
+	if ( ! is_wp_error( $post_id ) && $post_id > 0 ) {
+		// Auto-set Ruang Baca/Artikel SEO and Show Home
+		update_post_meta( $post_id, '_ss_is_seo_article', '1' );
+		update_post_meta( $post_id, '_ss_show_home', '1' );
+
+		// Map metadata
+		if ( isset( $params['SEO Title'] ) ) {
+			update_post_meta( $post_id, '_ss_seo_title', sanitize_text_field( $params['SEO Title'] ) );
+		}
+		if ( isset( $params['Meta Description'] ) ) {
+			update_post_meta( $post_id, '_ss_meta_desc', sanitize_text_field( $params['Meta Description'] ) );
+		}
+		if ( isset( $params['Pesan Moral'] ) ) {
+			update_post_meta( $post_id, '_ss_pesan_moral', sanitize_textarea_field( $params['Pesan Moral'] ) );
+		}
+		if ( $author_id > 0 ) {
+			update_post_meta( $post_id, '_ss_original_author_id', (string) $author_id );
+		}
+
+		return new WP_REST_Response( array(
+			'success' => true,
+			'message' => 'Dongeng article drafted successfully.',
+			'post_id' => $post_id,
+		), 200 );
+	} else {
+		return new WP_REST_Response( array(
+			'success' => false,
+			'message' => 'Failed to create article in database.',
+		), 500 );
+	}
+}
+
+
 
