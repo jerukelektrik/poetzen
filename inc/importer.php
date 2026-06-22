@@ -371,3 +371,119 @@ function sukusastra_render_import_komunitas_page(): void {
 	<?php
 }
 
+add_action( 'rest_api_init', 'sukusastra_register_komunitas_api' );
+function sukusastra_register_komunitas_api(): void {
+	register_rest_route( 'sukusastra/v1', '/import-komunitas', array(
+		'methods'             => 'POST',
+		'callback'            => 'sukusastra_api_import_komunitas_callback',
+		'permission_callback' => '__return_true',
+	) );
+}
+
+function sukusastra_api_import_komunitas_callback( WP_REST_Request $request ) {
+	$token = $request->get_header( 'X-SukuSastra-Token' );
+	$valid_token = 'sukusastra_sheets_token_2026';
+
+	if ( empty( $token ) || $token !== $valid_token ) {
+		return new WP_REST_Response( array(
+			'success' => false,
+			'message' => 'Unauthorized: Invalid API Token.',
+		), 401 );
+	}
+
+	$params = $request->get_json_params();
+	if ( empty( $params ) ) {
+		$params = $request->get_body_params();
+	}
+
+	$name = isset( $params['Nama Komunitas'] ) ? trim( $params['Nama Komunitas'] ) : '';
+	if ( empty( $name ) ) {
+		return new WP_REST_Response( array(
+			'success' => false,
+			'message' => 'Missing parameter: Nama Komunitas is required.',
+		), 400 );
+	}
+
+	// Prevent duplicate check by title
+	$existing = new WP_Query( array(
+		'post_type'      => 'komunitas',
+		'title'          => $name,
+		'posts_per_page' => 1,
+		'post_status'    => 'any',
+	) );
+
+	if ( $existing->have_posts() ) {
+		return new WP_REST_Response( array(
+			'success' => false,
+			'message' => 'Duplicate: Community already exists.',
+		), 200 );
+	}
+
+	$tentang = isset( $params['Tentang Komunitas'] ) ? wp_kses_post( trim( $params['Tentang Komunitas'] ) ) : '';
+
+	// Insert post as draft
+	$post_id = wp_insert_post( array(
+		'post_title'   => $name,
+		'post_type'    => 'komunitas',
+		'post_status'  => 'draft',
+		'post_content' => $tentang,
+	) );
+
+	if ( is_wp_error( $post_id ) || $post_id <= 0 ) {
+		return new WP_REST_Response( array(
+			'success' => false,
+			'message' => 'Failed to create post in database.',
+		), 500 );
+	}
+
+	// Map metadata
+	$meta_fields = array(
+		'_ss_comm_name'         => 'Nama Komunitas',
+		'_ss_comm_desc'         => 'Deskripsi Singkat',
+		'_ss_comm_year'         => 'Tahun Berdiri',
+		'_ss_comm_address'      => 'Alamat',
+		'_ss_comm_city'         => 'Kota',
+		'_ss_comm_province'     => 'Provinsi',
+		'_ss_comm_website'      => 'Website',
+		'_ss_comm_instagram'    => 'Instagram',
+		'_ss_comm_tiktok'       => 'TikTok',
+		'_ss_comm_youtube'      => 'YouTube',
+		'_ss_comm_contact'      => 'Kontak',
+		'_ss_comm_activities'   => 'Kegiatan',
+		'_ss_comm_publications' => 'Publikasi Karya',
+	);
+
+	foreach ( $meta_fields as $meta_key => $csv_header ) {
+		if ( isset( $params[ $csv_header ] ) ) {
+			$val = trim( $params[ $csv_header ] );
+			if ( in_array( $meta_key, array( '_ss_comm_website', '_ss_comm_instagram', '_ss_comm_tiktok', '_ss_comm_youtube' ), true ) ) {
+				if ( ! empty( $val ) && ! str_starts_with( $val, 'http' ) ) {
+					if ( '_ss_comm_instagram' === $meta_key ) {
+						$val = 'https://instagram.com/' . trim( $val, '@' );
+					} elseif ( '_ss_comm_tiktok' === $meta_key ) {
+						$val = 'https://tiktok.com/@' . trim( $val, '@' );
+					}
+				}
+				update_post_meta( $post_id, $meta_key, esc_url_raw( $val ) );
+			} elseif ( in_array( $meta_key, array( '_ss_comm_activities', '_ss_comm_publications' ), true ) ) {
+				update_post_meta( $post_id, $meta_key, sanitize_textarea_field( $val ) );
+			} else {
+				update_post_meta( $post_id, $meta_key, sanitize_text_field( $val ) );
+			}
+		}
+	}
+
+	// Auto-set Name metadata if blank
+	$saved_name = get_post_meta( $post_id, '_ss_comm_name', true );
+	if ( empty( $saved_name ) ) {
+		update_post_meta( $post_id, '_ss_comm_name', $name );
+	}
+
+	return new WP_REST_Response( array(
+		'success' => true,
+		'message' => 'Community drafted successfully.',
+		'post_id' => $post_id,
+	), 200 );
+}
+
+
