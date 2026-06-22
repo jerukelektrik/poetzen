@@ -1137,5 +1137,76 @@ document.addEventListener('DOMContentLoaded', function() {
 	</div>
 </section>
 
+<!-- Komunitas Section -->
+<section id="komunitas" class="ss-section">
+	<div class="ss-container grid gap-6">
+		<div class="flex items-center justify-between border-b border-slate-100 pb-2 dark:border-zinc-800/80">
+			<h2 class="ss-section-title ss-feed-section-title"><?php esc_html_e( 'Jejaring Komunitas', 'sukusastra' ); ?></h2>
+			<a class="ss-eyebrow" href="<?php echo esc_url( get_post_type_archive_link( 'komunitas' ) ); ?>">
+				<?php esc_html_e( 'Semua Komunitas', 'sukusastra' ); ?> &rarr;
+			</a>
+		</div>
+		<?php $komunitas = sukusastra_latest_cpt( 'komunitas', 3 ); ?>
+		<?php if ( $komunitas->have_posts() ) : ?>
+			<div class="ss-komunitas-carousel flex gap-4 overflow-x-auto snap-x snap-mandatory no-scrollbar pb-2 md:grid md:gap-6 md:grid-cols-3 md:overflow-visible md:snap-none" data-drag-scroll>
+				<?php while ( $komunitas->have_posts() ) : $komunitas->the_post(); ?>
+					<?php
+					$post_id    = get_the_ID();
+					$comm_name  = sukusastra_get_meta( $post_id, '_ss_comm_name', get_the_title() );
+					$comm_desc  = sukusastra_get_meta( $post_id, '_ss_comm_desc', '' );
+					$comm_year  = sukusastra_get_meta( $post_id, '_ss_comm_year', '' );
+					$comm_city  = sukusastra_get_meta( $post_id, '_ss_comm_city', '' );
+					$comm_prov  = sukusastra_get_meta( $post_id, '_ss_comm_province', '' );
+					?>
+					<div class="ss-komunitas-carousel-item w-[82vw] shrink-0 snap-start md:w-auto md:shrink">
+						<article <?php post_class( 'group flex flex-col h-full min-w-0 bg-white dark:bg-[#262B4E]/40 border border-slate-200/60 dark:border-zinc-800/80 rounded-3xl p-5 shadow-sm hover:shadow-md transition-shadow duration-300' ); ?>>
+							<!-- Image placeholder / featured image -->
+							<a class="block no-underline overflow-hidden rounded-2xl border border-slate-200/50 dark:border-zinc-800/80 shadow-sm" href="<?php the_permalink(); ?>">
+								<?php if ( has_post_thumbnail() ) : ?>
+									<?php the_post_thumbnail( 'sukusastra-card', array( 'class' => 'aspect-[3/2] w-full object-cover group-hover:scale-105 transition-transform duration-500' ) ); ?>
+								<?php else : ?>
+									<div class="ss-post-card-placeholder flex aspect-[3/2] w-full items-center justify-center bg-slate-50 dark:bg-zinc-900/40 p-6 group-hover:scale-105 transition-transform duration-500">
+										<svg class="h-12 w-12 text-slate-350 dark:text-zinc-700 opacity-60" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" /></svg>
+									</div>
+								<?php endif; ?>
+							</a>
+
+							<!-- Content info -->
+							<div class="mt-4 flex flex-col flex-grow">
+								<div class="flex items-center justify-between text-[10px] font-black uppercase tracking-wider text-red-700 dark:text-red-400">
+									<span><?php echo esc_html( $comm_city ); ?><?php echo $comm_prov ? ', ' . esc_html( $comm_prov ) : ''; ?></span>
+									<?php if ( $comm_year ) : ?>
+										<span class="text-slate-400 dark:text-zinc-550"><?php printf( esc_html__( 'Berdiri %s', 'sukusastra' ), esc_html( $comm_year ) ); ?></span>
+									<?php endif; ?>
+								</div>
+
+								<h3 class="text-lg font-black leading-snug text-slate-900 dark:text-zinc-50 mt-1.5 group-hover:text-red-700 dark:group-hover:text-red-400 transition-colors">
+									<a class="no-underline hover:text-red-700 dark:hover:text-red-400 transition-colors" href="<?php the_permalink(); ?>">
+										<?php echo esc_html( $comm_name ); ?>
+									</a>
+								</h3>
+
+								<?php if ( $comm_desc ) : ?>
+									<p class="mt-2 text-sm leading-relaxed text-slate-655 dark:text-zinc-400 line-clamp-2">
+										<?php echo esc_html( $comm_desc ); ?>
+									</p>
+								<?php endif; ?>
+
+								<div class="mt-auto pt-4 flex items-center justify-between border-t border-slate-100 dark:border-zinc-800/80">
+									<a class="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-zinc-300 hover:text-red-700 dark:hover:text-red-400 no-underline inline-flex items-center gap-1" href="<?php the_permalink(); ?>">
+										<?php esc_html_e( 'Lihat Profil', 'sukusastra' ); ?>
+										<svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+									</a>
+								</div>
+							</div>
+						</article>
+					</div>
+				<?php endwhile; wp_reset_postdata(); ?>
+			</div>
+		<?php else : ?>
+			<p class="text-sm text-slate-500 dark:text-zinc-400 py-6 text-center w-full"><?php esc_html_e( 'Belum ada komunitas terbaru.', 'sukusastra' ); ?></p>
+		<?php endif; ?>
+	</div>
+</section>
 
 <?php get_footer(); ?>
