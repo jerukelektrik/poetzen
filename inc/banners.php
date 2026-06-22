@@ -438,6 +438,14 @@ function poetzen_render_popup_banners(): void {
 			var popup = document.getElementById('poetzen-popup-banner');
 			if (!popup) return;
 
+			var popupId = popup.getAttribute('data-popup-id') || 'default';
+			var sessionKey = 'poetzen_popup_shown_' + popupId;
+
+			// Skip if already shown in this session
+			if (sessionStorage.getItem(sessionKey)) {
+				return;
+			}
+
 			var hasTriggered = false;
 			var isSlider = <?php echo $has_multiple ? 'true' : 'false'; ?>;
 			var autoPlayTimer;
@@ -526,6 +534,13 @@ function poetzen_render_popup_banners(): void {
 				hasTriggered = true;
 
 				window.removeEventListener('scroll', handleScroll);
+
+				// Mark as shown in this session
+				try {
+					sessionStorage.setItem(sessionKey, '1');
+				} catch (e) {
+					// Fallback for private/incognito browsing
+				}
 
 				popup.classList.remove('hidden');
 				setTimeout(function() {
