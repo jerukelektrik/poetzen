@@ -1571,6 +1571,22 @@
     height: 100% !important;
   }
 
+  .poetzen-catalog-banner-frame {
+    aspect-ratio: 8;
+  }
+
+  @media (max-width: 47.999rem) {
+    .poetzen-catalog-banner-frame {
+      aspect-ratio: 4;
+    }
+
+    .poetzen-catalog-banner-frame img {
+      object-fit: cover;
+      object-position: center;
+      height: 100% !important;
+    }
+  }
+
   .ss-terbitan-carousel {
     -webkit-overflow-scrolling: touch;
     contain: paint;

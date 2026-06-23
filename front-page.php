@@ -816,7 +816,7 @@ if ( ! function_exists( 'sukusastra_home_feed_panel' ) ) {
 					$banner     = $catalog_banners[0];
 					$target_url = ! empty( $banner['url'] ) ? esc_url( $banner['url'] ) : '';
 					?>
-					<div class="poetzen-catalog-banner w-full mb-6">
+					<div class="poetzen-catalog-banner poetzen-catalog-banner-frame w-full mb-6">
 						<?php if ( $target_url ) : ?>
 							<a href="<?php echo esc_url( $target_url ); ?>" target="_blank" rel="noopener" class="block w-full overflow-hidden rounded-2xl border border-slate-200/50 dark:border-zinc-800/80 shadow-sm transition hover:opacity-95 duration-200">
 						<?php else : ?>
@@ -830,7 +830,7 @@ if ( ! function_exists( 'sukusastra_home_feed_panel' ) ) {
 						<?php endif; ?>
 					</div>
 				<?php else : ?>
-					<div class="poetzen-catalog-slider relative w-full overflow-hidden rounded-2xl border border-slate-200/50 dark:border-zinc-800/80 shadow-sm mb-6" style="aspect-ratio: 1200/150;" id="poetzen-catalog-slider">
+					<div class="poetzen-catalog-slider poetzen-catalog-banner-frame relative w-full overflow-hidden rounded-2xl border border-slate-200/50 dark:border-zinc-800/80 shadow-sm mb-6" id="poetzen-catalog-slider">
 						<div class="poetzen-slider-track flex transition-transform duration-500 ease-in-out h-full w-full">
 							<?php foreach ( $catalog_banners as $banner ) : 
 								$target_url = ! empty( $banner['url'] ) ? esc_url( $banner['url'] ) : '';
