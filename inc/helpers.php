@@ -46,7 +46,7 @@ function sukusastra_get_menu_icon( string $title ): string {
 	
 	// Peristiwa / Berita / News
 	if ( 'peristiwa' === $title || 'berita' === $title || 'news' === $title ) {
-		return '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M10.34 15.84c-.688-.06-1.386-.09-2.09-.09H7.5a4.5 4.5 0 1 1 0-9h.75c.704 0 1.402-.03 2.09-.09m0 9.18c.253.962.584 1.892.985 2.783.247.55.06 1.21-.463 1.511l-.357.205a.75.75 0 0 1-1.006-.322c-.387-.77-.693-1.577-.913-2.407a11.514 11.514 0 0 1-.806-1.77zm0-9.18c.253-.962.584-1.892.985-2.783a1.125 1.125 0 0 1 1.62-.48l.358.205a.75.75 0 0 1 .154 1.107l-.361.361c-.72.72-1.332 1.547-1.808 2.457a11.954 11.954 0 0 1-.948-1.87zM10.34 9.74c1.537-.089 3.09-.13 4.66-.13H15.5a2.25 2.25 0 1 1 0 4.5h-.5c-1.57 0-3.123-.04-4.66-.13m0-4.24v4.24m0 0v4.24m11.379-1.92A11.07 11.07 0 0 0 15.5 8.25m6.219 7.5a11.071 11.071 0 0 1-6.219-2.748" /></svg>';
+		return '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 0 1-2.25 2.25M16.5 7.5V18a2.25 2.25 0 0 0 2.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 0 0 2.25 2.25h13.5M6 7.5h6v3H6v-3Z" /></svg>';
 	}
 	
 	// Puisi
