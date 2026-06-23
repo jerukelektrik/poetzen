@@ -1154,9 +1154,6 @@ document.addEventListener('DOMContentLoaded', function() {
 					$post_id    = get_the_ID();
 					$comm_name  = sukusastra_get_meta( $post_id, '_ss_comm_name', get_the_title() );
 					$comm_desc  = sukusastra_get_meta( $post_id, '_ss_comm_desc', '' );
-					$comm_year  = sukusastra_get_meta( $post_id, '_ss_comm_year', '' );
-					$comm_city  = sukusastra_get_meta( $post_id, '_ss_comm_city', '' );
-					$comm_prov  = sukusastra_get_meta( $post_id, '_ss_comm_province', '' );
 					?>
 					<div class="ss-komunitas-carousel-item w-[82vw] shrink-0 snap-start md:w-auto md:shrink">
 						<article <?php post_class( 'group flex flex-col h-full min-w-0 bg-white dark:bg-[#262B4E]/40 border border-slate-200/60 dark:border-zinc-800/80 rounded-3xl p-5 shadow-sm hover:shadow-md transition-shadow duration-300' ); ?>>
@@ -1173,13 +1170,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 							<!-- Content info -->
 							<div class="mt-4 flex flex-col flex-grow">
-								<div class="flex items-center justify-between text-[10px] font-black uppercase tracking-wider text-red-700 dark:text-red-400">
-									<span><?php echo esc_html( $comm_city ); ?><?php echo $comm_prov ? ', ' . esc_html( $comm_prov ) : ''; ?></span>
-									<?php if ( $comm_year ) : ?>
-										<span class="text-slate-400 dark:text-zinc-550"><?php printf( esc_html__( 'Berdiri %s', 'sukusastra' ), esc_html( $comm_year ) ); ?></span>
-									<?php endif; ?>
-								</div>
-
 								<h3 class="text-lg font-black leading-snug text-slate-900 dark:text-zinc-50 mt-1.5 group-hover:text-red-700 dark:group-hover:text-red-400 transition-colors">
 									<a class="no-underline hover:text-red-700 dark:hover:text-red-400 transition-colors" href="<?php the_permalink(); ?>">
 										<?php echo esc_html( $comm_name ); ?>
