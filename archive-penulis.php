@@ -54,11 +54,11 @@ get_header(); ?>
 		</form>
 
 		<!-- Writers Loop Grid -->
-		<div class="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-3 xl:grid-cols-4 mt-2">
+		<div class="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 xl:grid-cols-4 mt-2">
 			<?php if ( have_posts() ) : while ( have_posts() ) : the_post(); ?>
-				<article class="ss-card rounded-2xl p-3 shadow-sm hover:shadow-md transition-all flex flex-col items-center text-center group sm:rounded-3xl sm:p-6">
+				<article class="ss-card rounded-2xl p-4 shadow-sm hover:shadow-md transition-all flex flex-row items-center text-left gap-4 group sm:rounded-3xl sm:p-6 sm:flex-col sm:items-center sm:text-center sm:gap-0">
 					<!-- Writer Portrait -->
-					<div class="relative p-[3px] rounded-full bg-gradient-to-tr from-slate-200 to-slate-300 dark:from-zinc-800 dark:to-zinc-700 group-hover:from-red-700 group-hover:via-amber-500 group-hover:to-yellow-500 transition-all duration-500 mb-3 shadow sm:mb-4 sm:p-[4px]">
+					<div class="relative p-[3px] rounded-full bg-gradient-to-tr from-slate-200 to-slate-300 dark:from-zinc-800 dark:to-zinc-700 group-hover:from-red-700 group-hover:via-amber-500 group-hover:to-yellow-500 transition-all duration-500 mb-0 shadow sm:mb-4 sm:p-[4px] shrink-0">
 						<div class="bg-white dark:bg-[#262B4E] p-[2px] rounded-full sm:p-[3px]">
 							<?php 
 							$avatar_url = '';
@@ -73,68 +73,71 @@ get_header(); ?>
 						</div>
 					</div>
 
-					<!-- Writer Name -->
-					<h3 class="text-sm font-black text-slate-900 dark:text-zinc-50 leading-tight sm:text-base">
-						<a class="no-underline hover:text-red-700 dark:hover:text-red-400" href="<?php the_permalink(); ?>">
-							<?php the_title(); ?>
-						</a>
-					</h3>
+					<!-- Writer Details Wrapper -->
+					<div class="flex-1 min-w-0 flex flex-col items-start sm:items-center">
+						<!-- Writer Name -->
+						<h3 class="text-sm font-black text-slate-900 dark:text-zinc-50 leading-tight sm:text-base">
+							<a class="no-underline hover:text-red-700 dark:hover:text-red-400" href="<?php the_permalink(); ?>">
+								<?php the_title(); ?>
+							</a>
+						</h3>
 
-					<!-- Birth Place & Date -->
-					<?php 
-					$birth_place = get_post_meta( get_the_ID(), '_ss_penulis_tempat_lahir', true );
-					$birth_date = get_post_meta( get_the_ID(), '_ss_penulis_tanggal_lahir', true );
-					if ( $birth_place || $birth_date ) : ?>
-						<p class="hidden text-[10px] font-semibold text-slate-400 dark:text-zinc-500 mt-1.5 items-center gap-1 sm:flex">
-							<svg class="w-3 h-3 stroke-current fill-none stroke-2" viewBox="0 0 24 24">
-								<path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-								<path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
-							</svg>
-							<span><?php echo esc_html( trim( implode( ', ', array_filter( array( $birth_place, $birth_date ) ) ) ) ); ?></span>
-						</p>
-					<?php endif; ?>
+						<!-- Birth Place & Date -->
+						<?php 
+						$birth_place = get_post_meta( get_the_ID(), '_ss_penulis_tempat_lahir', true );
+						$birth_date = get_post_meta( get_the_ID(), '_ss_penulis_tanggal_lahir', true );
+						if ( $birth_place || $birth_date ) : ?>
+							<p class="hidden text-[10px] font-semibold text-slate-400 dark:text-zinc-550 mt-1.5 items-center gap-1 sm:flex">
+								<svg class="w-3 h-3 stroke-current fill-none stroke-2" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+									<path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+								</svg>
+								<span><?php echo esc_html( trim( implode( ', ', array_filter( array( $birth_place, $birth_date ) ) ) ) ); ?></span>
+							</p>
+						<?php endif; ?>
 
-					<!-- Bio Summary -->
-					<?php 
-					$bio = get_post_meta( get_the_ID(), '_ss_penulis_bio_summary', true );
-					if ( $bio ) : ?>
-						<p class="hidden text-[11px] leading-relaxed text-slate-500 dark:text-zinc-400 mt-3 font-serif line-clamp-2 italic sm:block">
-							<?php echo esc_html( $bio ); ?>
-						</p>
-					<?php else : ?>
-						<p class="hidden text-[11px] leading-relaxed text-slate-400 dark:text-zinc-500 mt-3 font-serif line-clamp-2 italic sm:block">
-							<?php esc_html_e( 'Sastrawan terkemuka yang berkontribusi aktif di media Suku Sastra.', 'sukusastra' ); ?>
-						</p>
-					<?php endif; ?>
+						<!-- Bio Summary -->
+						<?php 
+						$bio = get_post_meta( get_the_ID(), '_ss_penulis_bio_summary', true );
+						if ( $bio ) : ?>
+							<p class="hidden text-[11px] leading-relaxed text-slate-500 dark:text-zinc-450 mt-3 font-serif line-clamp-2 italic sm:block">
+								<?php echo esc_html( $bio ); ?>
+							</p>
+						<?php else : ?>
+							<p class="hidden text-[11px] leading-relaxed text-slate-400 dark:text-zinc-500 mt-3 font-serif line-clamp-2 italic sm:block">
+								<?php esc_html_e( 'Sastrawan terkemuka yang berkontribusi aktif di media Suku Sastra.', 'sukusastra' ); ?>
+							</p>
+						<?php endif; ?>
 
-					<!-- Works Count Badge -->
-					<?php
-					$works_count = get_posts( array(
-						'post_type'      => array( 'post', 'review_buku' ),
-						'posts_per_page' => -1,
-						'meta_query'     => array(
-							array(
-								'key'     => '_ss_original_author_id',
-								'value'   => get_the_ID(),
-								'compare' => '=',
+						<!-- Works Count Badge -->
+						<?php
+						$works_count = get_posts( array(
+							'post_type'      => array( 'post', 'review_buku' ),
+							'posts_per_page' => -1,
+							'meta_query'     => array(
+								array(
+									'key'     => '_ss_original_author_id',
+									'value'   => get_the_ID(),
+									'compare' => '=',
+								),
 							),
-						),
-						'fields'         => 'ids',
-					) );
-					$count = count( $works_count );
-					?>
-					<div class="mt-3 bg-slate-100 dark:bg-zinc-800/80 px-2.5 py-0.5 rounded-full text-[8px] font-black uppercase tracking-wider text-slate-600 dark:text-zinc-400 sm:mt-4 sm:px-3 sm:text-[9px]">
-						<?php printf( _n( '%d Karya', '%d Karya', $count, 'sukusastra' ), $count ); ?>
-					</div>
+							'fields'         => 'ids',
+						) );
+						$count = count( $works_count );
+						?>
+						<div class="mt-1.5 bg-slate-100 dark:bg-zinc-800/80 px-2.5 py-0.5 rounded-full text-[8px] font-black uppercase tracking-wider text-slate-600 dark:text-zinc-400 sm:mt-4 sm:px-3 sm:text-[9px]">
+							<?php printf( _n( '%d Karya', '%d Karya', $count, 'sukusastra' ), $count ); ?>
+						</div>
 
-					<!-- CTA Link -->
-					<a class="mt-4 text-[9px] font-black uppercase tracking-wider text-red-700 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 no-underline flex items-center justify-center gap-1 transition-all group-hover:translate-x-0.5 sm:mt-5 sm:text-[10px]" href="<?php the_permalink(); ?>">
-						<span class="sm:hidden"><?php esc_html_e( 'Profil', 'sukusastra' ); ?></span>
-						<span class="hidden sm:inline"><?php esc_html_e( 'Lihat Profil & Karya', 'sukusastra' ); ?></span>
-						<svg class="w-3.5 h-3.5 stroke-current fill-none stroke-2" viewBox="0 0 24 24">
-							<path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-						</svg>
-					</a>
+						<!-- CTA Link -->
+						<a class="mt-2.5 text-[9px] font-black uppercase tracking-wider text-red-700 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 no-underline flex items-center gap-1 transition-all group-hover:translate-x-0.5 sm:mt-5 sm:text-[10px]" href="<?php the_permalink(); ?>">
+							<span class="sm:hidden"><?php esc_html_e( 'Profil', 'sukusastra' ); ?></span>
+							<span class="hidden sm:inline"><?php esc_html_e( 'Lihat Profil & Karya', 'sukusastra' ); ?></span>
+							<svg class="w-3.5 h-3.5 stroke-current fill-none stroke-2" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+							</svg>
+						</a>
+					</div>
 				</article>
 			<?php endwhile; else : ?>
 				<div class="col-span-full rounded-md border border-slate-200 p-8 text-center dark:border-zinc-800 bg-white dark:bg-zinc-900">
