@@ -549,6 +549,81 @@
       user-select: none;
     }
 
+    .ss-category-swipe-row {
+      box-shadow: none;
+      cursor: default;
+      display: grid !important;
+      gap: 0 !important;
+      overflow: visible !important;
+      padding-bottom: 0 !important;
+      touch-action: pan-y;
+      width: 100% !important;
+    }
+
+    .ss-category-swipe-card {
+      border-bottom: 1px solid rgba(148, 163, 184, 0.22);
+      flex: none !important;
+      scroll-snap-align: none;
+      width: 100% !important;
+    }
+
+    .ss-category-swipe-card:last-child {
+      border-bottom: 0 !important;
+    }
+
+    .ss-category-swipe-card > article {
+      display: grid !important;
+      gap: 0.35rem 1rem !important;
+      grid-template-areas:
+        "title media"
+        "meta media";
+      grid-template-columns: minmax(0, 1fr) 5.75rem;
+      padding: 1rem 0;
+    }
+
+    .ss-category-swipe-card article > a:first-child {
+      align-self: start;
+      border: 0;
+      border-radius: 0.625rem;
+      box-shadow: none;
+      grid-area: media;
+    }
+
+    .ss-category-swipe-card article > a:first-child img,
+    .ss-category-swipe-card article > a:first-child .ss-post-card-placeholder {
+      aspect-ratio: 1 / 1 !important;
+      border-radius: inherit;
+      object-fit: cover !important;
+      height: 100% !important;
+    }
+
+    .ss-category-swipe-card article > div.ss-post-card-meta {
+      align-self: start;
+      font-size: 0.72rem !important;
+      gap: 0.25rem !important;
+      grid-area: meta;
+      margin-top: 0 !important;
+      text-transform: none;
+      flex-direction: column !important;
+    }
+
+    .ss-category-swipe-card article > div.ss-post-card-heading {
+      align-self: start;
+      grid-area: title;
+      margin-top: 0 !important;
+    }
+
+    .ss-category-swipe-card .ss-post-card-title {
+      font-family: var(--font-sans), sans-serif;
+      font-size: 1rem !important;
+      line-height: 1.32 !important;
+    }
+
+    .ss-category-swipe-card article > div.ss-post-card-heading > svg.ss-post-card-arrow,
+    .ss-category-swipe-card article > p.ss-post-card-excerpt {
+      display: none !important;
+    }
+
     #peristiwa .ss-peristiwa-list {
       box-shadow: none;
       cursor: default;
