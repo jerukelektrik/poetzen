@@ -818,11 +818,11 @@ if ( ! function_exists( 'sukusastra_home_feed_panel' ) ) {
 					?>
 					<div class="poetzen-catalog-banner poetzen-catalog-banner-frame w-full mb-6">
 						<?php if ( $target_url ) : ?>
-							<a href="<?php echo esc_url( $target_url ); ?>" target="_blank" rel="noopener" class="block w-full overflow-hidden rounded-2xl border border-slate-200/50 dark:border-zinc-800/80 shadow-sm transition hover:opacity-95 duration-200">
+							<a href="<?php echo esc_url( $target_url ); ?>" target="_blank" rel="noopener" class="block w-full h-full overflow-hidden rounded-2xl border border-slate-200/50 dark:border-zinc-800/80 shadow-sm transition hover:opacity-95 duration-200">
 						<?php else : ?>
-							<div class="w-full overflow-hidden rounded-2xl border border-slate-200/50 dark:border-zinc-800/80 shadow-sm">
+							<div class="w-full h-full overflow-hidden rounded-2xl border border-slate-200/50 dark:border-zinc-800/80 shadow-sm">
 						<?php endif; ?>
-							<img src="<?php echo esc_url( $banner['image'] ); ?>" alt="<?php esc_attr_e( 'Katalog Banner', 'sukusastra' ); ?>" class="ss-terbitan-banner-img w-full h-auto object-cover block">
+							<img src="<?php echo esc_url( $banner['image'] ); ?>" alt="<?php esc_attr_e( 'Katalog Banner', 'sukusastra' ); ?>" class="ss-terbitan-banner-img w-full h-full object-cover block">
 						<?php if ( $target_url ) : ?>
 							</a>
 						<?php else : ?>
