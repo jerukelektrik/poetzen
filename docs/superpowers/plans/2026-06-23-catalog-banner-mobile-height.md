@@ -15,9 +15,9 @@
 **Files:**
 - Modify: `front-page.php:816-838`
 
-- [ ] Tambahkan class `poetzen-catalog-banner-frame` pada wrapper banner tunggal dan slider.
-- [ ] Hapus `style="aspect-ratio: 1200/150;"` dari slider.
-- [ ] Jalankan PHP lint:
+- [x] Tambahkan class `poetzen-catalog-banner-frame` pada wrapper banner tunggal dan slider.
+- [x] Hapus `style="aspect-ratio: 1200/150;"` dari slider.
+- [x] Jalankan PHP lint:
 
 ```bash
 "/Users/armadanurliansyah/Library/Application Support/Local/lightning-services/php-8.2.29+0/bin/darwin-arm64/bin/php" -l front-page.php
@@ -31,7 +31,7 @@ Expected: `No syntax errors detected in front-page.php`.
 - Modify: `src/input.css`
 - Modify: `assets/css/theme.css`
 
-- [ ] Tambahkan aturan desktop:
+- [x] Tambahkan aturan desktop:
 
 ```css
 .poetzen-catalog-banner-frame {
@@ -39,7 +39,7 @@ Expected: `No syntax errors detected in front-page.php`.
 }
 ```
 
-- [ ] Tambahkan aturan mobile:
+- [x] Tambahkan aturan mobile:
 
 ```css
 @media (max-width: 47.999rem) {
@@ -55,8 +55,8 @@ Expected: `No syntax errors detected in front-page.php`.
 }
 ```
 
-- [ ] Jalankan `npm run build:css`.
-- [ ] Pastikan selector baru terdapat dalam `assets/css/theme.css`.
+- [x] Jalankan `npm run build:css`.
+- [x] Pastikan selector baru terdapat dalam `assets/css/theme.css`.
 
 ### Task 3: Verify Responsive Behavior
 
@@ -65,8 +65,8 @@ Expected: `No syntax errors detected in front-page.php`.
 - Test: `src/input.css`
 - Test: `assets/css/theme.css`
 
-- [ ] Pada viewport 393px, pastikan banner memiliki rasio 4:1 dan tinggi sekitar 86px.
-- [ ] Pastikan gambar, tombol panah, dots, dan slider tidak overflow.
-- [ ] Pada viewport 1440px, pastikan banner tetap memiliki rasio 8:1.
-- [ ] Pastikan console browser tidak menampilkan error baru.
-- [ ] Jalankan `git diff --check` dan commit perubahan.
+- [x] Pada viewport 393px, pastikan banner memiliki rasio 4:1 dan tinggi sekitar 86px.
+- [x] Pastikan gambar, tombol panah, dots, dan slider tidak overflow.
+- [x] Pada viewport 1440px, pastikan banner tetap memiliki rasio 8:1.
+- [x] Pastikan console browser tidak menampilkan error baru.
+- [x] Jalankan `git diff --check` dan commit perubahan.
