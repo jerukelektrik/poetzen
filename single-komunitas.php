@@ -45,69 +45,8 @@ get_header(); ?>
 						</div>
 					<?php endif; ?>
 
-					<!-- Full Description Content -->
-					<div class="ss-reading mt-8">
-						<h2 class="text-xl font-black mb-4"><?php esc_html_e( 'Tentang Komunitas', 'sukusastra' ); ?></h2>
-						<?php the_content(); ?>
-					</div>
-
-					<!-- Kegiatan & Publikasi sections -->
-					<?php if ( $activities || $publications ) : ?>
-						<div class="mt-10 grid gap-8 border-t border-slate-100 pt-8 dark:border-zinc-800/80">
-							<?php if ( $activities ) : ?>
-								<div>
-									<h3 class="text-lg font-black mb-3 text-slate-900 dark:text-zinc-50"><?php esc_html_e( 'Kegiatan Utama', 'sukusastra' ); ?></h3>
-									<div class="text-sm leading-relaxed text-slate-700 dark:text-zinc-300 bg-slate-50 dark:bg-zinc-900/30 border border-slate-200/50 dark:border-zinc-800/60 rounded-2xl p-5">
-										<?php echo wpautop( esc_html( $activities ) ); ?>
-									</div>
-								</div>
-							<?php endif; ?>
-
-							<?php if ( $publications ) : ?>
-								<div>
-									<h3 class="text-lg font-black mb-3 text-slate-900 dark:text-zinc-50"><?php esc_html_e( 'Publikasi Karya', 'sukusastra' ); ?></h3>
-									<div class="text-sm leading-relaxed text-slate-700 dark:text-zinc-300 bg-slate-50 dark:bg-zinc-900/30 border border-slate-200/50 dark:border-zinc-800/60 rounded-2xl p-5">
-										<?php echo wpautop( esc_html( $publications ) ); ?>
-									</div>
-								</div>
-							<?php endif; ?>
-						</div>
-					<?php endif; ?>
-
-					<!-- Galeri Aktivitas -->
-					<?php if ( ! empty( $gallery_array ) ) : ?>
-						<div class="mt-10 border-t border-slate-100 pt-8 dark:border-zinc-800/80">
-							<h3 class="text-lg font-black mb-4 text-slate-900 dark:text-zinc-50"><?php esc_html_e( 'Galeri Aktivitas', 'sukusastra' ); ?></h3>
-							<!-- Responsive Photo Grid -->
-							<div class="grid gap-4 grid-cols-2 sm:grid-cols-3">
-								<?php foreach ( $gallery_array as $img_id ) : ?>
-									<?php 
-									$thumb_url = wp_get_attachment_image_url( (int) $img_id, 'medium' );
-									$full_url  = wp_get_attachment_image_url( (int) $img_id, 'full' );
-									if ( $thumb_url ) :
-										?>
-										<a href="<?php echo esc_url( $full_url ); ?>" target="_blank" rel="noopener" class="block overflow-hidden rounded-xl border border-slate-200/60 dark:border-zinc-800 shadow-sm hover:scale-102 transition-transform duration-300 bg-slate-100 dark:bg-zinc-900 aspect-square">
-											<img src="<?php echo esc_url( $thumb_url ); ?>" class="w-full h-full object-cover" alt="<?php esc_attr_e( 'Foto Aktivitas Komunitas', 'sukusastra' ); ?>" />
-										</a>
-									<?php endif; ?>
-								<?php endforeach; ?>
-							</div>
-						</div>
-					<?php endif; ?>
-
-					<!-- Related Posts -->
-					<?php sukusastra_display_related_posts(); ?>
-				</div>
-
-				<!-- Sidebar Column -->
-				<aside class="grid content-start gap-6">
-					<!-- Sidebar Banners (Desktop only) -->
-					<div class="hidden lg:block">
-						<?php poetzen_render_sidebar_banners(); ?>
-					</div>
-
 					<!-- Identitas Komunitas Card -->
-					<div class="ss-card rounded-3xl p-6 grid gap-5 bg-white dark:bg-[#262B4E]/40 shadow-sm border border-slate-200/60 dark:border-zinc-800/80 font-sans">
+					<div class="ss-card mt-6 rounded-3xl p-6 grid gap-5 bg-white dark:bg-[#262B4E]/40 shadow-sm border border-slate-200/60 dark:border-zinc-800/80 font-sans">
 						<h3 class="ss-info-title m-0 text-slate-900 dark:text-zinc-50 text-base font-black uppercase tracking-wide"><?php esc_html_e( 'Identitas Komunitas', 'sukusastra' ); ?></h3>
 						
 						<div class="grid gap-4.5 text-sm">
@@ -219,6 +158,68 @@ get_header(); ?>
 							<?php endif; ?>
 						</div>
 					</div>
+
+					<!-- Full Description Content -->
+					<div class="ss-reading mt-8">
+						<h2 class="text-xl font-black mb-4"><?php esc_html_e( 'Tentang Komunitas', 'sukusastra' ); ?></h2>
+						<?php the_content(); ?>
+					</div>
+
+					<!-- Kegiatan & Publikasi sections -->
+					<?php if ( $activities || $publications ) : ?>
+						<div class="mt-10 grid gap-8 border-t border-slate-100 pt-8 dark:border-zinc-800/80">
+							<?php if ( $activities ) : ?>
+								<div>
+									<h3 class="text-lg font-black mb-3 text-slate-900 dark:text-zinc-50"><?php esc_html_e( 'Kegiatan Utama', 'sukusastra' ); ?></h3>
+									<div class="text-sm leading-relaxed text-slate-700 dark:text-zinc-300 bg-slate-50 dark:bg-zinc-900/30 border border-slate-200/50 dark:border-zinc-800/60 rounded-2xl p-5">
+										<?php echo wpautop( esc_html( $activities ) ); ?>
+									</div>
+								</div>
+							<?php endif; ?>
+
+							<?php if ( $publications ) : ?>
+								<div>
+									<h3 class="text-lg font-black mb-3 text-slate-900 dark:text-zinc-50"><?php esc_html_e( 'Publikasi Karya', 'sukusastra' ); ?></h3>
+									<div class="text-sm leading-relaxed text-slate-700 dark:text-zinc-300 bg-slate-50 dark:bg-zinc-900/30 border border-slate-200/50 dark:border-zinc-800/60 rounded-2xl p-5">
+										<?php echo wpautop( esc_html( $publications ) ); ?>
+									</div>
+								</div>
+							<?php endif; ?>
+						</div>
+					<?php endif; ?>
+
+					<!-- Galeri Aktivitas -->
+					<?php if ( ! empty( $gallery_array ) ) : ?>
+						<div class="mt-10 border-t border-slate-100 pt-8 dark:border-zinc-800/80">
+							<h3 class="text-lg font-black mb-4 text-slate-900 dark:text-zinc-50"><?php esc_html_e( 'Galeri Aktivitas', 'sukusastra' ); ?></h3>
+							<!-- Responsive Photo Grid -->
+							<div class="grid gap-4 grid-cols-2 sm:grid-cols-3">
+								<?php foreach ( $gallery_array as $img_id ) : ?>
+									<?php 
+									$thumb_url = wp_get_attachment_image_url( (int) $img_id, 'medium' );
+									$full_url  = wp_get_attachment_image_url( (int) $img_id, 'full' );
+									if ( $thumb_url ) :
+										?>
+										<a href="<?php echo esc_url( $full_url ); ?>" target="_blank" rel="noopener" class="block overflow-hidden rounded-xl border border-slate-200/60 dark:border-zinc-800 shadow-sm hover:scale-102 transition-transform duration-300 bg-slate-100 dark:bg-zinc-900 aspect-square">
+											<img src="<?php echo esc_url( $thumb_url ); ?>" class="w-full h-full object-cover" alt="<?php esc_attr_e( 'Foto Aktivitas Komunitas', 'sukusastra' ); ?>" />
+										</a>
+									<?php endif; ?>
+								<?php endforeach; ?>
+							</div>
+						</div>
+					<?php endif; ?>
+
+					<!-- Related Posts -->
+					<?php sukusastra_display_related_posts(); ?>
+				</div>
+
+				<!-- Sidebar Column -->
+				<aside class="grid content-start gap-6">
+					<!-- Sidebar Banners (Desktop only) -->
+					<div class="hidden lg:block">
+						<?php poetzen_render_sidebar_banners(); ?>
+					</div>
+
 				</aside>
 			</div>
 		</div>
