@@ -766,8 +766,8 @@ if ( ! function_exists( 'sukusastra_home_feed_panel' ) ) {
 	}
 }
 ?>
-<?php $query_puisi = sukusastra_home_posts( 'puisi', 10 ); ?>
-<?php $popular_puisi = sukusastra_home_posts( 'puisi', 10, 'terpopuler' ); ?>
+<?php $query_puisi = sukusastra_home_posts( 'puisi', 5 ); ?>
+<?php $popular_puisi = sukusastra_home_posts( 'puisi', 5, 'terpopuler' ); ?>
 <?php if ( $query_puisi->have_posts() ) : ?>
 	<section id="puisi" class="ss-section bg-transparent" data-feed-section>
 		<div class="ss-container grid gap-6">
@@ -781,8 +781,8 @@ if ( ! function_exists( 'sukusastra_home_feed_panel' ) ) {
 	</section>
 <?php endif; ?>
 
-<?php $query_cerpen = sukusastra_home_posts( 'cerpen', 10 ); ?>
-<?php $popular_cerpen = sukusastra_home_posts( 'cerpen', 10, 'terpopuler' ); ?>
+<?php $query_cerpen = sukusastra_home_posts( 'cerpen', 5 ); ?>
+<?php $popular_cerpen = sukusastra_home_posts( 'cerpen', 5, 'terpopuler' ); ?>
 <?php if ( $query_cerpen->have_posts() ) : ?>
 	<section id="cerpen" class="ss-section bg-transparent" data-feed-section>
 		<div class="ss-container grid gap-6">
@@ -977,8 +977,8 @@ if ( ! function_exists( 'sukusastra_home_feed_panel' ) ) {
 	</section>
 <?php endif; ?>
 
-<?php $query_esai = sukusastra_home_posts( 'esai', 10 ); ?>
-<?php $popular_esai = sukusastra_home_posts( 'esai', 10, 'terpopuler' ); ?>
+<?php $query_esai = sukusastra_home_posts( 'esai', 5 ); ?>
+<?php $popular_esai = sukusastra_home_posts( 'esai', 5, 'terpopuler' ); ?>
 <?php if ( $query_esai->have_posts() ) : ?>
 	<section id="esai" class="ss-section bg-transparent" data-feed-section>
 		<div class="ss-container grid gap-6">
