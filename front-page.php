@@ -1075,7 +1075,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			<div class="flex items-center justify-between border-b border-slate-100 pb-2 dark:border-zinc-800/80">
 				<h2 class="ss-section-title ss-feed-section-title"><?php esc_html_e( 'Reviu Buku', 'sukusastra' ); ?></h2>
 				<a class="ss-eyebrow" href="<?php echo esc_url( get_post_type_archive_link( 'review_buku' ) ); ?>">
-					<?php esc_html_e( 'Semua Reviu', 'sukusastra' ); ?> &rarr;
+					<?php esc_html_e( 'Lihat Semua', 'sukusastra' ); ?> &rarr;
 				</a>
 			</div>
 			<div class="ss-review-carousel flex gap-4 overflow-x-auto snap-x snap-mandatory no-scrollbar pb-2 md:grid md:gap-5 md:grid-cols-2 lg:grid-cols-3 md:overflow-visible md:snap-none">
@@ -1095,7 +1095,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		<div class="flex items-center justify-between border-b border-slate-100 pb-2 dark:border-zinc-800/80">
 			<h2 class="ss-section-title ss-feed-section-title"><?php esc_html_e( 'Peristiwa Suku Sastra', 'sukusastra' ); ?></h2>
 			<a class="ss-eyebrow" href="<?php echo esc_url( get_post_type_archive_link( 'berita' ) ); ?>">
-				<?php esc_html_e( 'Semua Peristiwa', 'sukusastra' ); ?> &rarr;
+				<?php esc_html_e( 'Lihat Semua', 'sukusastra' ); ?> &rarr;
 			</a>
 		</div>
 		<?php $news = sukusastra_latest_cpt( 'berita', 3 ); ?>
@@ -1119,7 +1119,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		<div class="flex items-center justify-between border-b border-slate-100 pb-2 dark:border-zinc-800/80">
 			<h2 class="ss-section-title ss-feed-section-title"><?php esc_html_e( 'Agenda & Event Sastra', 'sukusastra' ); ?></h2>
 			<a class="ss-eyebrow" href="<?php echo esc_url( get_post_type_archive_link( 'event' ) ); ?>">
-				<?php esc_html_e( 'Semua Event', 'sukusastra' ); ?> &rarr;
+				<?php esc_html_e( 'Lihat Semua', 'sukusastra' ); ?> &rarr;
 			</a>
 		</div>
 		<?php $events = sukusastra_upcoming_events( 4 ); ?>
@@ -1143,7 +1143,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		<div class="flex items-center justify-between border-b border-slate-100 pb-2 dark:border-zinc-800/80">
 			<h2 class="ss-section-title ss-feed-section-title"><?php esc_html_e( 'Jejaring Komunitas', 'sukusastra' ); ?></h2>
 			<a class="ss-eyebrow" href="<?php echo esc_url( get_post_type_archive_link( 'komunitas' ) ); ?>">
-				<?php esc_html_e( 'Semua Komunitas', 'sukusastra' ); ?> &rarr;
+				<?php esc_html_e( 'Lihat Semua', 'sukusastra' ); ?> &rarr;
 			</a>
 		</div>
 		<?php $komunitas = sukusastra_latest_cpt( 'komunitas', 3 ); ?>
