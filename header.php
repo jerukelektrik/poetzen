@@ -140,11 +140,9 @@ if ( $gtm_id ) : ?>
 
 		<!-- Action Buttons -->
 		<div class="flex items-center gap-2">
-			<a class="ss-button-kirim" href="<?php echo esc_url( home_url( '/ketentuan-pengiriman-karya/' ) ); ?>">
-				<svg class="w-4 h-4 shrink-0 text-current" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.9" aria-hidden="true">
-					<path stroke-linecap="round" stroke-linejoin="round" d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7Z" />
-					<path stroke-linecap="round" stroke-linejoin="round" d="M14 2v5h5" />
-					<path stroke-linecap="round" stroke-linejoin="round" d="M12 11v6M9 14h6" />
+			<a class="ss-button-kirim font-sans" href="<?php echo esc_url( home_url( '/ketentuan-pengiriman-karya/' ) ); ?>">
+				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 shrink-0 text-current" aria-hidden="true">
+					<path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
 				</svg>
 				<span><?php esc_html_e( 'Kirim Karya', 'sukusastra' ); ?></span>
 			</a>
@@ -440,13 +438,11 @@ if ( $gtm_id ) : ?>
 
 		<!-- Kirim Karya Button (Call to Action) -->
 		<div>
-			<a class="flex items-center justify-center gap-2.5 rounded-xl border border-red-700 bg-white dark:bg-zinc-900 dark:border-red-500/30 px-4 py-3 text-red-700 dark:text-red-400 no-underline shadow-sm hover:bg-red-50 dark:hover:bg-red-950/20 transition-all w-full cursor-pointer h-11" href="<?php echo esc_url( home_url( '/ketentuan-pengiriman-karya/' ) ); ?>">
-				<svg class="w-4 h-4 shrink-0 text-current" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
-					<path stroke-linecap="round" stroke-linejoin="round" d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7Z" />
-					<path stroke-linecap="round" stroke-linejoin="round" d="M14 2v5h5" />
-					<path stroke-linecap="round" stroke-linejoin="round" d="M12 11v6M9 14h6" />
+			<a class="flex items-center justify-center gap-2.5 rounded-xl border border-red-700 bg-white dark:bg-zinc-900 dark:border-red-500/30 px-4 py-3 text-red-700 dark:text-red-400 no-underline shadow-sm hover:bg-red-50 dark:hover:bg-red-950/20 transition-all w-full cursor-pointer h-11 font-sans" href="<?php echo esc_url( home_url( '/ketentuan-pengiriman-karya/' ) ); ?>">
+				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 shrink-0 text-current" aria-hidden="true">
+					<path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
 				</svg>
-				<span class="text-[11px] uppercase font-black tracking-wider leading-none">Kirim Karya</span>
+				<span class="text-[11px] uppercase font-bold tracking-wider leading-none">Kirim Karya</span>
 			</a>
 		</div>
 	</div>
