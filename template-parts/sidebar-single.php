@@ -173,9 +173,9 @@ if ( 'review_buku' !== $post_type ) {
 				$event_start = sukusastra_get_meta( get_the_ID(), '_ss_event_start' );
 				$image_class = $is_past ? ' grayscale opacity-75' : '';
 				?>
-				<div class="flex gap-3 items-start">
+				<div class="flex gap-4 items-center">
 					<?php if ( has_post_thumbnail() ) : ?>
-						<a href="<?php the_permalink(); ?>" class="h-10 w-10 shrink-0 overflow-hidden rounded border border-slate-100 dark:border-zinc-800 shadow-sm">
+						<a href="<?php the_permalink(); ?>" class="h-16 w-16 shrink-0 overflow-hidden rounded-xl border border-slate-100 dark:border-zinc-800/80 shadow-sm">
 							<?php the_post_thumbnail( 'thumbnail', array( 'class' => 'h-full w-full object-cover hover:scale-105 transition-transform duration-300' . $image_class ) ); ?>
 						</a>
 					<?php endif; ?>
