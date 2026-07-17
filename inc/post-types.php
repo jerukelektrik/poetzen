@@ -147,3 +147,43 @@ function sukusastra_register_komunitas_type(): void {
 	);
 }
 
+/**
+ * Add custom columns to CPT Penulis list in admin dashboard.
+ */
+add_filter( 'manage_edit-penulis_columns', 'sukusastra_set_penulis_columns' );
+function sukusastra_set_penulis_columns( array $columns ): array {
+	$new_columns = array();
+	foreach ( $columns as $key => $title ) {
+		$new_columns[ $key ] = $title;
+		if ( 'title' === $key ) {
+			$new_columns['jumlah_karya'] = __( 'Karya', 'sukusastra' );
+		}
+	}
+	return $new_columns;
+}
+
+add_action( 'manage_penulis_posts_custom_column', 'sukusastra_custom_penulis_column', 10, 2 );
+function sukusastra_custom_penulis_column( string $column, int $post_id ): void {
+	if ( 'jumlah_karya' === $column ) {
+		global $wpdb;
+		$count = (int) $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT COUNT(*) FROM $wpdb->posts p 
+				 INNER JOIN $wpdb->postmeta pm ON p.ID = pm.post_id 
+				 WHERE pm.meta_key = '_ss_original_author_id' 
+				   AND pm.meta_value = %d 
+				   AND p.post_status = 'publish' 
+				   AND p.post_type IN ('post', 'review_buku', 'event', 'berita')",
+				$post_id
+			)
+		);
+
+		if ( $count > 0 ) {
+			echo '<strong>' . esc_html( $count ) . '</strong>';
+		} else {
+			echo '<span class="text-slate-400">—</span>';
+		}
+	}
+}
+
+
