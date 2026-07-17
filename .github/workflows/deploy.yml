@@ -1,47 +1,23 @@
-name: Deploy Theme to Live Site
+name: Deploy Theme to Live Host
 
 on:
-  workflow_dispatch: # Memicu deploy secara manual dari tab Actions ketika situs sudah siap live
+  push:
+    branches:
+      - main
 
 jobs:
-  deploy:
+  web-deploy:
+    name: 🚀 Deploy Poetzen Theme
     runs-on: ubuntu-latest
-
     steps:
-      # 1. Unduh kode dari repositori GitHub
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      # 2. Setup Node.js untuk kompilasi Tailwind CSS
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      # 3. Instal dependensi NPM dan Build CSS Tailwind
-      - name: Install and Build CSS
-        run: |
-          npm ci
-          npm run build:css
-
-      # 4. Kirim berkas tema ke Server Live menggunakan SFTP
-      - name: SFTP Deploy
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          server: ${{ secrets.SFTP_HOST }}
-          username: ${{ secrets.SFTP_USERNAME }}
-          password: ${{ secrets.SFTP_PASSWORD }}
-          port: ${{ secrets.SFTP_PORT }}
-          # Path tujuan di server hosting Anda (Silakan sesuaikan jika folder live site Anda berbeda)
-          local-dir: ./
-          server-dir: /public_html/wp-content/themes/poetzen/
-          # Pengecualian berkas yang tidak perlu dikirim ke server live
-          exclude: |
-            **/.git*
-            **/.git*/**
-            **/node_modules/**
-            **/src/**
-            package.json
-            package-lock.json
-            README.md
+    - name: 🚚 Get latest code
+      uses: actions/checkout@v3
+    
+    - name: 📂 Sync files via FTP
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+      with:
+        server: ${{ secrets.FTP_SERVER }}
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        server-dir: public_html/wp-content/themes/poetzen/
+        # Secara default, action ini hanya akan mengunggah file yang berubah (incremental)
