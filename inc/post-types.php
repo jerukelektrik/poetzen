@@ -233,5 +233,134 @@ function sukusastra_penulis_orderby_clauses( array $clauses, WP_Query $query ): 
 	return $clauses;
 }
 
+/**
+ * Add custom column "Penulis Asli" to the Posts list.
+ */
+add_filter( 'manage_post_posts_columns', 'sukusastra_add_post_columns' );
+function sukusastra_add_post_columns( array $columns ): array {
+	$new_columns = array();
+	foreach ( $columns as $key => $title ) {
+		$new_columns[ $key ] = $title;
+		if ( 'title' === $key ) {
+			$new_columns['penulis_asli'] = __( 'Penulis Asli', 'sukusastra' );
+		}
+	}
+	return $new_columns;
+}
+
+/**
+ * Render the content of the "Penulis Asli" column.
+ */
+add_action( 'manage_post_posts_custom_column', 'sukusastra_render_post_columns', 10, 2 );
+function sukusastra_render_post_columns( string $column, int $post_id ): void {
+	if ( 'penulis_asli' === $column ) {
+		$orig_author = sukusastra_get_original_author( $post_id );
+		$author_id = $orig_author ? $orig_author->ID : 0;
+		$author_title = $orig_author ? $orig_author->post_title : '—';
+
+		echo '<div class="penulis-asli-display">' . esc_html( $author_title ) . '</div>';
+		echo '<div class="hidden-penulis-asli-id" style="display:none;" data-id="' . esc_attr( (string) $author_id ) . '"></div>';
+	}
+}
+
+/**
+ * Output the CPT Penulis select box inside WordPress Quick Edit template.
+ */
+add_action( 'quick_edit_custom_box', 'sukusastra_quick_edit_penulis', 10, 2 );
+function sukusastra_quick_edit_penulis( string $column_name, string $post_type ): void {
+	if ( 'penulis_asli' !== $column_name || 'post' !== $post_type ) {
+		return;
+	}
+
+	$authors = get_posts(
+		array(
+			'post_type'      => 'penulis',
+			'posts_per_page' => -1,
+			'post_status'    => 'publish',
+			'orderby'        => 'title',
+			'order'          => 'ASC',
+		)
+	);
+
+	wp_nonce_field( 'sukusastra_quick_edit_nonce', 'sukusastra_quick_edit_nonce' );
+	?>
+	<fieldset class="inline-edit-col-right" style="margin-top: 10px;">
+		<div class="inline-edit-col">
+			<label class="alignleft">
+				<span class="title"><?php esc_html_e( 'Penulis Asli', 'sukusastra' ); ?></span>
+				<select name="_ss_original_author_id" id="_ss_original_author_id" style="max-width: 300px;">
+					<option value=""><?php esc_html_e( '— Tanpa Penulis/Tokoh —', 'sukusastra' ); ?></option>
+					<?php foreach ( $authors as $author ) : ?>
+						<option value="<?php echo esc_attr( (string) $author->ID ); ?>">
+							<?php echo esc_html( $author->post_title ); ?>
+						</option>
+					<?php endforeach; ?>
+				</select>
+			</label>
+		</div>
+	</fieldset>
+	<?php
+}
+
+/**
+ * Save the quick edit data.
+ */
+add_action( 'save_post_post', 'sukusastra_save_quick_edit_penulis', 10, 3 );
+function sukusastra_save_quick_edit_penulis( int $post_id, WP_Post $post, bool $update ): void {
+	if ( ! $update ) {
+		return;
+	}
+
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+		return;
+	}
+
+	if ( ! isset( $_POST['sukusastra_quick_edit_nonce'] ) || ! wp_verify_nonce( $_POST['sukusastra_quick_edit_nonce'], 'sukusastra_quick_edit_nonce' ) ) {
+		return;
+	}
+
+	if ( ! current_user_can( 'edit_post', $post_id ) ) {
+		return;
+	}
+
+	if ( isset( $_POST['_ss_original_author_id'] ) ) {
+		$author_id = sanitize_text_field( wp_unslash( $_POST['_ss_original_author_id'] ) );
+		if ( '' === $author_id ) {
+			delete_post_meta( $post_id, '_ss_original_author_id' );
+		} else {
+			update_post_meta( $post_id, '_ss_original_author_id', (int) $author_id );
+		}
+	}
+}
+
+/**
+ * Print Javascript in edit screen footer to populate custom fields when Quick Edit opens.
+ */
+add_action( 'admin_footer-edit.php', 'sukusastra_quick_edit_javascript' );
+function sukusastra_quick_edit_javascript(): void {
+	global $current_screen;
+	if ( ! $current_screen || 'post' !== $current_screen->post_type ) {
+		return;
+	}
+	?>
+	<script type="text/javascript">
+	jQuery(document).ready(function($) {
+		const wp_inline_edit = inlineEditPost.edit;
+		inlineEditPost.edit = function(id) {
+			wp_inline_edit.apply(this, arguments);
+
+			const post_id = inlineEditPost.getId(id);
+			const row = $('#post-' + post_id);
+			const penulis_id = row.find('.hidden-penulis-asli-id').data('id');
+
+			const edit_row = $('#edit-' + post_id);
+			edit_row.find('#_ss_original_author_id').val(penulis_id || '');
+		};
+	});
+	</script>
+	<?php
+}
+
+
 
 
