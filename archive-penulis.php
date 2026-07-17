@@ -99,15 +99,16 @@ get_header(); ?>
 						<!-- Bio Summary -->
 						<?php 
 						$bio = get_post_meta( get_the_ID(), '_ss_penulis_bio_summary', true );
-						if ( $bio ) : ?>
-							<p class="hidden text-[11px] leading-relaxed text-slate-500 dark:text-zinc-450 mt-3 font-serif line-clamp-2 italic sm:block">
-								<?php echo esc_html( $bio ); ?>
-							</p>
-						<?php else : ?>
-							<p class="hidden text-[11px] leading-relaxed text-slate-400 dark:text-zinc-500 mt-3 font-serif line-clamp-2 italic sm:block">
-								<?php esc_html_e( 'Sastrawan terkemuka yang berkontribusi aktif di media Suku Sastra.', 'sukusastra' ); ?>
-							</p>
-						<?php endif; ?>
+						if ( $bio ) {
+							$truncated_bio = mb_strimwidth( $bio, 0, 200, '......' );
+						} else {
+							$truncated_bio = esc_html__( 'Sastrawan terkemuka yang berkontribusi aktif di media Suku Sastra.', 'sukusastra' );
+						}
+						?>
+						<p class="hidden text-[11px] leading-relaxed text-slate-500 dark:text-zinc-450 mt-3 font-serif italic sm:block">
+							<?php echo esc_html( $truncated_bio ); ?>
+						</p>
+
 
 						<!-- Works Count Badge -->
 						<?php
