@@ -49,7 +49,7 @@ function sukusastra_render_options_page(): void {
 				<div class="ss-options-tabs">
 					<button type="button" class="ss-tab-btn active" data-tab="branding">
 						<svg class="ss-tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-							<path stroke-linecap="round" stroke-linejoin="round" d="M9.53 16.122a3 3 0 00-5.78 1.128 2.25 2.25 0 01-2.4 2.245 4.5 4.5 0 008.4-2.245c0-.399-.078-.78-.22-1.128zm0 0a15.998 15.998 0 003.388-1.62m-5.01-1.25a9 9 0 002.25-2.25m5.01 1.25l.075.03A12.061 12.061 0 0012 15.75H12m1.282-3.836A3 3 0 0012 11.25h-.002A3 3 0 0010.5 12.75V12.75a3 3 0 003.032 3.032l.075-.03c.55-.221 1.116-.493 1.68-.813zm0 0a15.998 15.998 0 003.388-1.62m-5.01-1.25a9 9 0 002.25-2.25m9 9a9 9 0 11-18 0 9 9 0 0118 0z" />
+							<path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
 						</svg>
 						<span class="ss-tab-label"><?php esc_html_e( 'Umum & Branding', 'sukusastra' ); ?></span>
 					</button>
@@ -61,10 +61,11 @@ function sukusastra_render_options_page(): void {
 					</button>
 					<button type="button" class="ss-tab-btn" data-tab="socials">
 						<svg class="ss-tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-							<path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622a4.5 4.5 0 01-1.242-7.244l4.5-4.5a4.5 4.5 0 016.364 6.364l-1.757 1.757" />
+							<path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
 						</svg>
 						<span class="ss-tab-label"><?php esc_html_e( 'Media Sosial & Kontak', 'sukusastra' ); ?></span>
 					</button>
+
 					<button type="button" class="ss-tab-btn" data-tab="scripts">
 						<svg class="ss-tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 							<path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" />
