@@ -17,15 +17,16 @@ function sukusastra_sitemap_init(): void {
 	add_rewrite_rule( '^sitemap-([a-z0-9_-]+)\.xml$', 'index.php?ss_sitemap=$matches[1]', 'top' );
 }
 
-// Automatically flush rewrite rules once on next admin load to register the sitemap URLs
-add_action( 'admin_init', 'sukusastra_sitemap_flush_rules_once' );
+// Automatically flush rewrite rules once on next page load to register the sitemap URLs
+add_action( 'init', 'sukusastra_sitemap_flush_rules_once', 20 );
 function sukusastra_sitemap_flush_rules_once(): void {
-	if ( ! get_option( 'sukusastra_sitemap_flushed_v1' ) ) {
+	if ( ! get_option( 'sukusastra_sitemap_flushed_v2' ) ) {
 		sukusastra_sitemap_init();
 		flush_rewrite_rules();
-		update_option( 'sukusastra_sitemap_flushed_v1', 1 );
+		update_option( 'sukusastra_sitemap_flushed_v2', 1 );
 	}
 }
+
 
 
 // 2. Add query vars
