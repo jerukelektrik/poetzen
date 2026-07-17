@@ -90,7 +90,7 @@ function sukusastra_get_sitemap_lastmod( string $post_type = 'post', string $tax
 			$post_type
 		) );
 	}
-	return $lastmod ? mysql2date( 'Y-m-d H:i +00:00', $lastmod ) : date( 'Y-m-d H:i +00:00' );
+	return $lastmod ? mysql2date( 'c', $lastmod ) : date( 'c' );
 }
 
 // 6. Get sitemap taxonomy term last modified time
@@ -103,7 +103,7 @@ function sukusastra_get_term_lastmod( int $term_id, string $taxonomy ): string {
 		 WHERE tr.term_taxonomy_id = %d AND p.post_status = 'publish'",
 		$term_id
 	) );
-	return $lastmod ? mysql2date( 'Y-m-d H:i +00:00', $lastmod ) : date( 'Y-m-d H:i +00:00' );
+	return $lastmod ? mysql2date( 'c', $lastmod ) : date( 'c' );
 }
 
 // 7. Render Sitemap Index
@@ -166,7 +166,7 @@ function sukusastra_render_sitemap_section( string $section ): void {
 			$query->the_post();
 			echo '  <url>' . "\n";
 			echo '    <loc>' . esc_url( get_permalink() ) . '</loc>' . "\n";
-			echo '    <lastmod>' . esc_html( get_the_modified_date( 'Y-m-d H:i +00:00' ) ) . '</lastmod>' . "\n";
+			echo '    <lastmod>' . esc_html( get_the_modified_date( 'c' ) ) . '</lastmod>' . "\n";
 			echo '  </url>' . "\n";
 		}
 		wp_reset_postdata();
