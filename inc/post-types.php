@@ -234,9 +234,10 @@ function sukusastra_penulis_orderby_clauses( array $clauses, WP_Query $query ): 
 }
 
 /**
- * Add custom column "Penulis Asli" to the Posts list.
+ * Add custom column "Penulis Asli" to the Posts and Peristiwa list.
  */
 add_filter( 'manage_post_posts_columns', 'sukusastra_add_post_columns' );
+add_filter( 'manage_berita_posts_columns', 'sukusastra_add_post_columns' );
 function sukusastra_add_post_columns( array $columns ): array {
 	$new_columns = array();
 	foreach ( $columns as $key => $title ) {
@@ -252,6 +253,7 @@ function sukusastra_add_post_columns( array $columns ): array {
  * Render the content of the "Penulis Asli" column.
  */
 add_action( 'manage_post_posts_custom_column', 'sukusastra_render_post_columns', 10, 2 );
+add_action( 'manage_berita_posts_custom_column', 'sukusastra_render_post_columns', 10, 2 );
 function sukusastra_render_post_columns( string $column, int $post_id ): void {
 	if ( 'penulis_asli' === $column ) {
 		$orig_author = sukusastra_get_original_author( $post_id );
@@ -268,7 +270,7 @@ function sukusastra_render_post_columns( string $column, int $post_id ): void {
  */
 add_action( 'quick_edit_custom_box', 'sukusastra_quick_edit_penulis', 10, 2 );
 function sukusastra_quick_edit_penulis( string $column_name, string $post_type ): void {
-	if ( 'penulis_asli' !== $column_name || 'post' !== $post_type ) {
+	if ( 'penulis_asli' !== $column_name || ! in_array( $post_type, array( 'post', 'berita' ), true ) ) {
 		return;
 	}
 
@@ -306,6 +308,7 @@ function sukusastra_quick_edit_penulis( string $column_name, string $post_type )
  * Save the quick edit data.
  */
 add_action( 'save_post_post', 'sukusastra_save_quick_edit_penulis', 10, 3 );
+add_action( 'save_post_berita', 'sukusastra_save_quick_edit_penulis', 10, 3 );
 function sukusastra_save_quick_edit_penulis( int $post_id, WP_Post $post, bool $update ): void {
 	if ( ! $update ) {
 		return;
@@ -339,7 +342,7 @@ function sukusastra_save_quick_edit_penulis( int $post_id, WP_Post $post, bool $
 add_action( 'admin_footer-edit.php', 'sukusastra_quick_edit_javascript' );
 function sukusastra_quick_edit_javascript(): void {
 	global $current_screen;
-	if ( ! $current_screen || 'post' !== $current_screen->post_type ) {
+	if ( ! $current_screen || ! in_array( $current_screen->post_type, array( 'post', 'berita' ), true ) ) {
 		return;
 	}
 	?>
@@ -360,6 +363,7 @@ function sukusastra_quick_edit_javascript(): void {
 	</script>
 	<?php
 }
+
 
 
 

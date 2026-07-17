@@ -21,8 +21,9 @@ function sukusastra_register_metaboxes(): void {
 	add_meta_box( 'sukusastra_terbitan_meta', __( 'Metadata Terbitan', 'sukusastra' ), 'sukusastra_render_terbitan_metabox', 'terbitan', 'normal', 'default' );
 	add_meta_box( 'sukusastra_komunitas_meta', __( 'Metadata Komunitas', 'sukusastra' ), 'sukusastra_render_komunitas_metabox', 'komunitas', 'normal', 'default' );
 	
-	add_meta_box( 'sukusastra_original_author_meta', __( 'Penulis Asli (Tokoh)', 'sukusastra' ), 'sukusastra_render_original_author_metabox', 'post', 'normal', 'default' );
+	add_meta_box( 'sukusastra_original_author_meta', __( 'Penulis Asli (Tokoh)', 'sukusastra' ), 'sukusastra_render_original_author_metabox', array( 'post', 'berita' ), 'normal', 'default' );
 	add_meta_box( 'sukusastra_pesan_moral_meta', __( 'Pesan Moral', 'sukusastra' ), 'sukusastra_render_pesan_moral_metabox', 'post', 'normal', 'default' );
+
 	add_meta_box( 'sukusastra_penulis_meta', __( 'Metadata Penulis/Tokoh', 'sukusastra' ), 'sukusastra_render_penulis_metabox', 'penulis', 'normal', 'default' );
 	add_meta_box( 'sukusastra_related_post_meta', __( 'Artikel Terkait', 'sukusastra' ), 'sukusastra_render_related_post_metabox', array( 'post', 'review_buku', 'berita', 'komunitas' ), 'normal', 'default' );
 }
