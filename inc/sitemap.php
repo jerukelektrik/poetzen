@@ -37,12 +37,13 @@ function sukusastra_sitemap_query_vars( array $vars ): array {
 
 // 3. Prevent canonical redirects for sitemap URLs
 add_filter( 'redirect_canonical', 'sukusastra_sitemap_prevent_canonical', 10, 2 );
-function sukusastra_sitemap_prevent_canonical( string $redirect_url, string $requested_url ): string {
-	if ( false !== strpos( $requested_url, 'sitemap' ) ) {
-		return '';
+function sukusastra_sitemap_prevent_canonical( $redirect_url, $requested_url ) {
+	if ( is_string( $requested_url ) && false !== strpos( $requested_url, 'sitemap' ) ) {
+		return false;
 	}
 	return $redirect_url;
 }
+
 
 // 4. Handle template redirect
 add_action( 'template_redirect', 'sukusastra_sitemap_handle_redirect' );
