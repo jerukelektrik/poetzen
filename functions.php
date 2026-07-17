@@ -27,6 +27,7 @@ $sukusastra_files = array(
 	'inc/options.php',
 	'inc/banners.php',
 	'inc/importer.php',
+	'inc/webp-uploads.php',
 );
 
 foreach ( $sukusastra_files as $sukusastra_file ) {
