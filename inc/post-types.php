@@ -186,4 +186,52 @@ function sukusastra_custom_penulis_column( string $column, int $post_id ): void 
 	}
 }
 
+/**
+ * Make the custom Karya column sortable in admin dashboard list.
+ */
+add_filter( 'manage_edit-penulis_sortable_columns', 'sukusastra_penulis_sortable_columns' );
+function sukusastra_penulis_sortable_columns( array $sortable_columns ): array {
+	$sortable_columns['jumlah_karya'] = 'jumlah_karya';
+	return $sortable_columns;
+}
+
+add_action( 'pre_get_posts', 'sukusastra_penulis_orderby_query' );
+function sukusastra_penulis_orderby_query( WP_Query $query ): void {
+	if ( ! is_admin() || ! $query->is_main_query() ) {
+		return;
+	}
+
+	if ( 'penulis' === $query->get( 'post_type' ) && 'jumlah_karya' === $query->get( 'orderby' ) ) {
+		add_filter( 'posts_clauses', 'sukusastra_penulis_orderby_clauses', 10, 2 );
+	}
+}
+
+function sukusastra_penulis_orderby_clauses( array $clauses, WP_Query $query ): array {
+	global $wpdb;
+
+	$order = strtoupper( $query->get( 'order' ) );
+	if ( 'ASC' !== $order && 'DESC' !== $order ) {
+		$order = 'DESC';
+	}
+
+	// Join with a subquery counting published posts per CPT penulis
+	$clauses['join'] .= " LEFT JOIN (
+		SELECT pm.meta_value AS penulis_id, COUNT(*) AS karya_count 
+		FROM {$wpdb->postmeta} pm 
+		INNER JOIN {$wpdb->posts} p ON pm.post_id = p.ID 
+		WHERE pm.meta_key = '_ss_original_author_id' 
+		  AND p.post_status = 'publish' 
+		  AND p.post_type IN ('post', 'review_buku', 'event', 'berita')
+		GROUP BY pm.meta_value
+	) AS kc ON {$wpdb->posts}.ID = kc.penulis_id";
+
+	$clauses['orderby'] = "COALESCE(kc.karya_count, 0) {$order}, {$wpdb->posts}.post_title {$order}";
+
+	// Remove the filter so it doesn't affect subsequent queries
+	remove_filter( 'posts_clauses', 'sukusastra_penulis_orderby_clauses', 10 );
+
+	return $clauses;
+}
+
+
 
