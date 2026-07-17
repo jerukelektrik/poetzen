@@ -313,8 +313,9 @@ function sukusastra_render_sitemap_xsl(): void {
 					
 					<xsl:if test="sitemap:urlset">
 						<p>Sitemap ini berisi <xsl:value-of select="count(sitemap:urlset/sitemap:url)"/> URL.</p>
-						<p><a href="https://www.sukusastra.com/sitemap.xml">&larr; Kembali ke Sitemap Index</a></p>
+						<p><a href="https://www.sukusastra.com/sitemap.xml">&#8592; Kembali ke Sitemap Index</a></p>
 						<table>
+
 							<thead>
 								<tr>
 									<th width="80%">URL</th>
