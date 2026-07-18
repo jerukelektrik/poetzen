@@ -253,7 +253,7 @@ get_header(); ?>
 			</aside>
 			
 			<!-- Review Details Content -->
-			<div>
+			<div class="min-w-0">
 				<p class="ss-eyebrow mb-2 hidden lg:block">
 					<?php 
 					printf( '%s (%s)', esc_html__( 'Reviu Buku', 'sukusastra' ), esc_html( $book_type_label ) );

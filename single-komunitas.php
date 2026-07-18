@@ -29,7 +29,7 @@ get_header(); ?>
 			<?php sukusastra_breadcrumbs(); ?>
 			<div class="grid gap-y-16 gap-x-10 lg:grid-cols-[minmax(0,760px)_320px]">
 				<!-- Main Column -->
-				<div>
+				<div class="min-w-0">
 					<!-- Mobile Sidebar Banner (Tampil hanya di Mobile) -->
 					<div class="block lg:hidden mb-6">
 						<?php poetzen_render_sidebar_banners(); ?>

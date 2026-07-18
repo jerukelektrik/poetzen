@@ -10,7 +10,7 @@ get_header(); ?>
 		<div class="ss-container">
 			<?php sukusastra_breadcrumbs(); ?>
 			<div class="grid gap-y-16 gap-x-10 lg:grid-cols-[minmax(0,760px)_320px]">
-				<div>
+				<div class="min-w-0">
 				<?php $orig_author = sukusastra_get_original_author( get_the_ID() ); ?>
 				
 				<!-- Mobile Sidebar Banner (Tampil hanya di Mobile) -->
@@ -37,7 +37,7 @@ get_header(); ?>
 					</div>
 				<?php else : ?>
 					<div class="mt-8 rounded overflow-hidden shadow-sm flex items-center justify-center bg-white dark:bg-[#262B4E]/40 border border-slate-200/60 dark:border-zinc-800 p-8 h-64 md:h-[320px]">
-						<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo.svg' ); ?>" alt="<?php the_title_attribute(); ?>" class="h-32 md:h-40 w-auto opacity-60 dark:opacity-30 object-contain" />
+						<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo.svg' ); ?>" alt="<?php the_title_attribute(); ?>" class="h-32 w-32 md:h-40 md:w-40 opacity-60 dark:opacity-30 object-contain" />
 					</div>
 				<?php endif; ?>
 				<div class="ss-reading mt-8"><?php the_content(); ?></div>
