@@ -1068,7 +1068,10 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <!-- Book Reviews Section -->
-<?php $reviews = sukusastra_latest_cpt( 'review_buku', 4 ); ?>
+<?php 
+$reviews = sukusastra_latest_cpt( 'review_buku', 8 ); 
+$post_count = $reviews->post_count;
+?>
 <?php if ( $reviews->have_posts() ) : ?>
 	<section id="review-buku" class="ss-section">
 		<div class="ss-container grid gap-6">
@@ -1078,13 +1081,82 @@ document.addEventListener('DOMContentLoaded', function() {
 					<?php esc_html_e( 'Lihat Semua', 'sukusastra' ); ?> &rarr;
 				</a>
 			</div>
-			<div class="ss-review-carousel flex gap-4 overflow-x-auto snap-x snap-mandatory no-scrollbar pb-2 md:grid md:gap-5 md:grid-cols-2 lg:grid-cols-3 md:overflow-visible md:snap-none">
-				<?php while ( $reviews->have_posts() ) : $reviews->the_post(); ?>
-					<div class="ss-review-carousel-item w-[72vw] max-w-[18rem] shrink-0 snap-start sm:w-[44vw] md:w-auto md:max-w-none md:shrink">
-						<?php get_template_part( 'template-parts/cards/review-card', null, array( 'layout' => 'vertical' ) ); ?>
+			
+			<?php if ( $post_count <= 4 ) : ?>
+				<!-- Grid Layout (4 or fewer cards) -->
+				<div class="grid gap-5 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+					<?php while ( $reviews->have_posts() ) : $reviews->the_post(); ?>
+						<div>
+							<?php get_template_part( 'template-parts/cards/review-card', null, array( 'layout' => 'vertical' ) ); ?>
+						</div>
+					<?php endwhile; wp_reset_postdata(); ?>
+				</div>
+			<?php else : ?>
+				<!-- Carousel/Slider Layout (More than 4 cards) -->
+				<div class="relative w-full group" id="poetzen-review-carousel-wrapper">
+					<!-- Scroll Container -->
+					<div id="poetzen-review-scroll" class="flex gap-5 overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar pb-2">
+						<?php while ( $reviews->have_posts() ) : $reviews->the_post(); ?>
+							<div class="w-[72vw] max-w-[18rem] shrink-0 snap-start sm:w-[44vw] md:w-[calc((100%-3*1.25rem)/4)] lg:w-[calc((100%-3*1.25rem)/4)]">
+								<?php get_template_part( 'template-parts/cards/review-card', null, array( 'layout' => 'vertical' ) ); ?>
+							</div>
+						<?php endwhile; wp_reset_postdata(); ?>
 					</div>
-				<?php endwhile; wp_reset_postdata(); ?>
-			</div>
+					
+					<!-- Navigation Arrows -->
+					<button class="poetzen-review-prev absolute -left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white dark:bg-[#262B4E] border border-slate-200 dark:border-zinc-800 text-slate-700 dark:text-zinc-200 flex items-center justify-center cursor-pointer transition shadow-md hover:bg-slate-50 dark:hover:bg-zinc-800 hover:text-red-700 dark:hover:text-red-400 opacity-0 group-hover:opacity-100 disabled:opacity-20 disabled:pointer-events-none z-20 border-0 p-0" aria-label="<?php esc_attr_e( 'Previous Slide', 'sukusastra' ); ?>">
+						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" /></svg>
+					</button>
+					<button class="poetzen-review-next absolute -right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white dark:bg-[#262B4E] border border-slate-200 dark:border-zinc-800 text-slate-700 dark:text-zinc-200 flex items-center justify-center cursor-pointer transition shadow-md hover:bg-slate-50 dark:hover:bg-zinc-800 hover:text-red-700 dark:hover:text-red-400 opacity-0 group-hover:opacity-100 disabled:opacity-20 disabled:pointer-events-none z-20 border-0 p-0" aria-label="<?php esc_attr_e( 'Next Slide', 'sukusastra' ); ?>">
+						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" /></svg>
+					</button>
+				</div>
+				
+				<script>
+					document.addEventListener('DOMContentLoaded', function() {
+						var wrapper = document.getElementById('poetzen-review-carousel-wrapper');
+						if (!wrapper) return;
+						
+						var scrollContainer = wrapper.querySelector('#poetzen-review-scroll');
+						var prevBtn = wrapper.querySelector('.poetzen-review-prev');
+						var nextBtn = wrapper.querySelector('.poetzen-review-next');
+						
+						if (!scrollContainer) return;
+						
+						function checkButtons() {
+							var scrollLeft = scrollContainer.scrollLeft;
+							var maxScroll = scrollContainer.scrollWidth - scrollContainer.clientWidth;
+							
+							if (prevBtn) {
+								prevBtn.disabled = scrollLeft <= 10;
+							}
+							if (nextBtn) {
+								nextBtn.disabled = scrollLeft >= maxScroll - 10;
+							}
+						}
+						
+						if (prevBtn) {
+							prevBtn.addEventListener('click', function() {
+								var itemWidth = scrollContainer.firstElementChild.getBoundingClientRect().width + 20; // width + gap
+								scrollContainer.scrollBy({ left: -itemWidth * 2, behavior: 'smooth' });
+							});
+						}
+						
+						if (nextBtn) {
+							nextBtn.addEventListener('click', function() {
+								var itemWidth = scrollContainer.firstElementChild.getBoundingClientRect().width + 20; // width + gap
+								scrollContainer.scrollBy({ left: itemWidth * 2, behavior: 'smooth' });
+							});
+						}
+						
+						scrollContainer.addEventListener('scroll', checkButtons);
+						window.addEventListener('resize', checkButtons);
+						
+						// Initial check
+						setTimeout(checkButtons, 200);
+					});
+				</script>
+			<?php endif; ?>
 		</div>
 	</section>
 <?php endif; ?>
