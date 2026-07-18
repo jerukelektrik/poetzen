@@ -50,21 +50,21 @@ get_header(); ?>
 			<!-- Book Meta Sidebar -->
 			<aside class="grid content-start gap-4 lg:sticky lg:top-24 self-start">
 				<?php if ( $book_image_id ) : ?>
-					<div class="rounded-3xl overflow-hidden shadow-md border border-slate-100 dark:border-zinc-800 bg-white dark:bg-[#262B4E] p-3">
+					<div class="rounded-md overflow-hidden shadow-md border border-slate-100 dark:border-zinc-800 bg-white dark:bg-[#262B4E] p-3">
 						<p class="ss-meta mb-2 text-center"><?php esc_html_e( 'Sampul Buku', 'sukusastra' ); ?></p>
-						<?php echo wp_get_attachment_image( $book_image_id, 'sukusastra-cover', false, array( 'class' => 'w-full object-cover rounded-2xl shadow-sm' ) ); ?>
+						<?php echo wp_get_attachment_image( $book_image_id, 'sukusastra-cover', false, array( 'class' => 'w-full object-cover rounded-sm shadow-sm' ) ); ?>
 					</div>
 				<?php elseif ( has_post_thumbnail() ) : ?>
-					<div class="rounded-3xl overflow-hidden shadow-md border border-slate-100 dark:border-zinc-800 bg-white dark:bg-[#262B4E] p-3">
-						<?php the_post_thumbnail( 'sukusastra-cover', array( 'class' => 'w-full object-cover rounded-2xl' ) ); ?>
+					<div class="rounded-md overflow-hidden shadow-md border border-slate-100 dark:border-zinc-800 bg-white dark:bg-[#262B4E] p-3">
+						<?php the_post_thumbnail( 'sukusastra-cover', array( 'class' => 'w-full object-cover rounded-sm' ) ); ?>
 					</div>
 				<?php else : ?>
-					<div class="rounded-3xl overflow-hidden shadow-md border border-slate-200/60 dark:border-zinc-800 bg-white dark:bg-[#262B4E]/40 p-6 flex items-center justify-center aspect-[2/3] w-full">
+					<div class="rounded-md overflow-hidden shadow-md border border-slate-200/60 dark:border-zinc-800 bg-white dark:bg-[#262B4E]/40 p-6 flex items-center justify-center aspect-[2/3] w-full">
 						<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo.svg' ); ?>" alt="<?php the_title_attribute(); ?>" class="max-h-36 max-w-full opacity-60 dark:opacity-30 object-contain" />
 					</div>
 				<?php endif; ?>
 				
-				<div class="ss-card rounded-3xl p-6 grid gap-5 bg-white dark:bg-[#262B4E]/40 shadow-sm border border-slate-200/60 dark:border-zinc-800/80 font-sans text-sm">
+				<div class="ss-card rounded-md p-6 grid gap-5 bg-white dark:bg-[#262B4E]/40 shadow-sm border border-slate-200/60 dark:border-zinc-800/80 font-sans text-sm">
 					<h3 class="ss-info-title m-0 text-slate-900 dark:text-zinc-50 text-base font-black uppercase tracking-wide"><?php esc_html_e( 'Identitas Buku', 'sukusastra' ); ?></h3>
 					
 					<div class="grid gap-4.5 text-sm">
