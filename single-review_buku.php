@@ -50,16 +50,16 @@ get_header(); ?>
 			<!-- Book Meta Sidebar -->
 			<aside class="grid content-start gap-4 lg:sticky lg:top-24 self-start">
 				<?php if ( $book_image_id ) : ?>
-					<div class="rounded overflow-hidden shadow-md border border-slate-100 dark:border-zinc-800 bg-white dark:bg-[#262B4E] p-2">
+					<div class="rounded-3xl overflow-hidden shadow-md border border-slate-100 dark:border-zinc-800 bg-white dark:bg-[#262B4E] p-3">
 						<p class="ss-meta mb-2 text-center"><?php esc_html_e( 'Sampul Buku', 'sukusastra' ); ?></p>
-						<?php echo wp_get_attachment_image( $book_image_id, 'sukusastra-cover', false, array( 'class' => 'w-full object-cover rounded shadow-sm' ) ); ?>
+						<?php echo wp_get_attachment_image( $book_image_id, 'sukusastra-cover', false, array( 'class' => 'w-full object-cover rounded-2xl shadow-sm' ) ); ?>
 					</div>
 				<?php elseif ( has_post_thumbnail() ) : ?>
-					<div class="rounded overflow-hidden shadow-md">
-						<?php the_post_thumbnail( 'sukusastra-cover', array( 'class' => 'w-full object-cover' ) ); ?>
+					<div class="rounded-3xl overflow-hidden shadow-md border border-slate-100 dark:border-zinc-800 bg-white dark:bg-[#262B4E] p-3">
+						<?php the_post_thumbnail( 'sukusastra-cover', array( 'class' => 'w-full object-cover rounded-2xl' ) ); ?>
 					</div>
 				<?php else : ?>
-					<div class="rounded overflow-hidden shadow-md border border-slate-200/60 dark:border-zinc-800 bg-white dark:bg-[#262B4E]/40 p-6 flex items-center justify-center aspect-[2/3] w-full">
+					<div class="rounded-3xl overflow-hidden shadow-md border border-slate-200/60 dark:border-zinc-800 bg-white dark:bg-[#262B4E]/40 p-6 flex items-center justify-center aspect-[2/3] w-full">
 						<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo.svg' ); ?>" alt="<?php the_title_attribute(); ?>" class="max-h-36 max-w-full opacity-60 dark:opacity-30 object-contain" />
 					</div>
 				<?php endif; ?>
@@ -71,7 +71,7 @@ get_header(); ?>
 						<!-- Jenis Buku -->
 						<div>
 							<span class="block text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-zinc-550 mb-0.5"><?php esc_html_e( 'Jenis Buku', 'sukusastra' ); ?></span>
-							<span class="inline-block px-2.5 py-0.5 text-[11px] font-bold rounded-full bg-red-50 text-red-700 border border-red-200/60 dark:bg-red-950/20 dark:text-red-300 dark:border-red-900/50 mt-0.5"><?php echo esc_html( $book_type_label ); ?></span>
+							<span class="inline-block px-2.5 py-0.5 text-[11px] font-bold rounded-lg bg-red-50 text-red-700 border border-red-200/60 dark:bg-red-950/20 dark:text-red-300 dark:border-red-900/50 mt-0.5"><?php echo esc_html( $book_type_label ); ?></span>
 						</div>
 
 						<!-- Judul Buku -->
