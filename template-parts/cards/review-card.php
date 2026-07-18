@@ -38,11 +38,15 @@ if ( $tokopedia_url ) {
 ?>
 <?php
 $layout = isset( $args['layout'] ) ? $args['layout'] : 'horizontal';
-$article_classes = 'ss-card ss-review-card ';
+$article_classes = 'ss-card ss-review-card h-full ';
+$content_classes = 'ss-review-card-content ';
+
 if ( 'vertical' === $layout ) {
-	$article_classes .= 'flex flex-col gap-3 group';
+	$article_classes .= 'flex flex-col justify-between gap-3 group';
+	$content_classes .= 'flex flex-col justify-between flex-grow gap-3';
 } else {
 	$article_classes .= 'grid gap-4 md:grid-cols-[120px_1fr]';
+	$content_classes .= 'grid content-start gap-2';
 }
 ?>
 <article <?php post_class( $article_classes ); ?>>
@@ -64,21 +68,55 @@ if ( 'vertical' === $layout ) {
 			</div>
 		<?php endif; ?>
 	</a>
-	<div class="ss-review-card-content grid content-start gap-2">
-		<p class="ss-eyebrow">
-			<?php 
-			$book_type_val = sukusastra_get_meta( $post_id, '_ss_book_type', 'novel' );
-			$book_types = array(
-				'puisi'    => __( 'Kumpulan Puisi', 'sukusastra' ),
-				'cerpen'   => __( 'Kumpulan Cerpen', 'sukusastra' ),
-				'novel'    => __( 'Novel', 'sukusastra' ),
-				'nonfiksi' => __( 'Nonfiksi', 'sukusastra' ),
-			);
-			$book_type_label = isset( $book_types[ $book_type_val ] ) ? $book_types[ $book_type_val ] : $book_types['novel'];
+	<div class="<?php echo esc_attr( $content_classes ); ?>">
+		<?php if ( 'vertical' === $layout ) : ?>
+			<div class="grid gap-2">
+				<p class="ss-eyebrow">
+					<?php 
+					$book_type_val = sukusastra_get_meta( $post_id, '_ss_book_type', 'novel' );
+					$book_types = array(
+						'puisi'    => __( 'Kumpulan Puisi', 'sukusastra' ),
+						'cerpen'   => __( 'Kumpulan Cerpen', 'sukusastra' ),
+						'novel'    => __( 'Novel', 'sukusastra' ),
+						'nonfiksi' => __( 'Nonfiksi', 'sukusastra' ),
+					);
+					$book_type_label = isset( $book_types[ $book_type_val ] ) ? $book_types[ $book_type_val ] : $book_types['novel'];
+					echo esc_html( $book_type_label );
+					?>
+				</p>
+				<h3 class="ss-review-card-title text-base font-black leading-snug text-slate-900 dark:text-zinc-50 group-hover:text-red-700 dark:group-hover:text-red-400 transition-colors">
+					<a class="ss-card-title-link line-clamp-2" href="<?php the_permalink(); ?>">
+						<?php the_title(); ?>
+					</a>
+				</h3>
+			</div>
 			
-			if ( 'vertical' === $layout ) {
-				echo esc_html( $book_type_label );
-			} else {
+			<p class="ss-review-card-author text-[11px] text-slate-500 dark:text-zinc-400 font-bold uppercase tracking-wide mt-auto">
+				<?php 
+				$reviewer_info = sukusastra_get_reviewer_info( $post_id );
+				if ( ! empty( $reviewer_info['name'] ) ) {
+					echo esc_html( $reviewer_info['name'] );
+				} elseif ( $orig_author ) {
+					echo esc_html( $orig_author->post_title );
+				} else {
+					$book_author_info = sukusastra_get_book_author_info( $post_id );
+					if ( ! empty( $book_author_info['name'] ) ) {
+						echo esc_html( $book_author_info['name'] );
+					}
+				}
+				?>
+			</p>
+		<?php else : ?>
+			<p class="ss-eyebrow">
+				<?php 
+				$book_type_val = sukusastra_get_meta( $post_id, '_ss_book_type', 'novel' );
+				$book_types = array(
+					'puisi'    => __( 'Kumpulan Puisi', 'sukusastra' ),
+					'cerpen'   => __( 'Kumpulan Cerpen', 'sukusastra' ),
+					'novel'    => __( 'Novel', 'sukusastra' ),
+					'nonfiksi' => __( 'Nonfiksi', 'sukusastra' ),
+				);
+				$book_type_label = isset( $book_types[ $book_type_val ] ) ? $book_types[ $book_type_val ] : $book_types['novel'];
 				printf( '%s (%s)', esc_html__( 'Reviu Buku', 'sukusastra' ), esc_html( $book_type_label ) );
 
 				$reviewer_info = sukusastra_get_reviewer_info( $post_id );
@@ -99,31 +137,13 @@ if ( 'vertical' === $layout ) {
 						esc_html( $orig_author->post_title )
 					);
 				}
-			}
-			?>
-		</p>
-		<h3 class="ss-card-title ss-review-card-title">
-			<a class="ss-card-title-link line-clamp-2" href="<?php the_permalink(); ?>">
-				<?php the_title(); ?>
-			</a>
-		</h3>
-		<?php if ( 'vertical' === $layout ) : ?>
-			<p class="ss-review-card-author text-[11px] text-slate-500 dark:text-zinc-400 font-bold uppercase tracking-wide">
-				<?php 
-				$reviewer_info = sukusastra_get_reviewer_info( $post_id );
-				if ( ! empty( $reviewer_info['name'] ) ) {
-					echo esc_html( $reviewer_info['name'] );
-				} elseif ( $orig_author ) {
-					echo esc_html( $orig_author->post_title );
-				} else {
-					$book_author_info = sukusastra_get_book_author_info( $post_id );
-					if ( ! empty( $book_author_info['name'] ) ) {
-						echo esc_html( $book_author_info['name'] );
-					}
-				}
 				?>
 			</p>
-		<?php else : ?>
+			<h3 class="ss-card-title ss-review-card-title">
+				<a class="ss-card-title-link line-clamp-2" href="<?php the_permalink(); ?>">
+					<?php the_title(); ?>
+				</a>
+			</h3>
 			<?php
 			$book_author_info = sukusastra_get_book_author_info( $post_id );
 			$author_text = ! empty( $book_author_info['name'] ) ? ' · ' . $book_author_info['name'] : '';

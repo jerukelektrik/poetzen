@@ -1084,20 +1084,18 @@ $post_count = $reviews->post_count;
 			
 			<?php if ( $post_count <= 4 ) : ?>
 				<!-- Grid Layout (4 or fewer cards) -->
-				<div class="grid gap-5 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+				<div class="grid gap-5 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 items-stretch">
 					<?php while ( $reviews->have_posts() ) : $reviews->the_post(); ?>
-						<div>
-							<?php get_template_part( 'template-parts/cards/review-card', null, array( 'layout' => 'vertical' ) ); ?>
-						</div>
+						<?php get_template_part( 'template-parts/cards/review-card', null, array( 'layout' => 'vertical' ) ); ?>
 					<?php endwhile; wp_reset_postdata(); ?>
 				</div>
 			<?php else : ?>
 				<!-- Carousel/Slider Layout (More than 4 cards) -->
 				<div class="relative w-full group" id="poetzen-review-carousel-wrapper">
 					<!-- Scroll Container -->
-					<div id="poetzen-review-scroll" class="flex gap-5 overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar pb-2">
+					<div id="poetzen-review-scroll" class="flex gap-5 overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar pb-2 items-stretch">
 						<?php while ( $reviews->have_posts() ) : $reviews->the_post(); ?>
-							<div class="w-[72vw] max-w-[18rem] shrink-0 snap-start sm:w-[44vw] md:w-[calc((100%-3*1.25rem)/4)] lg:w-[calc((100%-3*1.25rem)/4)]">
+							<div class="w-[72vw] max-w-[18rem] shrink-0 snap-start sm:w-[44vw] md:w-[calc((100%-3*1.25rem)/4)] lg:w-[calc((100%-3*1.25rem)/4)] flex">
 								<?php get_template_part( 'template-parts/cards/review-card', null, array( 'layout' => 'vertical' ) ); ?>
 							</div>
 						<?php endwhile; wp_reset_postdata(); ?>
