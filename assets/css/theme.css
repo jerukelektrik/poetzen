@@ -180,6 +180,7 @@
     --leading-snug: 1.375;
     --leading-normal: 1.5;
     --leading-relaxed: 1.625;
+    --radius-sm: .25rem;
     --radius-md: .375rem;
     --radius-lg: .5rem;
     --radius-xl: .75rem;
@@ -839,7 +840,34 @@
   }
 
   .ss-reading p {
-    margin-block: calc(var(--spacing) * 6);
+    margin-block: calc(var(--spacing) * 6) !important;
+  }
+
+  .ss-reading h1, .ss-reading h2, .ss-reading h3, .ss-reading h4, .ss-reading h5, .ss-reading h6 {
+    margin-top: calc(var(--spacing) * 8) !important;
+    margin-bottom: calc(var(--spacing) * 4) !important;
+    line-height: 1.4 !important;
+  }
+
+  .ss-reading ul, .ss-reading ol {
+    margin-block: calc(var(--spacing) * 6) !important;
+    padding-left: calc(var(--spacing) * 6) !important;
+  }
+
+  .ss-reading li {
+    margin-block: calc(var(--spacing) * 2) !important;
+  }
+
+  .ss-reading blockquote {
+    margin-block: calc(var(--spacing) * 8) !important;
+    padding-left: calc(var(--spacing) * 4) !important;
+    border-left-width: 4px !important;
+    border-color: var(--color-slate-300) !important;
+    font-style: italic !important;
+  }
+
+  .dark .ss-reading blockquote {
+    border-color: var(--color-zinc-700) !important;
   }
 
   .logo-light {
@@ -3411,6 +3439,10 @@
 
   .rounded-md {
     border-radius: var(--radius-md);
+  }
+
+  .rounded-sm {
+    border-radius: var(--radius-sm);
   }
 
   .rounded-xl {

@@ -111,7 +111,37 @@
   }
 
   .ss-reading p {
-    @apply my-6;
+    @apply !my-6;
+  }
+
+  .ss-reading h1,
+  .ss-reading h2,
+  .ss-reading h3,
+  .ss-reading h4,
+  .ss-reading h5,
+  .ss-reading h6 {
+    @apply !mt-8 !mb-4;
+    line-height: 1.4 !important;
+  }
+
+  .ss-reading ul,
+  .ss-reading ol {
+    @apply !my-6 !pl-6;
+  }
+
+  .ss-reading li {
+    @apply !my-2;
+  }
+
+  .ss-reading blockquote {
+    @apply !my-8 !pl-4;
+    border-left-width: 4px !important;
+    border-color: var(--color-slate-300) !important;
+    font-style: italic !important;
+  }
+
+  .dark .ss-reading blockquote {
+    border-color: var(--color-zinc-700) !important;
   }
 
   .logo-light {
