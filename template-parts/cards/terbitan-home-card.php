@@ -24,16 +24,6 @@ $img_class = 'absolute inset-0 w-full h-full object-cover transition-transform d
 			</div>
 		<?php endif; ?>
 		
-		<!-- Dark overlay at bottom for author readability -->
-		<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-80 z-10"></div>
-		
-		<!-- Author Name overlay at the bottom center (like Kumparan) -->
-		<div class="ss-terbitan-home-author absolute bottom-4 left-0 right-0 text-center z-20 px-3">
-			<span class="text-xs font-bold uppercase tracking-wide text-white drop-shadow-md">
-				<?php echo esc_html( $book_author ? $book_author : 'Suku Sastra' ); ?>
-			</span>
-		</div>
-		
 		<!-- Light hover overlay -->
 		<div class="absolute inset-0 bg-black/5 dark:bg-black/10 group-hover:bg-black/0 transition-colors duration-300 z-15"></div>
 	</a>
