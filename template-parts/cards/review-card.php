@@ -42,7 +42,7 @@ $article_classes = 'ss-card ss-review-card h-full ';
 $content_classes = 'ss-review-card-content ';
 
 if ( 'vertical' === $layout ) {
-	$article_classes .= 'flex flex-col justify-between gap-3 group';
+	$article_classes .= 'flex flex-col justify-between gap-3 group !rounded-2xl';
 	$content_classes .= 'flex flex-col justify-between flex-grow gap-3';
 } else {
 	$article_classes .= 'grid gap-4 md:grid-cols-[120px_1fr]';

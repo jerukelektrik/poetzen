@@ -3429,6 +3429,10 @@
     scroll-behavior: smooth;
   }
 
+  .\!rounded-2xl {
+    border-radius: var(--radius-2xl) !important;
+  }
+
   .rounded {
     border-radius: .25rem;
   }
