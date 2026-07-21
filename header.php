@@ -139,7 +139,27 @@ if ( $gtm_id ) : ?>
 		</nav>
 
 		<!-- Action Buttons -->
-		<div class="flex items-center gap-2">
+		<div class="flex items-center gap-2.5">
+			<!-- Desktop Expandable Search Capsule Component (Matches Screenshot) -->
+			<div id="desktop-search-wrapper" class="relative flex items-center">
+				<!-- Collapsed Icon Button -->
+				<button type="button" id="desktop-search-trigger" class="w-10 h-10 rounded-full border border-slate-200 bg-white hover:bg-slate-50 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:bg-zinc-800 flex items-center justify-center text-slate-700 dark:text-zinc-200 shadow-sm cursor-pointer transition-all duration-200 shrink-0" aria-label="<?php esc_attr_e( 'Buka pencarian', 'sukusastra' ); ?>" title="<?php esc_attr_e( 'Cari tulisan', 'sukusastra' ); ?>">
+					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor" class="w-4.5 h-4.5">
+						<path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+					</svg>
+				</button>
+
+				<!-- Dropdown Search Bar Capsule (Positioned Underneath Header) -->
+				<form role="search" method="get" id="desktop-search-form" class="hidden absolute right-0 top-full mt-4 flex items-center rounded-full bg-white dark:bg-[#262B4E] border border-slate-200/90 dark:border-zinc-800 p-1.5 pl-6 shadow-2xl z-50 w-80 md:w-96 transition-all duration-300" action="<?php echo esc_url( home_url( '/' ) ); ?>">
+					<input type="search" id="desktop-search-input" class="w-full bg-transparent border-0 outline-none text-xs md:text-sm font-medium text-slate-900 dark:text-zinc-50 placeholder-slate-400 py-1 px-1 focus:outline-none" placeholder="<?php esc_attr_e( 'Cari tulisan, puisi, cerpen...', 'sukusastra' ); ?>" value="<?php echo get_search_query(); ?>" name="s" autocomplete="off" />
+					<button type="submit" class="w-9 h-9 rounded-full bg-red-700 hover:bg-red-800 text-white dark:bg-red-600 dark:hover:bg-red-500 flex items-center justify-center transition-colors cursor-pointer shrink-0 shadow-md border-0 ml-2">
+						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+							<path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+						</svg>
+					</button>
+				</form>
+			</div>
+
 			<a class="ss-button-kirim font-sans" href="<?php echo esc_url( home_url( '/ketentuan-pengiriman-karya/' ) ); ?>">
 				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 shrink-0 text-current" aria-hidden="true">
 					<path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
@@ -530,6 +550,50 @@ if ( $gtm_id ) : ?>
           target.classList.add('translate-x-0');
         }
       });
+    });
+  });
+})();
+</script>
+
+<script>
+(function() {
+  document.addEventListener('DOMContentLoaded', function() {
+    var trigger = document.getElementById('desktop-search-trigger');
+    var form = document.getElementById('desktop-search-form');
+    var input = document.getElementById('desktop-search-input');
+    var wrapper = document.getElementById('desktop-search-wrapper');
+
+    if (!trigger || !form) return;
+
+    function openSearch() {
+      form.classList.remove('hidden');
+      if (input) input.focus();
+    }
+
+    function closeSearch() {
+      form.classList.add('hidden');
+    }
+
+    trigger.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (form.classList.contains('hidden')) {
+        openSearch();
+      } else {
+        closeSearch();
+      }
+    });
+
+    document.addEventListener('click', function(e) {
+      if (wrapper && !wrapper.contains(e.target)) {
+        closeSearch();
+      }
+    });
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeSearch();
+      }
     });
   });
 })();
