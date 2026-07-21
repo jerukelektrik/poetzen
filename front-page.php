@@ -1082,13 +1082,72 @@ $post_count = $reviews->post_count;
 				</a>
 			</div>
 			
-			<!-- Reviu Buku: mobile carousel, desktop grid -->
-			<div class="ss-review-carousel -mx-4 flex gap-4 overflow-x-auto snap-x snap-mandatory no-scrollbar px-4 pb-2 sm:-mx-6 sm:px-6 md:mx-0 md:grid md:gap-5 md:grid-cols-4 md:px-0 md:overflow-visible md:snap-none">
+			<!-- Mobile: horizontal swipe carousel -->
+			<div class="ss-review-carousel -mx-4 flex gap-4 overflow-x-auto snap-x snap-mandatory no-scrollbar px-4 pb-2 sm:-mx-6 sm:px-6 md:hidden">
 				<?php while ( $reviews->have_posts() ) : $reviews->the_post(); ?>
-					<div class="w-[72vw] max-w-[17rem] shrink-0 snap-start md:w-auto md:max-w-none md:shrink flex flex-col">
+					<div class="w-[72vw] max-w-[17rem] shrink-0 snap-start flex flex-col">
 						<?php get_template_part( 'template-parts/cards/review-card', null, array( 'layout' => 'vertical' ) ); ?>
 					</div>
 				<?php endwhile; wp_reset_postdata(); ?>
+			</div>
+
+			<!-- Desktop: 4-col paginated grid slider -->
+			<div class="hidden md:block relative group" id="ss-review-desktop-slider">
+				<div class="overflow-hidden">
+					<div id="ss-review-track" class="flex transition-transform duration-500 ease-in-out" style="width: <?php echo ceil( $post_count / 4 ) * 100; ?>%;">
+						<?php
+						$reviews->rewind_posts();
+						$card_index = 0;
+						while ( $reviews->have_posts() ) : $reviews->the_post();
+							// Start a new page every 4 cards
+							if ( $card_index % 4 === 0 ) :
+								if ( $card_index > 0 ) echo '</div>'; // close previous page
+						?>
+						<div class="grid grid-cols-4 gap-5 w-full shrink-0">
+						<?php endif; ?>
+							<div class="flex flex-col">
+								<?php get_template_part( 'template-parts/cards/review-card', null, array( 'layout' => 'vertical' ) ); ?>
+							</div>
+						<?php
+							$card_index++;
+						endwhile;
+						wp_reset_postdata();
+						echo '</div>'; // close last page
+						?>
+					</div>
+				</div>
+
+				<?php if ( $post_count > 4 ) : ?>
+					<button id="ss-review-prev" class="absolute -left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white dark:bg-[#262B4E] border border-slate-200 dark:border-zinc-800 text-slate-700 dark:text-zinc-200 items-center justify-center cursor-pointer transition shadow-md hover:bg-slate-50 dark:hover:bg-zinc-800 hover:text-red-700 dark:hover:text-red-400 opacity-0 group-hover:opacity-100 disabled:opacity-20 disabled:pointer-events-none z-20 hidden" aria-label="<?php esc_attr_e( 'Previous', 'sukusastra' ); ?>">
+						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" /></svg>
+					</button>
+					<button id="ss-review-next" class="absolute -right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white dark:bg-[#262B4E] border border-slate-200 dark:border-zinc-800 text-slate-700 dark:text-zinc-200 items-center justify-center cursor-pointer transition shadow-md hover:bg-slate-50 dark:hover:bg-zinc-800 hover:text-red-700 dark:hover:text-red-400 opacity-0 group-hover:opacity-100 disabled:opacity-20 disabled:pointer-events-none z-20 flex" aria-label="<?php esc_attr_e( 'Next', 'sukusastra' ); ?>">
+						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" /></svg>
+					</button>
+
+					<script>
+					document.addEventListener('DOMContentLoaded', function() {
+						var track = document.getElementById('ss-review-track');
+						var prev = document.getElementById('ss-review-prev');
+						var next = document.getElementById('ss-review-next');
+						if (!track || !prev || !next) return;
+
+						var totalPages = <?php echo ceil( $post_count / 4 ); ?>;
+						var currentPage = 0;
+
+						function goTo(page) {
+							currentPage = page;
+							track.style.transform = 'translateX(-' + (currentPage * (100 / totalPages)) + '%)';
+							prev.style.display = currentPage === 0 ? 'none' : 'flex';
+							next.style.display = currentPage >= totalPages - 1 ? 'none' : 'flex';
+						}
+
+						prev.addEventListener('click', function() { if (currentPage > 0) goTo(currentPage - 1); });
+						next.addEventListener('click', function() { if (currentPage < totalPages - 1) goTo(currentPage + 1); });
+						goTo(0);
+					});
+					</script>
+				<?php endif; ?>
 			</div>
 		</div>
 	</section>
