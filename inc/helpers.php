@@ -523,7 +523,7 @@ add_action( 'admin_init', 'sukusastra_add_footnote_editor_button' );
 function sukusastra_add_footnote_editor_button(): void {
 	if ( current_user_can( 'edit_posts' ) || current_user_can( 'edit_pages' ) ) {
 		add_filter( 'mce_buttons', 'sukusastra_register_footnote_mce_button' );
-		add_filter( 'tinymce_before_init', 'sukusastra_add_footnote_to_tinymce_init' );
+		add_filter( 'mce_external_plugins', 'sukusastra_register_footnote_mce_plugin' );
 	}
 }
 
@@ -532,30 +532,9 @@ function sukusastra_register_footnote_mce_button( array $buttons ): array {
 	return $buttons;
 }
 
-function sukusastra_add_footnote_to_tinymce_init( array $init_array ): array {
-	$setup = isset( $init_array['setup'] ) ? $init_array['setup'] : '';
-	$custom_setup = "function(ed) {
-		ed.addButton('ss_footnote_button', {
-			title: 'Tambah Catatan Kaki [fn]',
-			text: '[fn]',
-			icon: false,
-			onclick: function() {
-				var selected = ed.selection.getContent({ format: 'text' });
-				var fnText = prompt('Masukkan isi Catatan Kaki:', selected || '');
-				if (fnText !== null && fnText.trim() !== '') {
-					ed.insertContent('[fn]' + fnText.trim() + '[/fn]');
-				}
-			}
-		});
-	}";
-
-	if ( ! empty( $setup ) ) {
-		$init_array['setup'] = 'function(ed){ (' . $setup . ')(ed); (' . $custom_setup . ')(ed); }';
-	} else {
-		$init_array['setup'] = $custom_setup;
-	}
-
-	return $init_array;
+function sukusastra_register_footnote_mce_plugin( array $plugins ): array {
+	$plugins['ss_footnote_plugin'] = SUKUSASTRA_URI . '/assets/js/tinymce-footnote.js';
+	return $plugins;
 }
 
 add_action( 'admin_print_footer_scripts', 'sukusastra_footnote_editor_scripts' );
