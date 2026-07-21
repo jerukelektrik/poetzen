@@ -92,10 +92,20 @@ get_header(); ?>
 				} elseif ( 'esai' === $selected_filter ) {
 					$query_args['post_type'] = 'post';
 					$query_args['category_name'] = 'esai';
+				} elseif ( 'peristiwa' === $selected_filter ) {
+					$query_args['post_type'] = array( 'berita', 'post' );
+					$query_args['tax_query'] = array(
+						'relation' => 'OR',
+						array(
+							'taxonomy' => 'category',
+							'field'    => 'slug',
+							'terms'    => array( 'peristiwa', 'berita' ),
+						),
+					);
 				} elseif ( 'review_buku' === $selected_filter ) {
 					$query_args['post_type'] = 'review_buku';
 				} else {
-					$query_args['post_type'] = array( 'post', 'review_buku' );
+					$query_args['post_type'] = array( 'post', 'review_buku', 'berita' );
 				}
 
 				$works_query = new WP_Query( $query_args );
@@ -113,6 +123,7 @@ get_header(); ?>
 								<option value="puisi" <?php selected( $selected_filter, 'puisi' ); ?>><?php esc_html_e( 'Puisi', 'sukusastra' ); ?></option>
 								<option value="cerpen" <?php selected( $selected_filter, 'cerpen' ); ?>><?php esc_html_e( 'Cerpen', 'sukusastra' ); ?></option>
 								<option value="esai" <?php selected( $selected_filter, 'esai' ); ?>><?php esc_html_e( 'Esai', 'sukusastra' ); ?></option>
+								<option value="peristiwa" <?php selected( $selected_filter, 'peristiwa' ); ?>><?php esc_html_e( 'Peristiwa', 'sukusastra' ); ?></option>
 								<option value="review_buku" <?php selected( $selected_filter, 'review_buku' ); ?>><?php esc_html_e( 'Reviu Buku', 'sukusastra' ); ?></option>
 							</select>
 						</form>
@@ -126,6 +137,8 @@ get_header(); ?>
 									<?php 
 									if ( 'review_buku' === get_post_type() ) {
 										get_template_part( 'template-parts/cards/review-card' );
+									} elseif ( 'berita' === get_post_type() ) {
+										get_template_part( 'template-parts/cards/news-card' );
 									} else {
 										get_template_part( 'template-parts/cards/post-card' );
 									}
