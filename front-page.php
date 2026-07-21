@@ -1082,33 +1082,27 @@ $post_count = $reviews->post_count;
 				</a>
 			</div>
 			
-			<?php if ( $post_count <= 4 ) : ?>
-				<!-- Grid Layout (4 or fewer cards) -->
-				<div class="grid gap-5 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 items-stretch">
+			<!-- Carousel/Slider Layout (Always slideable on mobile) -->
+			<div class="relative w-full group" id="poetzen-review-carousel-wrapper">
+				<!-- Scroll Container -->
+				<div id="poetzen-review-scroll" class="flex gap-5 overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar pb-2 items-stretch touch-pan-x">
 					<?php while ( $reviews->have_posts() ) : $reviews->the_post(); ?>
-						<?php get_template_part( 'template-parts/cards/review-card', null, array( 'layout' => 'vertical' ) ); ?>
+						<div class="w-[78vw] sm:w-[44vw] md:w-[calc((100%-3*1.25rem)/4)] lg:w-[calc((100%-3*1.25rem)/4)] max-w-[18rem] shrink-0 snap-start flex">
+							<?php get_template_part( 'template-parts/cards/review-card', null, array( 'layout' => 'vertical' ) ); ?>
+						</div>
 					<?php endwhile; wp_reset_postdata(); ?>
 				</div>
-			<?php else : ?>
-				<!-- Carousel/Slider Layout (More than 4 cards) -->
-				<div class="relative w-full group" id="poetzen-review-carousel-wrapper">
-					<!-- Scroll Container -->
-					<div id="poetzen-review-scroll" class="flex gap-5 overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar pb-2 items-stretch">
-						<?php while ( $reviews->have_posts() ) : $reviews->the_post(); ?>
-							<div class="w-[72vw] max-w-[18rem] shrink-0 snap-start sm:w-[44vw] md:w-[calc((100%-3*1.25rem)/4)] lg:w-[calc((100%-3*1.25rem)/4)] flex">
-								<?php get_template_part( 'template-parts/cards/review-card', null, array( 'layout' => 'vertical' ) ); ?>
-							</div>
-						<?php endwhile; wp_reset_postdata(); ?>
-					</div>
-					
-					<!-- Navigation Arrows -->
+				
+				<?php if ( $post_count > 4 ) : ?>
+					<!-- Navigation Arrows (Shown on desktop if more than 4 cards) -->
 					<button class="poetzen-review-prev absolute -left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white dark:bg-[#262B4E] border border-slate-200 dark:border-zinc-800 text-slate-700 dark:text-zinc-200 flex items-center justify-center cursor-pointer transition shadow-md hover:bg-slate-50 dark:hover:bg-zinc-800 hover:text-red-700 dark:hover:text-red-400 opacity-0 group-hover:opacity-100 disabled:opacity-20 disabled:pointer-events-none z-20 border-0 p-0" aria-label="<?php esc_attr_e( 'Previous Slide', 'sukusastra' ); ?>">
 						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" /></svg>
 					</button>
 					<button class="poetzen-review-next absolute -right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white dark:bg-[#262B4E] border border-slate-200 dark:border-zinc-800 text-slate-700 dark:text-zinc-200 flex items-center justify-center cursor-pointer transition shadow-md hover:bg-slate-50 dark:hover:bg-zinc-800 hover:text-red-700 dark:hover:text-red-400 opacity-0 group-hover:opacity-100 disabled:opacity-20 disabled:pointer-events-none z-20 border-0 p-0" aria-label="<?php esc_attr_e( 'Next Slide', 'sukusastra' ); ?>">
 						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" /></svg>
 					</button>
-				</div>
+				<?php endif; ?>
+			</div>
 				
 				<script>
 					document.addEventListener('DOMContentLoaded', function() {
