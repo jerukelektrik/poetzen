@@ -71,9 +71,9 @@
 		src="https://www.facebook.com/tr?id=<?php echo esc_attr( $meta_pixel_id ); ?>&ev=PageView&noscript=1"
 		/></noscript>
 		<!-- End Meta Pixel Code -->
-		<?php
-	}
-	?>
+	<!-- Theme Favicon Fallback -->
+	<link rel="icon" href="<?php echo esc_url( get_template_directory_uri() . '/assets/images/favicon.png' ); ?>" type="image/png">
+	<link rel="apple-touch-icon" href="<?php echo esc_url( get_template_directory_uri() . '/assets/images/favicon.png' ); ?>">
 	<?php wp_head(); ?>
 </head>
 <body <?php body_class( 'min-h-screen bg-slate-50 text-slate-950 dark:bg-[#343B6A] dark:text-zinc-50' ); ?>>
