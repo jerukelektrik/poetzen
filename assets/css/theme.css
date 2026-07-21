@@ -870,6 +870,78 @@
     border-color: var(--color-zinc-700) !important;
   }
 
+  @keyframes ss-footnote-flash {
+    0% {
+      background-color: #ef444440;
+    }
+
+    100% {
+      background-color: #0000;
+    }
+  }
+
+  .ss-footnote-highlight {
+    border-radius: .375rem;
+    animation: 2.5s ease-out ss-footnote-flash;
+  }
+
+  sup.fn, sup.wp-block-footnote-link {
+    padding: 0 .15rem;
+    font-weight: 800;
+  }
+
+  sup.fn a, sup.wp-block-footnote-link a {
+    color: #b91c1c;
+    background-color: #ef444414;
+    border-radius: .25rem;
+    padding: .1rem .35rem;
+    text-decoration: none;
+    transition: all .2s;
+  }
+
+  .dark sup.fn a, .dark sup.wp-block-footnote-link a {
+    color: #f87171;
+    background-color: #f8717126;
+  }
+
+  sup.fn a:hover, sup.wp-block-footnote-link a:hover {
+    background-color: #b91c1c;
+    color: #fff !important;
+  }
+
+  .dark sup.fn a:hover, .dark sup.wp-block-footnote-link a:hover {
+    background-color: #ef4444;
+    color: #fff !important;
+  }
+
+  ol.wp-block-footnotes {
+    border-top: 1px solid #e2e8f0cc !important;
+    margin-top: 2.5rem !important;
+    padding-top: 1.5rem !important;
+    font-size: .875rem !important;
+    line-height: 1.6 !important;
+  }
+
+  .dark ol.wp-block-footnotes {
+    border-top-color: #3f3f46cc !important;
+  }
+
+  ol.wp-block-footnotes li {
+    padding: .35rem .5rem;
+    transition: background-color .3s;
+    margin-bottom: .75rem !important;
+  }
+
+  ol.wp-block-footnotes a {
+    color: #b91c1c;
+    font-weight: 700;
+    text-decoration: underline;
+  }
+
+  .dark ol.wp-block-footnotes a {
+    color: #f87171;
+  }
+
   .logo-light {
     display: block;
   }

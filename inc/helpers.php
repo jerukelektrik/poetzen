@@ -433,4 +433,22 @@ function sukusastra_display_related_posts(): void {
 	<?php
 }
 
+/**
+ * Fix footnote href attributes that contain leading slashes (e.g. href="/#fn-id" -> href="#fn-id")
+ * to prevent unwanted homepage redirects.
+ */
+add_filter( 'the_content', 'sukusastra_fix_footnote_hrefs', 20 );
+function sukusastra_fix_footnote_hrefs( string $content ): string {
+	if ( is_admin() || empty( $content ) ) {
+		return $content;
+	}
+
+	return preg_replace(
+		'/href=["\']\/?#([^"\']+)["\']/',
+		'href="#$1"',
+		$content
+	);
+}
+
+
 
