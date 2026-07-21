@@ -1148,7 +1148,6 @@ $post_count = $reviews->post_count;
 						setTimeout(checkButtons, 200);
 					});
 				</script>
-			<?php endif; ?>
 		</div>
 	</section>
 <?php endif; ?>
