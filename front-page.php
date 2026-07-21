@@ -1069,7 +1069,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <!-- Book Reviews Section -->
 <?php 
-$reviews = sukusastra_latest_cpt( 'review_buku', 8 ); 
+$reviews = sukusastra_latest_cpt( 'review_buku', 4 ); 
 $post_count = $reviews->post_count;
 ?>
 <?php if ( $reviews->have_posts() ) : ?>
