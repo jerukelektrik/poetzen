@@ -523,12 +523,39 @@ add_action( 'admin_init', 'sukusastra_add_footnote_editor_button' );
 function sukusastra_add_footnote_editor_button(): void {
 	if ( current_user_can( 'edit_posts' ) || current_user_can( 'edit_pages' ) ) {
 		add_filter( 'mce_buttons', 'sukusastra_register_footnote_mce_button' );
+		add_filter( 'tinymce_before_init', 'sukusastra_add_footnote_to_tinymce_init' );
 	}
 }
 
 function sukusastra_register_footnote_mce_button( array $buttons ): array {
 	array_push( $buttons, 'ss_footnote_button' );
 	return $buttons;
+}
+
+function sukusastra_add_footnote_to_tinymce_init( array $init_array ): array {
+	$setup = isset( $init_array['setup'] ) ? $init_array['setup'] : '';
+	$custom_setup = "function(ed) {
+		ed.addButton('ss_footnote_button', {
+			title: 'Tambah Catatan Kaki [fn]',
+			text: '[fn]',
+			icon: false,
+			onclick: function() {
+				var selected = ed.selection.getContent({ format: 'text' });
+				var fnText = prompt('Masukkan isi Catatan Kaki:', selected || '');
+				if (fnText !== null && fnText.trim() !== '') {
+					ed.insertContent('[fn]' + fnText.trim() + '[/fn]');
+				}
+			}
+		});
+	}";
+
+	if ( ! empty( $setup ) ) {
+		$init_array['setup'] = 'function(ed){ (' . $setup . ')(ed); (' . $custom_setup . ')(ed); }';
+	} else {
+		$init_array['setup'] = $custom_setup;
+	}
+
+	return $init_array;
 }
 
 add_action( 'admin_print_footer_scripts', 'sukusastra_footnote_editor_scripts' );
@@ -539,28 +566,9 @@ function sukusastra_footnote_editor_scripts(): void {
 	}
 	?>
 	<script type="text/javascript">
-	(function() {
-		if (typeof QTags !== 'undefined') {
-			QTags.addButton('ss_footnote_qtag', 'Footnote [fn]', '[fn]', '[/fn]', 'f', 'Tambah Catatan Kaki');
-		}
-
-		if (typeof tinymce !== 'undefined') {
-			tinymce.PluginManager.add('ss_footnote_button', function(editor) {
-				editor.addButton('ss_footnote_button', {
-					text: '[fn] Catatan Kaki',
-					icon: false,
-					tooltip: 'Tambah Catatan Kaki [fn]',
-					onclick: function() {
-						var selected = editor.selection.getContent({ format: 'text' });
-						var fnText = prompt('Masukkan isi Catatan Kaki:', selected || '');
-						if (fnText !== null && fnText.trim() !== '') {
-							editor.insertContent('[fn]' + fnText.trim() + '[/fn]');
-						}
-					}
-				});
-			});
-		}
-	})();
+	if (typeof QTags !== 'undefined') {
+		QTags.addButton('ss_footnote_qtag', 'Footnote [fn]', '[fn]', '[/fn]', 'f', 'Tambah Catatan Kaki');
+	}
 	</script>
 	<?php
 }
