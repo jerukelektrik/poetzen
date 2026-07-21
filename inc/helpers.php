@@ -450,5 +450,71 @@ function sukusastra_fix_footnote_hrefs( string $content ): string {
 	);
 }
 
+/**
+ * Footnote Shortcode and Content Auto-Parser
+ * Allows writing [fn]Footnote content[/fn] or [footnote]Footnote content[/footnote] anywhere in post content.
+ * Automatically converts them to numbered superscript links ^1, ^2, ^3 and generates a styled
+ * footnote section at the bottom of the article.
+ */
+add_filter( 'the_content', 'sukusastra_parse_footnote_shortcodes', 15 );
+function sukusastra_parse_footnote_shortcodes( string $content ): string {
+	if ( is_admin() || empty( $content ) ) {
+		return $content;
+	}
+
+	if ( ! str_contains( $content, '[fn]' ) && ! str_contains( $content, '[footnote]' ) ) {
+		return $content;
+	}
+
+	$footnotes = array();
+	$count = 0;
+
+	$content = preg_replace_callback(
+		'/\[(?:fn|footnote)\](.*?)\[\/(?:fn|footnote)\]/s',
+		function ( $matches ) use ( &$footnotes, &$count ) {
+			$count++;
+			$fn_id = 'fn-' . $count;
+			$fn_link_id = 'fnref-' . $count;
+			$fn_text = trim( $matches[1] );
+
+			$footnotes[] = array(
+				'id'      => $fn_id,
+				'link_id' => $fn_link_id,
+				'text'    => $fn_text,
+				'num'     => $count,
+			);
+
+			return sprintf(
+				'<sup class="fn" id="%s"><a href="#%s">%d</a></sup>',
+				esc_attr( $fn_link_id ),
+				esc_attr( $fn_id ),
+				$count
+			);
+		},
+		$content
+	);
+
+	if ( ! empty( $footnotes ) ) {
+		$list_html = '<div class="ss-footnotes-wrapper mt-10 pt-6 border-t border-slate-200 dark:border-zinc-800">';
+		$list_html .= '<h4 class="text-sm font-black uppercase tracking-wider text-slate-500 dark:text-zinc-400 mb-3">' . esc_html__( 'Catatan Kaki:', 'sukusastra' ) . '</h4>';
+		$list_html .= '<ol class="wp-block-footnotes list-decimal pl-5 text-sm leading-relaxed">';
+
+		foreach ( $footnotes as $fn ) {
+			$list_html .= sprintf(
+				'<li id="%s" class="my-2 text-slate-700 dark:text-zinc-300">%s <a href="#%s" class="no-underline text-red-700 dark:text-red-400 font-bold ml-1" aria-label="Kembali ke teks">↩︎</a></li>',
+				esc_attr( $fn['id'] ),
+				$fn['text'],
+				esc_attr( $fn['link_id'] )
+			);
+		}
+
+		$list_html .= '</ol></div>';
+
+		$content .= $list_html;
+	}
+
+	return $content;
+}
+
 
 
