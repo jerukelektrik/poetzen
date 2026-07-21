@@ -71,6 +71,9 @@
 		src="https://www.facebook.com/tr?id=<?php echo esc_attr( $meta_pixel_id ); ?>&ev=PageView&noscript=1"
 		/></noscript>
 		<!-- End Meta Pixel Code -->
+		<?php
+	}
+	?>
 	<!-- Theme Favicon Fallback -->
 	<link rel="icon" href="<?php echo esc_url( get_template_directory_uri() . '/assets/images/favicon.png' ); ?>" type="image/png">
 	<link rel="apple-touch-icon" href="<?php echo esc_url( get_template_directory_uri() . '/assets/images/favicon.png' ); ?>">
