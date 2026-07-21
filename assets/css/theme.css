@@ -13,9 +13,6 @@
       --tw-rotate-z: initial;
       --tw-skew-x: initial;
       --tw-skew-y: initial;
-      --tw-pan-x: initial;
-      --tw-pan-y: initial;
-      --tw-pinch-zoom: initial;
       --tw-scroll-snap-strictness: proximity;
       --tw-space-y-reverse: 0;
       --tw-border-style: solid;
@@ -3124,6 +3121,10 @@
     width: 42px;
   }
 
+  .w-\[72vw\] {
+    width: 72vw;
+  }
+
   .w-\[78vw\] {
     width: 78vw;
   }
@@ -3180,8 +3181,8 @@
     max-width: 10rem;
   }
 
-  .max-w-\[18rem\] {
-    max-width: 18rem;
+  .max-w-\[17rem\] {
+    max-width: 17rem;
   }
 
   .max-w-\[80px\] {
@@ -3307,11 +3308,6 @@
 
   .cursor-pointer {
     cursor: pointer;
-  }
-
-  .touch-pan-x {
-    --tw-pan-x: pan-x;
-    touch-action: var(--tw-pan-x, ) var(--tw-pan-y, ) var(--tw-pinch-zoom, );
   }
 
   .resize {
@@ -5416,8 +5412,8 @@
       width: calc(var(--spacing) * 64);
     }
 
-    .sm\:w-\[44vw\] {
-      width: 44vw;
+    .sm\:w-\[42vw\] {
+      width: 42vw;
     }
 
     .sm\:w-\[64vw\] {
@@ -6533,21 +6529,6 @@
 }
 
 @property --tw-skew-y {
-  syntax: "*";
-  inherits: false
-}
-
-@property --tw-pan-x {
-  syntax: "*";
-  inherits: false
-}
-
-@property --tw-pan-y {
-  syntax: "*";
-  inherits: false
-}
-
-@property --tw-pinch-zoom {
   syntax: "*";
   inherits: false
 }

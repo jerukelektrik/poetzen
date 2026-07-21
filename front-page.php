@@ -1082,12 +1082,12 @@ $post_count = $reviews->post_count;
 				</a>
 			</div>
 			
-			<!-- Carousel/Slider Layout (Always slideable on mobile) -->
+			<!-- Carousel/Slider Layout (100% Fluid Touch Slideable on Mobile) -->
 			<div class="relative w-full group" id="poetzen-review-carousel-wrapper">
 				<!-- Scroll Container -->
-				<div id="poetzen-review-scroll" class="flex gap-5 overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar pb-2 items-stretch touch-pan-x">
+				<div id="poetzen-review-scroll" class="-mx-4 flex gap-4 overflow-x-auto snap-x snap-mandatory no-scrollbar px-4 pb-2 sm:-mx-6 sm:px-6 md:mx-0 md:px-0 md:gap-5 items-stretch" data-drag-scroll>
 					<?php while ( $reviews->have_posts() ) : $reviews->the_post(); ?>
-						<div class="w-[78vw] sm:w-[44vw] md:w-[calc((100%-3*1.25rem)/4)] lg:w-[calc((100%-3*1.25rem)/4)] max-w-[18rem] shrink-0 snap-start flex">
+						<div class="w-[72vw] max-w-[17rem] shrink-0 snap-start sm:w-[42vw] md:w-[calc((100%-3*1.25rem)/4)] lg:w-[calc((100%-3*1.25rem)/4)] flex">
 							<?php get_template_part( 'template-parts/cards/review-card', null, array( 'layout' => 'vertical' ) ); ?>
 						</div>
 					<?php endwhile; wp_reset_postdata(); ?>
