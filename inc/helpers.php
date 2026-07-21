@@ -516,5 +516,54 @@ function sukusastra_parse_footnote_shortcodes( string $content ): string {
 	return $content;
 }
 
+/**
+ * Add custom Footnote [fn] button to Classic Editor toolbar (TinyMCE Visual & Quicktags Text)
+ */
+add_action( 'admin_init', 'sukusastra_add_footnote_editor_button' );
+function sukusastra_add_footnote_editor_button(): void {
+	if ( current_user_can( 'edit_posts' ) || current_user_can( 'edit_pages' ) ) {
+		add_filter( 'mce_buttons', 'sukusastra_register_footnote_mce_button' );
+	}
+}
+
+function sukusastra_register_footnote_mce_button( array $buttons ): array {
+	array_push( $buttons, 'ss_footnote_button' );
+	return $buttons;
+}
+
+add_action( 'admin_print_footer_scripts', 'sukusastra_footnote_editor_scripts' );
+function sukusastra_footnote_editor_scripts(): void {
+	global $pagenow;
+	if ( ! in_array( $pagenow, array( 'post.php', 'post-new.php' ), true ) ) {
+		return;
+	}
+	?>
+	<script type="text/javascript">
+	(function() {
+		if (typeof QTags !== 'undefined') {
+			QTags.addButton('ss_footnote_qtag', 'Footnote [fn]', '[fn]', '[/fn]', 'f', 'Tambah Catatan Kaki');
+		}
+
+		if (typeof tinymce !== 'undefined') {
+			tinymce.PluginManager.add('ss_footnote_button', function(editor) {
+				editor.addButton('ss_footnote_button', {
+					text: '[fn] Catatan Kaki',
+					icon: false,
+					tooltip: 'Tambah Catatan Kaki [fn]',
+					onclick: function() {
+						var selected = editor.selection.getContent({ format: 'text' });
+						var fnText = prompt('Masukkan isi Catatan Kaki:', selected || '');
+						if (fnText !== null && fnText.trim() !== '') {
+							editor.insertContent('[fn]' + fnText.trim() + '[/fn]');
+						}
+					}
+				});
+			});
+		}
+	})();
+	</script>
+	<?php
+}
+
 
 
