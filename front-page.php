@@ -1085,9 +1085,9 @@ $post_count = $reviews->post_count;
 			<!-- Reviu Buku Container (ALWAYS Horizontal Swipe Carousel on Mobile, Grid/Carousel on Desktop) -->
 			<div class="relative w-full group" id="poetzen-review-carousel-wrapper">
 				<!-- Scroll Container: flex overflow-x-auto on Mobile (< sm), Grid on Desktop (>= sm) if <= 4 cards -->
-				<div id="poetzen-review-scroll" class="ss-review-carousel -mx-4 flex gap-4 overflow-x-auto snap-x snap-mandatory no-scrollbar px-4 pb-2 items-stretch <?php echo ( $post_count <= 4 ) ? 'sm:mx-0 sm:px-0 sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-5 sm:overflow-visible sm:snap-none' : 'sm:mx-0 sm:px-0 sm:gap-5'; ?>" data-drag-scroll>
+				<div id="poetzen-review-scroll" class="-mx-4 flex gap-4 overflow-x-auto snap-x snap-mandatory no-scrollbar px-4 pb-2 items-stretch <?php echo ( $post_count <= 4 ) ? 'sm:mx-0 sm:px-0 sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-5 sm:overflow-visible sm:snap-none' : 'sm:mx-0 sm:px-0 sm:gap-5'; ?>" data-drag-scroll>
 					<?php while ( $reviews->have_posts() ) : $reviews->the_post(); ?>
-						<div class="ss-review-carousel-item w-[75vw] max-w-[17rem] shrink-0 snap-start flex <?php echo ( $post_count <= 4 ) ? 'sm:w-auto sm:max-w-none sm:shrink' : 'sm:w-[44vw] md:w-[calc((100%-3*1.25rem)/4)] lg:w-[calc((100%-3*1.25rem)/4)]'; ?>">
+						<div class="w-[72vw] max-w-[17rem] shrink-0 snap-start flex flex-col <?php echo ( $post_count <= 4 ) ? 'sm:w-auto sm:max-w-none sm:shrink' : 'sm:w-[44vw] md:w-[calc((100%-3*1.25rem)/4)] lg:w-[calc((100%-3*1.25rem)/4)]'; ?>">
 							<?php get_template_part( 'template-parts/cards/review-card', null, array( 'layout' => 'vertical' ) ); ?>
 						</div>
 					<?php endwhile; wp_reset_postdata(); ?>
