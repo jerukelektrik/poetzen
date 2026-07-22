@@ -15,9 +15,9 @@ $img_class = 'absolute inset-0 w-full h-full object-cover transition-transform d
 <article class="ss-terbitan-home-card flex flex-col group gap-2.5">
 	<a class="ss-terbitan-home-cover block no-underline overflow-hidden rounded-2xl aspect-[2/3] relative bg-slate-100 dark:bg-zinc-900 border border-slate-200/50 dark:border-zinc-800 shadow-sm" href="<?php the_permalink(); ?>">
 		<?php if ( $book_image_id ) : ?>
-			<?php echo wp_get_attachment_image( $book_image_id, 'large', false, array( 'class' => $img_class ) ); ?>
+			<?php echo wp_get_attachment_image( $book_image_id, 'sukusastra-cover-sm', false, array( 'class' => $img_class, 'sizes' => '(max-width: 640px) 45vw, (max-width: 1024px) 25vw, 260px', 'decoding' => 'async' ) ); ?>
 		<?php elseif ( has_post_thumbnail() ) : ?>
-			<?php the_post_thumbnail( 'large', array( 'class' => $img_class ) ); ?>
+			<?php the_post_thumbnail( 'sukusastra-cover-sm', array( 'class' => $img_class, 'sizes' => '(max-width: 640px) 45vw, (max-width: 1024px) 25vw, 260px', 'decoding' => 'async' ) ); ?>
 		<?php else : ?>
 			<div class="absolute inset-0 flex items-center justify-center p-4 text-center">
 				<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo.svg' ); ?>" alt="<?php echo esc_attr( $book_title ); ?>" class="max-h-14 max-w-full opacity-50 dark:opacity-20 object-contain" />

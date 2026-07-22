@@ -10,7 +10,16 @@ $youtube = sukusastra_get_meta( get_the_ID(), '_ss_youtube_url' );
 	<!-- Image wrapper with scale hover effect -->
 	<a class="block no-underline overflow-hidden rounded-2xl border border-slate-200/50 dark:border-zinc-800/80 shadow-sm" href="<?php the_permalink(); ?>">
 		<?php if ( has_post_thumbnail() ) : ?>
-			<?php the_post_thumbnail( 'sukusastra-card', array( 'class' => 'aspect-[3/2] w-full object-cover group-hover:scale-105 transition-transform duration-500' ) ); ?>
+			<?php 
+			the_post_thumbnail( 
+				'article-card', 
+				array( 
+					'class'    => 'aspect-[3/2] w-full object-cover group-hover:scale-105 transition-transform duration-500',
+					'sizes'    => '(max-width: 640px) 82vw, (max-width: 768px) 45vw, (max-width: 1024px) 30vw, 360px',
+					'decoding' => 'async',
+				) 
+			); 
+			?>
 		<?php else : ?>
 			<div class="ss-post-card-placeholder flex aspect-[3/2] w-full items-center justify-center bg-slate-50 dark:bg-zinc-900/40 p-6 group-hover:scale-105 transition-transform duration-500">
 				<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo.svg' ); ?>" alt="<?php the_title_attribute(); ?>" class="max-h-12 max-w-full opacity-50 dark:opacity-20 object-contain" />

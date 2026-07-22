@@ -139,6 +139,7 @@ $hero_query = new WP_Query(
 
 					$hero_posts[] = array(
 						'id'          => get_the_ID(),
+						'thumb_id'    => get_post_thumbnail_id(),
 						'title'       => get_the_title(),
 						'permalink'   => get_permalink(),
 						'date'        => get_the_date(),
@@ -160,8 +161,23 @@ $hero_query = new WP_Query(
 						<article class="relative w-full aspect-[16/10] rounded-3xl overflow-hidden group shadow-md border border-slate-200/10 bg-slate-900 flex flex-col justify-between p-6 sm:p-8">
 							<!-- Background Image -->
 							<div class="absolute inset-0 z-0">
-								<?php if ( $main_post['thumbnail'] ) : ?>
-									<img src="<?php echo esc_url( $main_post['thumbnail'] ); ?>" alt="<?php echo esc_attr( $main_post['title'] ); ?>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-70">
+								<?php if ( ! empty( $main_post['thumb_id'] ) ) : ?>
+									<?php
+									echo wp_get_attachment_image(
+										$main_post['thumb_id'],
+										'sukusastra-card',
+										false,
+										array(
+											'class'         => 'w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-70',
+											'loading'       => 'eager',
+											'fetchpriority' => 'high',
+											'decoding'      => 'async',
+											'sizes'         => '(max-width: 1024px) 100vw, 800px',
+										)
+									);
+									?>
+								<?php elseif ( $main_post['thumbnail'] ) : ?>
+									<img src="<?php echo esc_url( $main_post['thumbnail'] ); ?>" alt="<?php echo esc_attr( $main_post['title'] ); ?>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-70" decoding="async" fetchpriority="high">
 								<?php else : ?>
 									<div class="w-full h-full bg-zinc-900 group-hover:scale-105 transition-transform duration-500 opacity-70 flex items-center justify-center p-8">
 										<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo.svg' ); ?>" alt="<?php echo esc_attr( $main_post['title'] ); ?>" class="max-h-36 max-w-full opacity-30 object-contain" />
@@ -222,9 +238,24 @@ $hero_query = new WP_Query(
 							?>
 							<article class="ss-card rounded-3xl p-4 shadow-sm hover:shadow-md transition-all flex items-center justify-between gap-4">
 								<!-- Left: Thumbnail image -->
-								<?php if ( $p['thumbnail'] ) : ?>
+								<?php if ( ! empty( $p['thumb_id'] ) ) : ?>
 									<a href="<?php echo esc_url( $p['permalink'] ); ?>" class="w-20 h-20 shrink-0 rounded-2xl overflow-hidden border border-slate-200/50 dark:border-zinc-800/50 shadow-inner">
-										<img src="<?php echo esc_url( $p['thumbnail'] ); ?>" alt="<?php echo esc_attr( $p['title'] ); ?>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+										<?php
+										echo wp_get_attachment_image(
+											$p['thumb_id'],
+											'thumbnail',
+											false,
+											array(
+												'class'    => 'w-full h-full object-cover group-hover:scale-105 transition-transform duration-500',
+												'decoding' => 'async',
+												'sizes'    => '80px',
+											)
+										);
+										?>
+									</a>
+								<?php elseif ( $p['thumbnail'] ) : ?>
+									<a href="<?php echo esc_url( $p['permalink'] ); ?>" class="w-20 h-20 shrink-0 rounded-2xl overflow-hidden border border-slate-200/50 dark:border-zinc-800/50 shadow-inner">
+										<img src="<?php echo esc_url( $p['thumbnail'] ); ?>" alt="<?php echo esc_attr( $p['title'] ); ?>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" decoding="async">
 									</a>
 								<?php else : ?>
 									<a href="<?php echo esc_url( $p['permalink'] ); ?>" class="w-20 h-20 shrink-0 rounded-2xl bg-white dark:bg-zinc-900 group-hover:scale-105 transition-transform duration-500 border border-slate-200/50 dark:border-zinc-800/50 flex items-center justify-center p-2">
@@ -275,8 +306,24 @@ $hero_query = new WP_Query(
 							<article class="relative w-full aspect-[4/3] rounded-3xl overflow-hidden group shadow border border-slate-200/10 bg-slate-900 flex flex-col justify-between p-5">
 								<!-- Background Image -->
 								<div class="absolute inset-0 z-0">
-									<?php if ( $post['thumbnail'] ) : ?>
-										<img src="<?php echo esc_url( $post['thumbnail'] ); ?>" alt="<?php echo esc_attr( $post['title'] ); ?>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-70">
+									<?php if ( ! empty( $post['thumb_id'] ) ) : ?>
+										<?php
+										$is_lcp = ( 0 === $index );
+										echo wp_get_attachment_image(
+											$post['thumb_id'],
+											'article-card',
+											false,
+											array(
+												'class'         => 'w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-70',
+												'loading'       => $is_lcp ? 'eager' : 'lazy',
+												'fetchpriority' => $is_lcp ? 'high' : 'auto',
+												'decoding'      => 'async',
+												'sizes'         => '(max-width: 640px) 78vw, 64vw',
+											)
+										);
+										?>
+									<?php elseif ( $post['thumbnail'] ) : ?>
+										<img src="<?php echo esc_url( $post['thumbnail'] ); ?>" alt="<?php echo esc_attr( $post['title'] ); ?>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-70" decoding="async" <?php echo 0 === $index ? 'fetchpriority="high"' : 'loading="lazy"'; ?>>
 									<?php else : ?>
 										<div class="w-full h-full bg-zinc-900 group-hover:scale-105 transition-transform duration-500 opacity-70 flex items-center justify-center p-6">
 											<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo.svg' ); ?>" alt="<?php echo esc_attr( $post['title'] ); ?>" class="max-h-24 max-w-full opacity-30 object-contain" />
@@ -1224,7 +1271,16 @@ $post_count = $reviews->post_count;
 							<!-- Image placeholder / featured image -->
 							<a class="block no-underline overflow-hidden rounded-2xl border border-slate-200/50 dark:border-zinc-800/80 shadow-sm" href="<?php the_permalink(); ?>">
 								<?php if ( has_post_thumbnail() ) : ?>
-									<?php the_post_thumbnail( 'sukusastra-card', array( 'class' => 'aspect-[3/2] w-full object-cover group-hover:scale-105 transition-transform duration-500' ) ); ?>
+									<?php 
+									the_post_thumbnail( 
+										'article-card', 
+										array( 
+											'class'    => 'aspect-[3/2] w-full object-cover group-hover:scale-105 transition-transform duration-500',
+											'sizes'    => '(max-width: 640px) 82vw, (max-width: 1024px) 30vw, 360px',
+											'decoding' => 'async',
+										) 
+									); 
+									?>
 								<?php else : ?>
 									<div class="ss-post-card-placeholder flex aspect-[3/2] w-full items-center justify-center bg-slate-50 dark:bg-zinc-900/40 p-6 group-hover:scale-105 transition-transform duration-500">
 										<svg class="h-12 w-12 text-slate-350 dark:text-zinc-700 opacity-60" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" /></svg>

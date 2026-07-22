@@ -33,7 +33,18 @@ get_header(); ?>
 				</p>
 				<?php if ( has_post_thumbnail() ) : ?>
 					<div class="mt-8 rounded overflow-hidden shadow-sm">
-						<?php the_post_thumbnail( 'sukusastra-hero', array( 'class' => 'w-full object-cover' ) ); ?>
+						<?php 
+						the_post_thumbnail( 
+							'sukusastra-hero', 
+							array( 
+								'class'         => 'w-full object-cover',
+								'loading'       => 'eager',
+								'fetchpriority' => 'high',
+								'decoding'      => 'async',
+								'sizes'         => '(max-width: 768px) 100vw, 1280px',
+							) 
+						); 
+						?>
 					</div>
 				<?php else : ?>
 					<div class="mt-8 rounded overflow-hidden shadow-sm flex items-center justify-center bg-white dark:bg-[#262B4E]/40 border border-slate-200/60 dark:border-zinc-800 p-8 h-64 md:h-[320px]">

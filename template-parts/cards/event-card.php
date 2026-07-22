@@ -72,7 +72,16 @@ if ( 'sayembara' === $event_type ) {
 	<!-- Image wrapper flush with borders -->
 	<a class="block no-underline overflow-hidden aspect-[16/10] shrink-0 <?php echo $is_ended ? 'grayscale opacity-75' : ''; ?>" href="<?php the_permalink(); ?>">
 		<?php if ( has_post_thumbnail() ) : ?>
-			<?php the_post_thumbnail( 'sukusastra-card', array( 'class' => 'w-full h-full object-cover group-hover:scale-105 transition-transform duration-500' ) ); ?>
+			<?php 
+			the_post_thumbnail( 
+				'article-card', 
+				array( 
+					'class'    => 'w-full h-full object-cover group-hover:scale-105 transition-transform duration-500',
+					'sizes'    => '(max-width: 640px) 85vw, (max-width: 1024px) 45vw, 360px',
+					'decoding' => 'async',
+				) 
+			); 
+			?>
 		<?php else : ?>
 			<div class="flex w-full h-full items-center justify-center bg-slate-50 dark:bg-zinc-900/40 p-6 group-hover:scale-105 transition-transform duration-500">
 				<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo.svg' ); ?>" alt="<?php the_title_attribute(); ?>" class="max-h-12 max-w-full opacity-50 dark:opacity-20 object-contain" />

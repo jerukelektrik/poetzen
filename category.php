@@ -62,7 +62,7 @@ $category_feature_posts = ( $is_two_column_mobile && isset( $GLOBALS['wp_query']
 					<article <?php post_class( 'ss-category-mobile-hero-card group', $feature_post_id ); ?>>
 						<a class="ss-category-mobile-hero-media" href="<?php echo esc_url( get_permalink( $feature_post_id ) ); ?>">
 							<?php if ( has_post_thumbnail( $feature_post_id ) ) : ?>
-								<?php echo get_the_post_thumbnail( $feature_post_id, 'sukusastra-card', array( 'class' => 'h-full w-full object-cover transition-transform duration-500 group-hover:scale-105' ) ); ?>
+								<?php echo get_the_post_thumbnail( $feature_post_id, 'article-card', array( 'class' => 'h-full w-full object-cover transition-transform duration-500 group-hover:scale-105', 'sizes' => '(max-width: 768px) 100vw, 360px', 'decoding' => 'async' ) ); ?>
 							<?php else : ?>
 								<div class="ss-category-mobile-hero-placeholder flex items-center justify-center bg-slate-50 dark:bg-zinc-900/40 p-6 h-full w-full group-hover:scale-105 transition-transform duration-500">
 									<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo.svg' ); ?>" alt="<?php echo esc_attr( get_the_title( $feature_post_id ) ); ?>" class="max-h-12 max-w-full opacity-50 dark:opacity-20 object-contain" />

@@ -59,9 +59,9 @@ if ( 'vertical' === $layout ) {
 		}
 		if ( $book_image_id ) : 
 			?>
-			<?php echo wp_get_attachment_image( $book_image_id, 'sukusastra-cover', false, array( 'class' => $img_class ) ); ?>
+			<?php echo wp_get_attachment_image( $book_image_id, 'sukusastra-cover-sm', false, array( 'class' => $img_class, 'sizes' => '(max-width: 640px) 72vw, (max-width: 1024px) 25vw, 260px', 'decoding' => 'async' ) ); ?>
 		<?php elseif ( has_post_thumbnail() ) : ?>
-			<?php the_post_thumbnail( 'sukusastra-cover', array( 'class' => $img_class ) ); ?>
+			<?php the_post_thumbnail( 'sukusastra-cover-sm', array( 'class' => $img_class, 'sizes' => '(max-width: 640px) 72vw, (max-width: 1024px) 25vw, 260px', 'decoding' => 'async' ) ); ?>
 		<?php else : ?>
 			<div class="ss-review-card-placeholder flex aspect-[2/3] w-full items-center justify-center bg-slate-50 dark:bg-zinc-900/40 p-4 dark:text-zinc-400">
 				<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo.svg' ); ?>" alt="<?php echo esc_attr( $book_title ); ?>" class="max-h-14 max-w-full opacity-50 dark:opacity-20 object-contain" />
