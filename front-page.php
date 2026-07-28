@@ -6,11 +6,68 @@
  */
 get_header();
 
-// Fetch latest 5 posts for the Hero Grid
-$hero_query = new WP_Query(
+// 1. Fetch pinned posts for the Hero Grid (max 5)
+$pinned_query = new WP_Query(
 	array(
 		'post_type'           => 'post',
 		'posts_per_page'      => 5,
+		'ignore_sticky_posts' => true,
+		'meta_query'          => array(
+			array(
+				'key'     => '_ss_pinned_home',
+				'value'   => '1',
+				'compare' => '=',
+			),
+		),
+	)
+);
+
+$pinned_ids = array();
+$hero_posts = array();
+
+if ( $pinned_query->have_posts() ) {
+	while ( $pinned_query->have_posts() ) {
+		$pinned_query->the_post();
+		$pinned_ids[] = get_the_ID();
+		
+		$categories = get_the_category();
+		$orig_author = sukusastra_get_original_author( get_the_ID() );
+		
+		$author_name = esc_html__( 'Suku Sastra', 'sukusastra' );
+		$author_avatar = '';
+		if ( $orig_author ) {
+			$author_name = $orig_author->post_title;
+			if ( has_post_thumbnail( $orig_author->ID ) ) {
+				$author_avatar = get_the_post_thumbnail_url( $orig_author->ID, 'thumbnail' );
+			}
+		}
+		if ( ! $author_avatar ) {
+			$author_avatar = get_avatar_url( get_the_author_meta( 'ID' ) );
+		}
+
+		$hero_posts[] = array(
+			'id'          => get_the_ID(),
+			'thumb_id'    => get_post_thumbnail_id(),
+			'title'       => get_the_title(),
+			'permalink'   => get_permalink(),
+			'date'        => get_the_date(),
+			'time_ago'    => human_time_diff( get_the_time('U'), current_time('timestamp') ) . ' ' . esc_html__( 'lalu', 'sukusastra' ),
+			'excerpt'     => wp_strip_all_tags( get_the_excerpt() ),
+			'thumbnail'   => has_post_thumbnail() ? get_the_post_thumbnail_url( get_the_ID(), 'large' ) : '',
+			'category'    => ! empty( $categories ) ? $categories[0]->name : esc_html__( 'Karya', 'sukusastra' ),
+			'author_name' => $author_name,
+			'avatar'      => $author_avatar
+		);
+	}
+	wp_reset_postdata();
+}
+
+// 2. Fetch regular posts to fill the rest of the 5 slots
+$needed = 5 - count( $hero_posts );
+if ( $needed > 0 ) {
+	$regular_query_args = array(
+		'post_type'           => 'post',
+		'posts_per_page'      => $needed,
 		'ignore_sticky_posts' => true,
 		'meta_query'          => array(
 			'relation' => 'OR',
@@ -24,8 +81,50 @@ $hero_query = new WP_Query(
 				'compare' => 'NOT EXISTS',
 			),
 		),
-	)
-);
+	);
+	
+	if ( ! empty( $pinned_ids ) ) {
+		$regular_query_args['post__not_in'] = $pinned_ids;
+	}
+	
+	$regular_query = new WP_Query( $regular_query_args );
+	
+	if ( $regular_query->have_posts() ) {
+		while ( $regular_query->have_posts() ) {
+			$regular_query->the_post();
+			
+			$categories = get_the_category();
+			$orig_author = sukusastra_get_original_author( get_the_ID() );
+			
+			$author_name = esc_html__( 'Suku Sastra', 'sukusastra' );
+			$author_avatar = '';
+			if ( $orig_author ) {
+				$author_name = $orig_author->post_title;
+				if ( has_post_thumbnail( $orig_author->ID ) ) {
+					$author_avatar = get_the_post_thumbnail_url( $orig_author->ID, 'thumbnail' );
+				}
+			}
+			if ( ! $author_avatar ) {
+				$author_avatar = get_avatar_url( get_the_author_meta( 'ID' ) );
+			}
+
+			$hero_posts[] = array(
+				'id'          => get_the_ID(),
+				'thumb_id'    => get_post_thumbnail_id(),
+				'title'       => get_the_title(),
+				'permalink'   => get_permalink(),
+				'date'        => get_the_date(),
+				'time_ago'    => human_time_diff( get_the_time('U'), current_time('timestamp') ) . ' ' . esc_html__( 'lalu', 'sukusastra' ),
+				'excerpt'     => wp_strip_all_tags( get_the_excerpt() ),
+				'thumbnail'   => has_post_thumbnail() ? get_the_post_thumbnail_url( get_the_ID(), 'large' ) : '',
+				'category'    => ! empty( $categories ) ? $categories[0]->name : esc_html__( 'Karya', 'sukusastra' ),
+				'author_name' => $author_name,
+				'avatar'      => $author_avatar
+			);
+		}
+		wp_reset_postdata();
+	}
+}
 ?>
 
 <!-- Editorial Hero Grid & News Ticker -->
@@ -73,44 +172,10 @@ $hero_query = new WP_Query(
 		</div>
 		<?php endif; ?>
 		<!-- 2. Hero 2-Column Layout (Widescreen Card on Left + 3 Stacked List Items on Right) -->
-		<?php if ( $hero_query->have_posts() ) : ?>
+		<?php if ( ! empty( $hero_posts ) ) : ?>
 			<!-- Desktop Hero Grid (Visible on desktop, hidden on mobile) -->
 			<div class="hidden lg:grid gap-8 grid-cols-1 lg:grid-cols-3">
 				<?php 
-				$hero_posts = array();
-				while ( $hero_query->have_posts() ) {
-					$hero_query->the_post();
-					$categories = get_the_category();
-					$orig_author = sukusastra_get_original_author( get_the_ID() );
-					
-					$author_name = esc_html__( 'Suku Sastra', 'sukusastra' );
-					$author_avatar = '';
-					if ( $orig_author ) {
-						$author_name = $orig_author->post_title;
-						if ( has_post_thumbnail( $orig_author->ID ) ) {
-							$author_avatar = get_the_post_thumbnail_url( $orig_author->ID, 'thumbnail' );
-						}
-					}
-					if ( ! $author_avatar ) {
-						$author_avatar = get_avatar_url( get_the_author_meta( 'ID' ) );
-					}
-
-					$hero_posts[] = array(
-						'id'          => get_the_ID(),
-						'thumb_id'    => get_post_thumbnail_id(),
-						'title'       => get_the_title(),
-						'permalink'   => get_permalink(),
-						'date'        => get_the_date(),
-						'time_ago'    => human_time_diff( get_the_time('U'), current_time('timestamp') ) . ' ' . esc_html__( 'lalu', 'sukusastra' ),
-						'excerpt'     => wp_strip_all_tags( get_the_excerpt() ),
-						'thumbnail'   => has_post_thumbnail() ? get_the_post_thumbnail_url( get_the_ID(), 'large' ) : '',
-						'category'    => ! empty( $categories ) ? $categories[0]->name : esc_html__( 'Karya', 'sukusastra' ),
-						'author_name' => $author_name,
-						'avatar'      => $author_avatar
-					);
-				}
-				wp_reset_postdata();
-				
 				// Render Column 1: Main Feature (First Post - Spans 2 Columns)
 				if ( isset( $hero_posts[0] ) ) :
 					$main_post = $hero_posts[0];

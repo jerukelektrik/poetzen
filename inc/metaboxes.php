@@ -32,6 +32,7 @@ function sukusastra_render_editorial_metabox( WP_Post $post ): void {
 	wp_nonce_field( 'sukusastra_save_meta', 'sukusastra_meta_nonce' );
 	$show_home = sukusastra_get_meta( $post->ID, '_ss_show_home', '1' );
 	$is_seo    = sukusastra_get_meta( $post->ID, '_ss_is_seo_article', '0' );
+	$pinned    = sukusastra_get_meta( $post->ID, '_ss_pinned_home', '0' );
 	?>
 	<p>
 		<label>
@@ -43,6 +44,12 @@ function sukusastra_render_editorial_metabox( WP_Post $post ): void {
 		<label>
 			<input type="checkbox" name="ss_is_seo_article" value="1" <?php echo sukusastra_checked( $is_seo, '1' ); ?>>
 			<?php esc_html_e( 'Artikel SEO/Ruang Baca', 'sukusastra' ); ?>
+		</label>
+	</p>
+	<p style="margin-top: 15px; border-top: 1px solid #eee; padding-top: 10px;">
+		<label>
+			<input type="checkbox" name="ss_pinned_home" value="1" <?php echo sukusastra_checked( $pinned, '1' ); ?>>
+			<strong><?php esc_html_e( 'Pin ke Hero Grid Homepage', 'sukusastra' ); ?></strong>
 		</label>
 	</p>
 	<?php
@@ -635,7 +642,12 @@ function sukusastra_save_metaboxes( int $post_id ): void {
 
 	// 1. Save general/editorial/SEO fields (if nonce exists)
 	if ( isset( $_POST['sukusastra_meta_nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['sukusastra_meta_nonce'] ) ), 'sukusastra_save_meta' ) ) {
-		$checkboxes = array( 'ss_show_home' => '_ss_show_home', 'ss_is_seo_article' => '_ss_is_seo_article', '_ss_paid_ticket' => '_ss_paid_ticket' );
+		$checkboxes = array( 
+			'ss_show_home'      => '_ss_show_home', 
+			'ss_is_seo_article' => '_ss_is_seo_article', 
+			'ss_pinned_home'    => '_ss_pinned_home',
+			'_ss_paid_ticket'   => '_ss_paid_ticket' 
+		);
 		foreach ( $checkboxes as $input => $meta_key ) {
 			update_post_meta( $post_id, $meta_key, isset( $_POST[ $input ] ) ? '1' : '0' );
 		}
