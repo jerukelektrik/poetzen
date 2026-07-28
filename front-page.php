@@ -32,56 +32,14 @@ $hero_query = new WP_Query(
 <section id="hero" class="ss-section border-t-0 bg-transparent pt-0 md:pt-4 pb-10 md:pb-14">
 	<div class="ss-container">
 		<?php 
-		// Fetch ongoing/upcoming events for the News Update ticker
+		// Fetch latest posts and news for the News Update ticker
 		$news_update_events = new WP_Query( array(
-			'post_type'      => 'event',
+			'post_type'      => array( 'post', 'berita' ),
 			'posts_per_page' => 10,
-			'meta_key'       => '_ss_event_start',
-			'orderby'        => 'meta_value',
-			'order'          => 'ASC',
-			'meta_query'     => array(
-				'relation' => 'AND',
-				array(
-					'key'     => '_ss_event_status',
-					'value'   => 'upcoming',
-					'compare' => '=',
-				),
-				array(
-					'relation' => 'OR',
-					array(
-						'key'     => '_ss_event_end',
-						'value'   => date( 'Y-m-d' ),
-						'compare' => '>=',
-						'type'    => 'DATE',
-					),
-					array(
-						'key'     => '_ss_event_end',
-						'compare' => 'NOT EXISTS',
-					),
-				),
-			),
+			'orderby'        => 'date',
+			'order'          => 'DESC',
+			'post_status'    => 'publish'
 		) );
-		
-		if ( ! $news_update_events->have_posts() ) {
-			// Fallback: Latest events regardless of status
-			$news_update_events = new WP_Query( array(
-				'post_type'      => 'event',
-				'posts_per_page' => 10,
-				'orderby'        => 'date',
-				'order'          => 'DESC',
-				'post_status'    => 'publish'
-			) );
-		}
-		if ( ! $news_update_events->have_posts() ) {
-			// Fallback: Latest posts
-			$news_update_events = new WP_Query( array(
-				'post_type'      => 'post',
-				'posts_per_page' => 10,
-				'orderby'        => 'date',
-				'order'          => 'DESC',
-				'post_status'    => 'publish'
-			) );
-		}
 		$show_news_ticker = sukusastra_get_option( 'toggle_news_ticker', '1' );
 		if ( '1' === $show_news_ticker && $news_update_events->have_posts() ) :
 		?>
@@ -1224,29 +1182,7 @@ $post_count = $reviews->post_count;
 	</div>
 </section>
 
-<!-- Events Section -->
-<section id="event" class="ss-section bg-slate-100 dark:bg-black/40 border-b border-slate-200 dark:border-[#4d568c]/25">
-	<div class="ss-container grid gap-6">
-		<div class="flex items-center justify-between border-b border-slate-100 pb-2 dark:border-zinc-800/80">
-			<h2 class="ss-section-title ss-feed-section-title"><?php esc_html_e( 'Agenda & Event Sastra', 'sukusastra' ); ?></h2>
-			<a class="ss-eyebrow" href="<?php echo esc_url( get_post_type_archive_link( 'event' ) ); ?>">
-				<?php esc_html_e( 'Lihat Semua', 'sukusastra' ); ?> &rarr;
-			</a>
-		</div>
-		<?php $events = sukusastra_upcoming_events( 4 ); ?>
-		<?php if ( $events->have_posts() ) : ?>
-			<div class="ss-event-carousel flex gap-4 overflow-x-auto snap-x snap-mandatory no-scrollbar pb-2 md:grid md:gap-6 md:grid-cols-2 md:overflow-visible md:snap-none lg:grid-cols-4" data-drag-scroll>
-				<?php while ( $events->have_posts() ) : $events->the_post(); ?>
-					<div class="ss-event-carousel-item w-[82vw] shrink-0 snap-start md:w-auto md:shrink">
-						<?php get_template_part( 'template-parts/cards/event-card' ); ?>
-					</div>
-				<?php endwhile; wp_reset_postdata(); ?>
-			</div>
-		<?php else : ?>
-			<p class="text-sm text-slate-500 dark:text-zinc-400 py-6 text-center"><?php esc_html_e( 'Belum ada agenda terdekat.', 'sukusastra' ); ?></p>
-		<?php endif; ?>
-	</div>
-</section>
+
 
 <!-- Komunitas Section -->
 <section id="komunitas" class="ss-section">

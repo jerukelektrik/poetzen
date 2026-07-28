@@ -19,7 +19,6 @@ function sukusastra_primary_menu_fallback(): void {
 		'Esai'        => home_url( '/category/esai/' ),
 		'Reviu Buku' => home_url( '/review-buku/' ),
 		'Peristiwa'   => home_url( '/peristiwa/' ),
-		'Event'       => home_url( '/event/' ),
 	);
 
 	echo '<ul class="flex flex-col gap-4 ss-nav-text md:flex-row md:items-center md:gap-8">';

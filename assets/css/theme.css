@@ -5588,10 +5588,6 @@
       scroll-snap-type: none;
     }
 
-    .md\:grid-cols-2 {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
     .md\:grid-cols-3 {
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
@@ -5749,10 +5745,6 @@
 
   .dark\:hidden:where(.dark, .dark *) {
     display: none;
-  }
-
-  .dark\:border-\[\#4d568c\]\/25:where(.dark, .dark *) {
-    border-color: oklab(47.0359% .00815398 -.0876516 / .25);
   }
 
   .dark\:border-amber-600\/70:where(.dark, .dark *) {
@@ -5992,16 +5984,6 @@
   @supports (color: color-mix(in lab, red, red)) {
     .dark\:bg-black\/10:where(.dark, .dark *) {
       background-color: color-mix(in oklab, var(--color-black) 10%, transparent);
-    }
-  }
-
-  .dark\:bg-black\/40:where(.dark, .dark *) {
-    background-color: #0006;
-  }
-
-  @supports (color: color-mix(in lab, red, red)) {
-    .dark\:bg-black\/40:where(.dark, .dark *) {
-      background-color: color-mix(in oklab, var(--color-black) 40%, transparent);
     }
   }
 
