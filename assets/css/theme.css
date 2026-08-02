@@ -844,28 +844,69 @@
     margin-block: calc(var(--spacing) * 6) !important;
   }
 
-  .ss-reading img {
+  .ss-reading img, .ss-reading figure, .ss-reading .wp-caption, .ss-reading .wp-block-image, .ss-reading iframe, .ss-reading video, .ss-reading embed, .ss-reading object {
     border-radius: 1rem;
-    margin: 2rem auto;
-    display: block;
     max-width: 100% !important;
     height: auto !important;
   }
 
-  .ss-reading figure {
-    max-width: 100% !important;
+  .ss-reading .wp-caption {
+    background: #fafafa;
+    border: 1px solid #f0f0f0;
+    padding: 6px;
+    width: auto !important;
     margin: 2rem auto !important;
   }
 
-  .ss-reading figure img {
-    margin: 0 auto;
+  .dark .ss-reading .wp-caption {
+    background: #1b1e36/40;
+    border-color: #2c3056/40;
   }
 
-  .ss-reading iframe, .ss-reading video {
-    border-radius: 1rem;
-    margin: 2rem auto;
+  .ss-reading .wp-caption img {
+    border-radius: .75rem;
     display: block;
-    max-width: 100% !important;
+    margin: 0 auto !important;
+  }
+
+  .ss-reading .wp-caption-text {
+    text-align: center;
+    color: #64748b;
+    font-size: .875rem;
+    font-family: var(--font-sans), sans-serif;
+    margin-top: .6rem !important;
+    margin-bottom: .2rem !important;
+  }
+
+  .dark .ss-reading .wp-caption-text {
+    color: #94a3b8;
+  }
+
+  .ss-reading .alignleft, .ss-reading img.alignleft, .ss-reading .wp-caption.alignleft {
+    float: left;
+    max-width: 50% !important;
+    margin: .5rem 1.5rem 1.5rem 0 !important;
+  }
+
+  .ss-reading .alignright, .ss-reading img.alignright, .ss-reading .wp-caption.alignright {
+    float: right;
+    max-width: 50% !important;
+    margin: .5rem 0 1.5rem 1.5rem !important;
+  }
+
+  .ss-reading .aligncenter, .ss-reading img.aligncenter, .ss-reading .wp-caption.aligncenter {
+    clear: both;
+    display: block;
+    margin: 2rem auto !important;
+  }
+
+  @media (max-width: 640px) {
+    .ss-reading .alignleft, .ss-reading .alignright, .ss-reading img.alignleft, .ss-reading img.alignright, .ss-reading .wp-caption.alignleft, .ss-reading .wp-caption.alignright {
+      display: block;
+      float: none !important;
+      max-width: 100% !important;
+      margin: 2rem auto !important;
+    }
   }
 
   .ss-reading h1, .ss-reading h2, .ss-reading h3, .ss-reading h4, .ss-reading h5, .ss-reading h6 {
