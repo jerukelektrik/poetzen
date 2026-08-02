@@ -844,6 +844,30 @@
     margin-block: calc(var(--spacing) * 6) !important;
   }
 
+  .ss-reading img {
+    border-radius: 1rem;
+    margin: 2rem auto;
+    display: block;
+    max-width: 100% !important;
+    height: auto !important;
+  }
+
+  .ss-reading figure {
+    max-width: 100% !important;
+    margin: 2rem auto !important;
+  }
+
+  .ss-reading figure img {
+    margin: 0 auto;
+  }
+
+  .ss-reading iframe, .ss-reading video {
+    border-radius: 1rem;
+    margin: 2rem auto;
+    display: block;
+    max-width: 100% !important;
+  }
+
   .ss-reading h1, .ss-reading h2, .ss-reading h3, .ss-reading h4, .ss-reading h5, .ss-reading h6 {
     margin-top: calc(var(--spacing) * 8) !important;
     margin-bottom: calc(var(--spacing) * 4) !important;
