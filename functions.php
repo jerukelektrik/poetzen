@@ -29,7 +29,6 @@ $sukusastra_files = array(
 	'inc/importer.php',
 	'inc/webp-uploads.php',
 	'inc/sitemap.php',
-	'inc/migrations.php',
 );
 
 foreach ( $sukusastra_files as $sukusastra_file ) {
