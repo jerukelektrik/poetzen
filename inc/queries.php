@@ -480,6 +480,18 @@ function sukusastra_sidebar_latest_posts( int $exclude_id = 0, int $limit = 5 ):
 		'orderby'             => 'date',
 		'order'               => 'DESC',
 		'post_status'         => 'publish',
+		'meta_query'          => array(
+			'relation' => 'OR',
+			array(
+				'key'     => '_ss_is_seo_article',
+				'value'   => '1',
+				'compare' => '!=',
+			),
+			array(
+				'key'     => '_ss_is_seo_article',
+				'compare' => 'NOT EXISTS',
+			),
+		),
 	);
 	if ( $exclude_id > 0 ) {
 		$args['post__not_in'] = array( $exclude_id );
@@ -496,6 +508,18 @@ function sukusastra_sidebar_popular_posts( int $exclude_id = 0, int $limit = 5 )
 		'orderby'             => 'meta_value_num',
 		'order'               => 'DESC',
 		'post_status'         => 'publish',
+		'meta_query'          => array(
+			'relation' => 'OR',
+			array(
+				'key'     => '_ss_is_seo_article',
+				'value'   => '1',
+				'compare' => '!=',
+			),
+			array(
+				'key'     => '_ss_is_seo_article',
+				'compare' => 'NOT EXISTS',
+			),
+		),
 	);
 	if ( $exclude_id > 0 ) {
 		$args['post__not_in'] = array( $exclude_id );
