@@ -118,13 +118,40 @@
   .ss-reading figure,
   .ss-reading .wp-caption,
   .ss-reading .wp-block-image,
-  .ss-reading iframe,
-  .ss-reading video,
   .ss-reading embed,
   .ss-reading object {
     max-width: 100% !important;
     height: auto !important;
     border-radius: 1rem;
+  }
+
+  .ss-reading iframe,
+  .ss-reading video {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 16 / 9 !important;
+    border-radius: 1rem;
+    display: block;
+    margin: 2.5rem auto !important;
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  }
+
+  .ss-reading .wp-block-embed,
+  .ss-reading .wp-block-embed-youtube {
+    width: 100% !important;
+    max-width: 100% !important;
+    aspect-ratio: 16 / 9 !important;
+    margin: 2.5rem auto !important;
+  }
+
+  .ss-reading .wp-block-embed iframe,
+  .ss-reading .wp-block-embed-youtube iframe {
+    width: 100% !important;
+    height: 100% !important;
+    aspect-ratio: 16 / 9 !important;
+    border-radius: 1rem;
+    margin: 0 !important;
   }
 
   .ss-reading .wp-caption {
