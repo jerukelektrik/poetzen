@@ -11,13 +11,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: 🚚 Get latest code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     
+    - name: 🛠️ Install dependencies & Build CSS
+      run: |
+        npm install
+        npm run build:css
+
     - name: 📂 Sync files via FTP
-      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.5
       with:
         server: ${{ secrets.FTP_SERVER }}
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
-        server-dir: public_html/wp-content/themes/poetzen/
-        # Secara default, action ini hanya akan mengunggah file yang berubah (incremental)
+        port: ${{ secrets.FTP_PORT }}
+        server-dir: wp-content/themes/poetzen/
+        exclude: |
+          **/.git*
+          **/.git*/**
+          **/node_modules/**
+          .github/**
+          tests/**
+          README.md
