@@ -45,6 +45,9 @@ get_header(); ?>
 					?>
 				</p>
 				<h1 class="ss-page-title"><?php the_title(); ?></h1>
+				<p class="mt-2 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400">
+					<?php echo esc_html( get_the_date() ); ?>
+				</p>
 			</div>
 
 			<!-- Book Meta Sidebar -->
@@ -184,6 +187,12 @@ get_header(); ?>
 								</span>
 							</div>
 						<?php endif; ?>
+
+						<!-- Tanggal Tayang -->
+						<div>
+							<span class="block text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-zinc-550 mb-0.5"><?php esc_html_e( 'Tanggal Tayang', 'sukusastra' ); ?></span>
+							<span class="text-slate-700 dark:text-zinc-200 font-bold"><?php echo esc_html( get_the_date() ); ?></span>
+						</div>
 					</div>
 
 					<?php
@@ -267,6 +276,9 @@ get_header(); ?>
 					?>
 				</p>
 				<h1 class="ss-page-title hidden lg:block"><?php the_title(); ?></h1>
+				<p class="mt-2 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400 hidden lg:block">
+					<?php echo esc_html( get_the_date() ); ?>
+				</p>
 				
 				<?php if ( $book_image_id && has_post_thumbnail() ) : ?>
 					<div class="mt-8 rounded overflow-hidden shadow-sm">
